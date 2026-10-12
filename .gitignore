@@ -54,3 +54,4 @@ app.*.map.json
 android/.gradle/
 android/local.properties
 publish_release.py
+upload_release.py

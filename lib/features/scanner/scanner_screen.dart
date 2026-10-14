@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pdfx/pdfx.dart' as pdfx;
 import 'package:permission_handler/permission_handler.dart';
 
-import '../../core/db/app_database.dart';
+import '../../core/ai_client/ai_client.dart';
 import '../../core/di/providers.dart';
 import '../../core/settings/app_settings.dart';
 import 'ocr_service.dart';
@@ -213,76 +213,113 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
     if (mounted) setState(() => _selected = null);
   }
 
-  /// Пакетное добавление уникальных слов в словарь с автоматическим переводом через ML Kit.
+  /// Умное пакетное извлечение и добавление ключевых слов в словарь через OmniRoute.
   Future<void> _batchAddWords(String text) async {
-    final rawWords = text.split(RegExp(r'\s+'));
+    final trimmed = text.trim();
+    if (trimmed.isEmpty) {
+      _toast('Нет текста для добавления.');
+      return;
+    }
+
+    final aiClient = ref.read(aiClientProvider);
     final db = ref.read(databaseProvider);
-    final translator = ref.read(translationServiceProvider);
-    final uk = ref.read(settingsProvider).isUk;
+    final isUk = ref.read(settingsProvider).isUk;
+    final targetLang = isUk ? 'Украинский' : 'Русский';
 
-    // Выделяем уникальные подходящие слова
-    final candidates = <String>{};
-    for (final raw in rawWords) {
-      final clean = AppDatabase.normalize(raw.replaceAll(
-        RegExp(r'^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$', unicode: true),
-        '',
-      ));
-      if (clean.length >= 3 &&
-          !AppDatabase.stopwords.contains(clean) &&
-          !RegExp(r'^\d+$').hasMatch(clean)) {
-        candidates.add(clean);
-      }
-    }
-
-    if (candidates.isEmpty) {
-      _toast('Не найдено подходящих слов для добавления.');
+    if (aiClient.apiKey.trim().isEmpty) {
+      _toast('⚠️ Укажите API-ключ в Настройках для умного извлечения слов.');
       return;
     }
 
-    // Оставляем только те слова, которых еще нет в базе
-    final toTranslate = <String>[];
-    for (final w in candidates) {
-      final exists = await db.findByForm(w);
-      if (exists == null) {
-        toTranslate.add(w);
-      }
-    }
+    _toast('⏳ ИИ извлекает и переводит ключевые слова…');
 
-    if (toTranslate.isEmpty) {
-      _toast('Все найденные слова уже есть в словаре.');
-      return;
-    }
+    try {
+      final sample = trimmed.length > 3000 ? trimmed.substring(0, 3000) : trimmed;
 
-    _toast('⏳ Перевожу и сохраняю ${toTranslate.length} слов...');
+      final prompt =
+          'Извлеки из этого польского текста ключевые полезные слова для изучения '
+          '(исключи предлоги, союзы, цифры и междометия). Для каждого слова верни начальную форму '
+          '(инфинитив для глаголов, именительный падеж ед.ч. для существительных/прилагательных) '
+          'и его точный естественный перевод на $targetLang.\n'
+          'Верни СТРОГО валидный JSON-массив без markdown-оберток:\n'
+          '[{"lemma": "базовая_форма", "translation": "перевод", "pos": "часть_речи"}]\n\n'
+          'Текст:\n$sample';
 
-    // Автоматический локальный перевод каждого слова через ML Kit
-    final translations = <String, String>{};
-    for (final w in toTranslate) {
-      try {
-        final tr = await translator.translate(w);
-        if (tr.trim().isNotEmpty) {
-          translations[w] = tr.trim();
-        }
-      } catch (_) {}
-    }
-
-    final added = await db.batchAddWords(
-      toTranslate,
-      uk: uk,
-      translations: translations,
-    );
-
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('✅ Добавлено $added новых слов с переводом в словарь'),
-          behavior: SnackBarBehavior.floating,
-        ),
+      final responseText = await aiClient.chat(
+        [
+          const ChatMessage(
+            'system',
+            'Ты — опытный лингвист-лексикограф польского языка. Отвечай ТОЛЬКО чистым валидным JSON-массивом.',
+          ),
+          ChatMessage('user', prompt),
+        ],
+        temperature: 0.2,
+        timeout: const Duration(seconds: 35),
       );
+
+      final list = extractJsonList(responseText);
+      if (list == null || list.isEmpty) {
+        _toast('ИИ не выделил новых слов из данного текста.');
+        return;
+      }
+
+      final parsed = <({String lemma, String translation, String? pos})>[];
+      for (final item in list) {
+        if (item is Map) {
+          final lemma = (item['lemma'] as String? ?? '').trim();
+          final translation = (item['translation'] as String? ?? '').trim();
+          final pos = (item['pos'] as String? ?? '').trim();
+          if (lemma.isNotEmpty && translation.isNotEmpty) {
+            parsed.add((
+              lemma: lemma,
+              translation: translation,
+              pos: pos.isEmpty ? null : pos,
+            ));
+          }
+        }
+      }
+
+      if (parsed.isEmpty) {
+        _toast('Не удалось извлечь слова.');
+        return;
+      }
+
+      final added = await db.batchAddAiWords(parsed, uk: isUk);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              added > 0
+                  ? '✅ Добавлено $added новых словарных форм с переводом через ИИ'
+                  : 'Все извлеченные слова (${parsed.length}) уже есть в словаре',
+            ),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } on AiException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('⚠️ Ошибка ИИ-шлюза: ${e.message}'),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('⚠️ Не удалось извлечь слова: $e'),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
     }
   }
 
-  /// Быстрый перевод всего текста со снимка или документа.
+  /// Быстрый связный перевод всего текста через OmniRoute.
   Future<void> _translateParagraph(String text) async {
     final trimmed = text.trim();
     if (trimmed.isEmpty) {
@@ -323,7 +360,7 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
                     const Icon(Icons.translate, size: 20),
                     const SizedBox(width: 8),
                     Text(
-                      'Перевод',
+                      'Перевод (OmniRoute ИИ)',
                       style: Theme.of(ctx).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
                     ),
                   ],
@@ -334,7 +371,7 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
                   builder: (_, snap) {
                     if (snap.hasError) {
                       return Text(
-                        'Не удалось перевести (при первом запуске скачивается модель ML Kit)',
+                        'Не удалось перевести. Проверьте интернет или настройки ИИ-шлюза.',
                         style: TextStyle(color: Theme.of(ctx).colorScheme.error),
                       );
                     }
@@ -345,7 +382,7 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
                           children: [
                             SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)),
                             SizedBox(width: 12),
-                            Text('Перевожу…'),
+                            Text('ИИ выполняет связный литературный перевод…'),
                           ],
                         ),
                       );
@@ -358,8 +395,7 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  'Машинный перевод — для общего смысла. Для документов '
-                  'ориентируйтесь на официальный перевод.',
+                  'Литературный перевод выполнен с помощью искусственного интеллекта OmniRoute.',
                   style: Theme.of(ctx).textTheme.bodySmall,
                 ),
                 const SizedBox(height: 16),
@@ -371,7 +407,7 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
                       _batchAddWords(trimmed);
                     },
                     icon: const Icon(Icons.bookmark_add, size: 20),
-                    label: const Text('📥 Добавить все слова с переводом в словарь'),
+                    label: const Text('📥 Добавить ключевые слова с переводом в словарь'),
                   ),
                 ),
               ],
@@ -636,7 +672,7 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
                               onPressed: () =>
                                   _batchAddWords(_textInputController.text),
                               icon: const Icon(Icons.bookmark_add, size: 16),
-                              label: const Text('📥 Все слова с переводом в словарь'),
+                              label: const Text('📥 Добавить ключевые слова в словарь (ИИ)'),
                             ),
                           ),
                         ],

@@ -12,10 +12,16 @@ final ocrServiceProvider = Provider<OcrService>((ref) {
   return s;
 });
 
-/// Пересоздаётся при смене языка подсказок (UK/RU).
+/// Пересоздаётся при смене языка подсказок (UK/RU) или настроек шлюза.
 final translationServiceProvider = Provider<TranslationService>((ref) {
   final lang = ref.watch(settingsProvider.select((s) => s.lang));
-  final s = TranslationService(lang: lang);
+  final aiClient = ref.watch(aiClientProvider);
+  final db = ref.watch(databaseProvider);
+  final s = TranslationService(
+    aiClient: aiClient,
+    db: db,
+    lang: lang,
+  );
   ref.onDispose(s.dispose);
   return s;
 });

@@ -20,7 +20,7 @@ class UpdateInfo {
   });
 }
 
-const currentAppVersion = "1.0.5";
+const currentAppVersion = "1.0.6";
 
 class AppUpdaterService {
   static const String currentVersion = currentAppVersion;

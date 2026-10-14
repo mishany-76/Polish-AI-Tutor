@@ -33,7 +33,10 @@ class _WordSheetState extends ConsumerState<WordSheet> {
   @override
   void initState() {
     super.initState();
-    _translation = ref.read(translationServiceProvider).translate(_form);
+    _translation = ref.read(translationServiceProvider).translateWord(
+          _form,
+          sentence: widget.word.lineText,
+        );
     ref.read(databaseProvider).findByForm(_form).then((w) {
       if (mounted) {
         setState(() {
@@ -180,7 +183,7 @@ class _WordSheetState extends ConsumerState<WordSheet> {
       builder: (context, snap) {
         if (snap.hasError) {
           return Text(
-            'Не удалось перевести (для первой загрузки модели нужен интернет)',
+            'Не удалось перевести слово. Проверьте интернет или настройки ИИ-шлюза.',
             style: theme.textTheme.bodyMedium
                 ?.copyWith(color: theme.colorScheme.error),
           );
@@ -194,7 +197,7 @@ class _WordSheetState extends ConsumerState<WordSheet> {
             ),
             SizedBox(width: 12),
             Flexible(
-              child: Text('Перевожу… (при первом запуске скачивается модель)'),
+              child: Text('ИИ переводит слово в контексте…'),
             ),
           ]);
         }

@@ -181,6 +181,39 @@ class AppDatabase extends _$AppDatabase {
     return addedCount;
   }
 
+  /// Пакетное добавление извлеченных ИИ качественных слов (лемма, перевод, часть речи).
+  Future<int> batchAddAiWords(
+    List<({String lemma, String translation, String? pos})> aiWords, {
+    required bool uk,
+  }) async {
+    int addedCount = 0;
+    for (final item in aiWords) {
+      final lem = normalize(item.lemma.replaceAll(
+        RegExp(r'^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$', unicode: true),
+        '',
+      ));
+      if (lem.length < 2) continue;
+      if (stopwords.contains(lem)) continue;
+      if (RegExp(r'^\d+$').hasMatch(lem)) continue;
+
+      final tr = item.translation.trim();
+      if (tr.isEmpty) continue;
+
+      if (await findByForm(lem) == null) {
+        await into(words).insert(WordsCompanion.insert(
+          lemma: lem,
+          surfaceForm: Value(lem),
+          translationUk: Value(uk ? tr : null),
+          translationRu: Value(uk ? null : tr),
+          pos: Value(item.pos?.trim().isEmpty == true ? null : item.pos?.trim()),
+          source: const Value('batch_ai'),
+        ));
+        addedCount++;
+      }
+    }
+    return addedCount;
+  }
+
   /// Добавляет/дополняет слово результатом ИИ-разбора.
   /// Если слово с такой леммой уже есть — данные сливаются в него.
   Future<void> saveAnalysis({

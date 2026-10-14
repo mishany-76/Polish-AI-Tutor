@@ -120,3 +120,16 @@ Map<String, dynamic>? extractJson(String text) {
   }
 }
 
+/// Достаёт первый JSON-массив из текста (с учётом ```json ограждений).
+List<dynamic>? extractJsonList(String text) {
+  final start = text.indexOf('[');
+  final end = text.lastIndexOf(']');
+  if (start < 0 || end <= start) return null;
+  try {
+    final v = jsonDecode(text.substring(start, end + 1));
+    return v is List ? v : null;
+  } catch (_) {
+    return null;
+  }
+}
+

@@ -220,3 +220,4 @@ final appStringsProvider = Provider<AppStrings>((ref) {
   final lang = ref.watch(settingsProvider.select((s) => s.lang));
   return AppStrings(lang);
 });
+

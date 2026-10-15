@@ -6,7 +6,8 @@ import '../../core/db/app_database.dart';
 /// Язык подсказок (см. чертёж: украинский или русский).
 enum UiLang {
   uk(TranslateLanguage.ukrainian),
-  ru(TranslateLanguage.russian);
+  ru(TranslateLanguage.russian),
+  pl(TranslateLanguage.polish);
 
   const UiLang(this.mlKit);
   final TranslateLanguage mlKit;
@@ -31,7 +32,16 @@ class TranslationService {
   UiLang? _translatorLang;
   final _modelManager = OnDeviceTranslatorModelManager();
 
-  String get _targetLangName => lang == UiLang.uk ? 'Украинский' : 'Русский';
+  String get _targetLangName {
+    switch (lang) {
+      case UiLang.uk:
+        return 'Украинский';
+      case UiLang.ru:
+        return 'Русский';
+      case UiLang.pl:
+        return 'Украинский';
+    }
+  }
 
   /// Полный связный перевод абзаца/текста через OmniRoute.
   Future<String> translate(String text) async {

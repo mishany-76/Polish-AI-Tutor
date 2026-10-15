@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/db/app_database.dart';
 import '../../core/di/providers.dart';
+import '../../core/localization/app_strings.dart';
 import '../../core/settings/app_settings.dart';
 
 /// «Мой словарь»: все сохранённые слова, поиск и фильтр по статусу изучения.
@@ -17,14 +18,8 @@ class _DictionaryScreenState extends ConsumerState<DictionaryScreen> {
   String _query = '';
   WordStatus? _filter; // null — все
 
-  static const _labels = {
-    WordStatus.fresh: 'Новые',
-    WordStatus.learning: 'Учу',
-    WordStatus.mastered: 'Выучены',
-  };
-
   Future<void> _confirmClearDictionary() async {
-    final isUk = ref.read(settingsProvider).isUk;
+    final strings = ref.read(appStringsProvider);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -34,26 +29,22 @@ class _DictionaryScreenState extends ConsumerState<DictionaryScreen> {
             const SizedBox(width: 8),
             Flexible(
               child: Text(
-                isUk ? 'Очистити словник?' : 'Очистить словарь?',
+                strings.clearDictConfirmTitle,
                 softWrap: true,
               ),
             ),
           ],
         ),
-        content: Text(
-          isUk
-              ? 'Ви впевнені, що хочете видалити всі збережені слова? Це скине прогрес повторень.'
-              : 'Вы уверены, что хотите удалить все сохраненные слова? Это сбросит прогресс повторений.',
-        ),
+        content: Text(strings.clearDictConfirmBody),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: Text(isUk ? 'Скасувати' : 'Отмена'),
+            child: Text(strings.cancel),
           ),
           FilledButton(
             style: FilledButton.styleFrom(backgroundColor: Colors.red),
             onPressed: () => Navigator.pop(ctx, true),
-            child: Text(isUk ? 'Очистити' : 'Очистить'),
+            child: Text(strings.clearBtn),
           ),
         ],
       ),
@@ -64,11 +55,7 @@ class _DictionaryScreenState extends ConsumerState<DictionaryScreen> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            isUk
-                ? '🗑️ Словник очищено (видалено слів: $count)'
-                : '🗑️ Словарь очищен (удалено слов: $count)',
-          ),
+          content: Text(strings.dictClearedSnack(count)),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -78,14 +65,21 @@ class _DictionaryScreenState extends ConsumerState<DictionaryScreen> {
   @override
   Widget build(BuildContext context) {
     final words = ref.watch(wordsProvider);
+    final strings = ref.watch(appStringsProvider);
     final uk = ref.watch(settingsProvider.select((s) => s.isUk));
+
+    final filterLabels = {
+      WordStatus.fresh: strings.filterFresh,
+      WordStatus.learning: strings.filterLearning,
+      WordStatus.mastered: strings.filterMastered,
+    };
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('📖 Мой словарь'),
+        title: Text(strings.dictTitle),
         actions: [
           IconButton(
-            tooltip: 'Очистить словарь',
+            tooltip: strings.clearDictTooltip,
             icon: const Icon(Icons.delete_sweep_outlined),
             onPressed: _confirmClearDictionary,
           ),
@@ -97,10 +91,10 @@ class _DictionaryScreenState extends ConsumerState<DictionaryScreen> {
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
             child: TextField(
               onChanged: (v) => setState(() => _query = v.trim().toLowerCase()),
-              decoration: const InputDecoration(
-                prefixIcon: Icon(Icons.search),
-                hintText: 'Поиск по слову или переводу',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                prefixIcon: const Icon(Icons.search),
+                hintText: strings.searchWordHint,
+                border: const OutlineInputBorder(),
                 isDense: true,
               ),
             ),
@@ -112,12 +106,12 @@ class _DictionaryScreenState extends ConsumerState<DictionaryScreen> {
               Padding(
                 padding: const EdgeInsets.all(4),
                 child: ChoiceChip(
-                  label: const Text('Все'),
+                  label: Text(strings.filterAll),
                   selected: _filter == null,
                   onSelected: (_) => setState(() => _filter = null),
                 ),
               ),
-              for (final e in _labels.entries)
+              for (final e in filterLabels.entries)
                 Padding(
                   padding: const EdgeInsets.all(4),
                   child: ChoiceChip(
@@ -131,7 +125,7 @@ class _DictionaryScreenState extends ConsumerState<DictionaryScreen> {
           Expanded(
             child: words.when(
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (e, _) => Center(child: Text('Ошибка базы данных: $e')),
+              error: (e, _) => Center(child: Text('Error: $e')),
               data: (all) {
                 final list = all.where((w) {
                   if (_filter != null && w.status != _filter) return false;

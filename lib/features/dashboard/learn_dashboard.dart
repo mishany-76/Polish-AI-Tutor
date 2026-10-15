@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/di/providers.dart';
+import '../../core/localization/app_strings.dart';
 import '../../core/settings/app_settings.dart';
 import '../../core/streak/streak_service.dart';
 import '../../core/theme/app_theme.dart';
 import '../review/quiz_builders.dart';
 import '../review/quiz_screen.dart';
 import '../review/review_screen.dart';
+import '../scanner/scanner_providers.dart';
 import '../scanner/translation_service.dart';
 import '../tutor/roleplay_screen.dart';
 import '../tutor/scenarios.dart';
@@ -19,29 +21,13 @@ class LearnDashboard extends ConsumerWidget {
   void _push(BuildContext context, Widget page) =>
       Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => page));
 
-  static String _streakDayLabel(int n, bool isUk) {
-    if (isUk) {
-      if (n % 10 == 1 && n % 100 != 11) return 'день';
-      if ([2, 3, 4].contains(n % 10) && ![12, 13, 14].contains(n % 100)) return 'дні';
-      return 'днів';
-    } else {
-      if (n % 10 == 1 && n % 100 != 11) return 'день';
-      if ([2, 3, 4].contains(n % 10) && ![12, 13, 14].contains(n % 100)) return 'дня';
-      return 'дней';
-    }
-  }
-
   Future<void> _deferDueQueue(BuildContext context, WidgetRef ref) async {
-    final isUk = ref.read(settingsProvider).isUk;
+    final strings = ref.read(appStringsProvider);
     final count = await ref.read(databaseProvider).deferDueWordsToTomorrow();
     if (!context.mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          isUk
-              ? '⏰ Чергу повторень на сьогодні очищено (відкладено на завтра: $count)'
-              : '⏰ Очередь повторений на сегодня очищена (отложено на завтра: $count)',
-        ),
+        content: Text(strings.queueDeferredSnack(count)),
         behavior: SnackBarBehavior.floating,
       ),
     );
@@ -54,6 +40,7 @@ class LearnDashboard extends ConsumerWidget {
     final total = ref.watch(wordsProvider).value?.length ?? 0;
     final settings = ref.watch(settingsProvider);
     final streak = ref.watch(streakProvider).value ?? 1;
+    final strings = ref.watch(appStringsProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -76,7 +63,7 @@ class LearnDashboard extends ConsumerWidget {
                 const Text('🔥', style: TextStyle(fontSize: 14)),
                 const SizedBox(width: 4),
                 Text(
-                  '$streak ${_streakDayLabel(streak, settings.isUk)}',
+                  '$streak ${strings.streakDays(streak)}',
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
@@ -87,7 +74,7 @@ class LearnDashboard extends ConsumerWidget {
             ),
           ),
           IconButton(
-            tooltip: 'Инструкция',
+            tooltip: strings.guideTooltip,
             icon: const Icon(Icons.help_outline),
             onPressed: () => _showUserGuide(context, ref),
           ),
@@ -104,13 +91,13 @@ class LearnDashboard extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Слов на повторение сегодня',
+                  Text(strings.dueWordsToday,
                       style: theme.textTheme.titleMedium),
                   const SizedBox(height: 4),
                   Text('$due',
                       style: theme.textTheme.displayMedium
                           ?.copyWith(fontWeight: FontWeight.bold)),
-                  Text('Всего в колоде: $total',
+                  Text(strings.totalInDeck(total),
                       style: theme.textTheme.bodySmall),
                   const SizedBox(height: 12),
                   Wrap(
@@ -133,9 +120,9 @@ class LearnDashboard extends ConsumerWidget {
                         label: Text(
                           due == 0
                               ? (total == 0
-                                  ? 'Сканировать слова'
-                                  : 'На сегодня всё 🎉')
-                              : 'Начать повторение',
+                                  ? strings.scanWords
+                                  : strings.allDoneToday)
+                              : strings.startReview,
                           style: const TextStyle(fontWeight: FontWeight.w600),
                         ),
                       ),
@@ -149,9 +136,9 @@ class LearnDashboard extends ConsumerWidget {
                         ),
                         onPressed: () => _showManualWordDialog(context, ref),
                         icon: const Icon(Icons.edit, size: 18),
-                        label: const Text(
-                          '✍️ Ввести вручную',
-                          style: TextStyle(fontWeight: FontWeight.w600),
+                        label: Text(
+                          strings.manualWordBtn,
+                          style: const TextStyle(fontWeight: FontWeight.w600),
                         ),
                       ),
                       if (due > 0)
@@ -162,7 +149,7 @@ class LearnDashboard extends ConsumerWidget {
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
-                          tooltip: 'Отложить очередь на завтра',
+                          tooltip: strings.clearQueueBtn,
                           icon: const Icon(Icons.snooze, size: 20),
                           onPressed: () => _deferDueQueue(context, ref),
                         ),
@@ -175,12 +162,12 @@ class LearnDashboard extends ConsumerWidget {
           const SizedBox(height: 24),
 
           // --- Игры ---
-          Text('Тренировки', style: theme.textTheme.titleLarge),
+          Text(strings.drillsTitle, style: theme.textTheme.titleLarge),
           const SizedBox(height: 8),
           _DrillTile(
             icon: Icons.edit_note,
-            title: 'Угадай правильное окончание',
-            subtitle: 'chleb / chleba / chlebem — падежи в живых фразах',
+            title: strings.drillEndingsTitle,
+            subtitle: strings.drillEndingsSub,
             onTap: () async {
               final lang = ref.read(settingsProvider).lang;
               final q = await buildAdaptiveEndingsQuiz(lang);
@@ -188,7 +175,7 @@ class LearnDashboard extends ConsumerWidget {
               _push(
                 context,
                 QuizScreen(
-                  title: 'Окончания',
+                  title: strings.drillEndingsTitle,
                   category: 'endings',
                   questions: q,
                   onGenerateNextRound: () =>
@@ -199,8 +186,8 @@ class LearnDashboard extends ConsumerWidget {
           ),
           _DrillTile(
             icon: Icons.headphones,
-            title: 'Аудио-тренажёр',
-            subtitle: 'Слушаем слово — выбираем перевод',
+            title: strings.drillAudioTitle,
+            subtitle: strings.drillAudioSub,
             onTap: () async {
               final deck = await ref.read(databaseProvider).allWords();
               final lang = ref.read(settingsProvider).lang;
@@ -209,7 +196,7 @@ class LearnDashboard extends ConsumerWidget {
               _push(
                 context,
                 QuizScreen(
-                  title: 'Аудио',
+                  title: strings.drillAudioTitle,
                   category: 'audio',
                   questions: q,
                   onGenerateNextRound: () {
@@ -222,8 +209,8 @@ class LearnDashboard extends ConsumerWidget {
           ),
           _DrillTile(
             icon: Icons.warning_amber,
-            title: 'Осторожно, ложные друзья!',
-            subtitle: 'zapomnieć, owoce, sklep… слова-обманки',
+            title: strings.drillFalseFriendsTitle,
+            subtitle: strings.drillFalseFriendsSub,
             onTap: () async {
               final lang = ref.read(settingsProvider).lang;
               final q = await buildAdaptiveFalseFriendsQuiz(lang);
@@ -231,7 +218,7 @@ class LearnDashboard extends ConsumerWidget {
               _push(
                 context,
                 QuizScreen(
-                  title: 'Ложные друзья',
+                  title: strings.drillFalseFriendsTitle,
                   category: 'false_friends',
                   questions: q,
                   onGenerateNextRound: () =>
@@ -242,8 +229,8 @@ class LearnDashboard extends ConsumerWidget {
           ),
           _DrillTile(
             icon: Icons.payments_outlined,
-            title: 'Числа, ціни та рахунок',
-            subtitle: 'Слухаємо польські суми, копійки, години та рахунки на касі',
+            title: strings.drillNumbersTitle,
+            subtitle: strings.drillNumbersSub,
             onTap: () async {
               final lang = ref.read(settingsProvider).lang;
               final q = await buildAdaptiveNumbersPricesQuiz(lang);
@@ -251,7 +238,7 @@ class LearnDashboard extends ConsumerWidget {
               _push(
                 context,
                 QuizScreen(
-                  title: 'Числа та ціни',
+                  title: strings.drillNumbersTitle,
                   category: 'numbers_prices',
                   questions: q,
                   onGenerateNextRound: () =>
@@ -268,7 +255,7 @@ class LearnDashboard extends ConsumerWidget {
             children: [
               Flexible(
                 child: Text(
-                  'Ролевые диалоги',
+                  strings.roleplayTitle,
                   style: theme.textTheme.titleLarge,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -282,14 +269,14 @@ class LearnDashboard extends ConsumerWidget {
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(color: Colors.green, width: 1),
                   ),
-                  child: const Row(
+                  child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.check_circle, size: 14, color: Colors.green),
-                      SizedBox(width: 4),
+                      const Icon(Icons.check_circle, size: 14, color: Colors.green),
+                      const SizedBox(width: 4),
                       Text(
-                        'Готов',
-                        style: TextStyle(fontSize: 12, color: Colors.green, fontWeight: FontWeight.bold),
+                        strings.readyToChat,
+                        style: const TextStyle(fontSize: 12, color: Colors.green, fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
@@ -299,8 +286,16 @@ class LearnDashboard extends ConsumerWidget {
           const SizedBox(height: 4),
           Text(
             settings.hasKey
-                ? 'ИИ играет поляка — отвечайте голосом или текстом'
-                : '⚠️ Укажите API-ключ шлюза в «Настройки», чтобы начать диалоги',
+                ? (strings.isPl
+                    ? 'AI odgrywa rolę mieszkańca Polski — odpowiadaj głosem lub tekstem'
+                    : (strings.isUk
+                        ? 'ШІ грає жителя Польщі — відповідайте голосом або текстом'
+                        : 'ИИ играет поляка — отвечайте голосом или текстом'))
+                : (strings.isPl
+                    ? '⚠️ Podaj klucz API w «Ustawieniach», aby rozpocząć dialogi'
+                    : (strings.isUk
+                        ? '⚠️ Вкажіть API-ключ шлюзу в «Налаштуваннях», щоб почати діалоги'
+                        : '⚠️ Укажите API-ключ шлюза в «Настройки», чтобы начать диалоги')),
             style: TextStyle(
               fontSize: 13,
               color: settings.hasKey ? theme.textTheme.bodySmall?.color : theme.colorScheme.error,
@@ -349,84 +344,9 @@ class LearnDashboard extends ConsumerWidget {
   }
 
   void _showManualWordDialog(BuildContext context, WidgetRef ref) {
-    final wordController = TextEditingController();
-    final transController = TextEditingController();
-    final noteController = TextEditingController();
-
     showDialog<void>(
       context: context,
-      builder: (dialogCtx) {
-        return AlertDialog(
-          title: const Text('✍️ Новое слово'),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: wordController,
-                  autofocus: true,
-                  decoration: const InputDecoration(
-                    labelText: 'Польское слово *',
-                    hintText: 'например, dworzec',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: transController,
-                  decoration: const InputDecoration(
-                    labelText: 'Перевод *',
-                    hintText: 'например, вокзал',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: noteController,
-                  maxLines: 2,
-                  decoration: const InputDecoration(
-                    labelText: 'Контекст / заметка (опционально)',
-                    hintText: 'например, Idę na dworzec kolejowy',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(dialogCtx).pop(),
-              child: const Text('Отмена'),
-            ),
-            FilledButton(
-              onPressed: () async {
-                final pl = wordController.text.trim();
-                final tr = transController.text.trim();
-                if (pl.isEmpty || tr.isEmpty) return;
-
-                final uk = ref.read(settingsProvider).isUk;
-                final added = await ref.read(databaseProvider).addManualWord(
-                  lemma: pl,
-                  translation: tr,
-                  uk: uk,
-                  example: noteController.text.trim(),
-                  note: noteController.text.trim(),
-                );
-
-                if (dialogCtx.mounted) {
-                  Navigator.of(dialogCtx).pop();
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text(added
-                        ? '✅ Слово "$pl" добавлено в колоду'
-                        : '⚠️ Слово "$pl" уже есть в словаре'),
-                  ));
-                }
-              },
-              child: const Text('Сохранить'),
-            ),
-          ],
-        );
-      },
+      builder: (dialogCtx) => const _ManualWordDialog(),
     );
   }
 
@@ -440,6 +360,7 @@ class LearnDashboard extends ConsumerWidget {
           builder: (context, ref, _) {
             final lang = ref.watch(settingsProvider.select((s) => s.lang));
             final isUk = lang == UiLang.uk;
+            final isPl = lang == UiLang.pl;
             final theme = Theme.of(context);
 
             return DraggableScrollableSheet(
@@ -460,7 +381,9 @@ class LearnDashboard extends ConsumerWidget {
                           children: [
                             Flexible(
                               child: Text(
-                                isUk ? '📖 Керівництво користувача' : '📖 Руководство пользователя',
+                                isPl
+                                    ? '📖 Instrukcja użytkownika'
+                                    : (isUk ? '📖 Керівництво користувача' : '📖 Руководство пользователя'),
                                 style: theme.textTheme.titleMedium?.copyWith(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 17,
@@ -486,11 +409,15 @@ class LearnDashboard extends ConsumerWidget {
                             segments: const [
                               ButtonSegment(
                                 value: UiLang.uk,
-                                label: Text('🇺🇦 Українська', style: TextStyle(fontSize: 13)),
+                                label: Text('🇺🇦 Українська', style: TextStyle(fontSize: 12)),
                               ),
                               ButtonSegment(
                                 value: UiLang.ru,
-                                label: Text('🇷🇺 Русский', style: TextStyle(fontSize: 13)),
+                                label: Text('🇷🇺 Русский', style: TextStyle(fontSize: 12)),
+                              ),
+                              ButtonSegment(
+                                value: UiLang.pl,
+                                label: Text('🇵🇱 Polski', style: TextStyle(fontSize: 12)),
                               ),
                             ],
                             selected: {lang},
@@ -506,14 +433,20 @@ class LearnDashboard extends ConsumerWidget {
                     _GuideCard(
                       icon: Icons.psychology,
                       color: Colors.blue,
-                      title: isUk ? '1. 🧠 Навчання та алгоритм SRS' : '1. 🧠 Обучение и алгоритм SRS',
-                      body: isUk
-                          ? '• Картка дня працює за алгоритмом SM-2: слова пропонуються для повторення через 1, 6, 14 днів, запобігаючи забуванню.\n'
-                            '• Кнопка «✍️ Ввести слово вручну» дозволяє зберегти будь-яке почуте слово з контекстом.\n'
-                            '• Тренажери «Закінчення», «Аудіо» та «Хибні друзі» тренують відмінки, слух та слова-обманки.'
-                          : '• Блок дня работает по алгоритму SM-2: слова повторяются с интервалами 1, 6, 14 дней для надежного закрепления.\n'
-                            '• Кнопка «✍️ Ввести слово вручную» позволяет сохранить любое незнакомое слово с контекстом.\n'
-                            '• Тренажеры «Окончания», «Аудио» и «Ложные друзья» тренируют падежи, слух и слова-ловушки.',
+                      title: isPl
+                          ? '1. 🧠 Nauka i algorytm SRS'
+                          : (isUk ? '1. 🧠 Навчання та алгоритм SRS' : '1. 🧠 Обучение и алгоритм SRS'),
+                      body: isPl
+                          ? '• Blok dnia działa według algorytmu SM-2: słowa są powtarzane w odstępach 1, 6, 14 dni.\n'
+                            '• Przycisk «✍️ Dodaj słowo ręcznie» umożliwia natychmiastowe tłumaczenie i dodawanie słów.\n'
+                            '• Treningi «Końcówki», «Słuch», «Liczby» i «Fałszywi przyjaciele» doskonalą odmianę i słuch.'
+                          : (isUk
+                              ? '• Картка дня працює за алгоритмом SM-2: слова пропонуються для повторення через 1, 6, 14 днів, запобігаючи забуванню.\n'
+                                '• Кнопка «✍️ Ввести слово вручну» дозволяє зберегти будь-яке почуте слово з контекстом та автоперекладом.\n'
+                                '• Тренажери «Закінчення», «Аудіо», «Числа» та «Хибні друзі» тренують відмінки, слух та слова-обманки.'
+                              : '• Блок дня работает по алгоритму SM-2: слова повторяются с интервалами 1, 6, 14 дней для надежного закрепления.\n'
+                                '• Кнопка «✍️ Ввести слово вручную» позволяет сохранить любое незнакомое слово с автопереводом.\n'
+                                '• Тренажеры «Окончания», «Аудио», «Числа» и «Ложные друзья» тренируют падежи, слух и слова-ловушки.'),
                     ),
                     const SizedBox(height: 12),
 
@@ -521,16 +454,22 @@ class LearnDashboard extends ConsumerWidget {
                     _GuideCard(
                       icon: Icons.forum,
                       color: const Color(0xFF8C1D2F),
-                      title: isUk ? '2. 💬 Рольові діалоги з ШІ' : '2. 💬 Ролевые диалоги с ИИ',
-                      body: isUk
-                          ? '• Тьютор Kasia грає жителя Польщі в 6 життєвих сценаріях (магазин, ужонд, кафе, лікар, вокзал, оренда житла).\n'
-                            '• Значок 🌐 біля кожної репліки відкриває синхронний переклад українською.\n'
-                            '• Підказка (Podpowiedź) містить польську фразу та курсивний переклад. Натисніть її, щоб вставити в поле введення.\n'
-                            '• Підтримується відповідь голосом через мікрофон.'
-                          : '• Тьютор Kasia играет жителя Польши в 6 реальных ситуациях (магазин, ужонд, кафе, поликлиника, вокзал, аренда жилья).\n'
-                            '• Кнопка 🌐 возле каждой фразы открывает перевод на русский язык.\n'
-                            '• Плашка «Подсказка» содержит польский ответ и курсивный перевод. Клик вставляет её в строку ввода.\n'
-                            '• Поддерживается ответ голосом через микрофон.',
+                      title: isPl
+                          ? '2. 💬 Dialogi sytuacyjne AI'
+                          : (isUk ? '2. 💬 Рольові діалоги з ШІ' : '2. 💬 Ролевые диалоги с ИИ'),
+                      body: isPl
+                          ? '• Kasia odgrywa role w 6 realnych sytuacjach (sklep, urząd, kawiarnia, przychodnia, dworzec, wynajem).\n'
+                            '• Ikona 🌐 otwiera tłumaczenie wypowiedzi.\n'
+                            '• Podpowiedź zawiera gotową odpowiedź, wymowę 🔊 oraz tłumaczenie.'
+                          : (isUk
+                              ? '• Тьютор Kasia грає жителя Польщі в 6 життєвих сценаріях (магазин, ужонд, кафе, лікар, вокзал, оренда житла).\n'
+                                '• Значок 🌐 біля кожної репліки відкриває синхронний переклад.\n'
+                                '• Підказка (Podpowiedź) містить польську фразу, озвучку 🔊 та переклад. Клік вставляє її в рядок введення.\n'
+                                '• Підтримується відповідь голосом через мікрофон.'
+                              : '• Тьютор Kasia играет жителя Польши в 6 реальных ситуациях (магазин, ужонд, кафе, поликлиника, вокзал, аренда жилья).\n'
+                                '• Кнопка 🌐 возле каждой фразы открывает перевод.\n'
+                                '• Плашка «Подсказка» содержит польский ответ, озвучку 🔊 и перевод. Клик вставляет её в строку ввода.\n'
+                                '• Поддерживается ответ голосом через микрофон.'),
                     ),
                     const SizedBox(height: 12),
 
@@ -538,16 +477,22 @@ class LearnDashboard extends ConsumerWidget {
                     _GuideCard(
                       icon: Icons.document_scanner,
                       color: Colors.teal,
-                      title: isUk ? '3. 📷 Багатофункціональний Перекладач' : '3. 📷 Многофункциональный Переводчик',
-                      body: isUk
-                          ? '• Режим 📷 Камера: миттєвий захват польського тексту з вивісок, чеків, документів через ML Kit.\n'
-                            '• Режим 📁 Файл/PDF: імпорт фото та багатосторінкових PDF-документів із гортанням сторінок.\n'
-                            '• Режим ✍️ Текст: швидкий переклад будь-яких фраз.\n'
-                            '• Кнопка 📥 «Додати всі слова в словник» зберігає всі незнайомі слова з документа в колоду.'
-                          : '• Режим 📷 Камера: мгновенный захват польского текста с вывесок, чеков и писем через ML Kit.\n'
-                            '• Режим 📁 Файл/PDF: импорт фото и многостраничных PDF-документов с перелистыванием страниц.\n'
-                            '• Режим ✍️ Текст: быстрый перевод любых введенных фраз.\n'
-                            '• Кнопка 📥 «Добавить все слова в словарь» сохраняет все слова документа в колоду повторения.',
+                      title: isPl
+                          ? '3. 📷 Tłumacz i skaner'
+                          : (isUk ? '3. 📷 Багатофункціональний Перекладач' : '3. 📷 Многофункциональный Переводчик'),
+                      body: isPl
+                          ? '• Aparat: natychmiastowe rozpoznawanie tekstu z tablic, paragonów i pism.\n'
+                            '• Pliki/PDF: import zdjęć oraz dokumentów PDF z podglądem stron.\n'
+                            '• Inteligentne tłumaczenie AI przez OmniRoute oraz dodawanie słów kluczowych.'
+                          : (isUk
+                              ? '• Режим 📷 Камера: миттєвий захват польського тексту з вивісок, чеків, документів через ML Kit.\n'
+                                '• Режим 📁 Файл/PDF: імпорт фото та багатосторінкових PDF-документів із гортанням сторінок.\n'
+                                '• Режим ✍️ Текст: швидкий переклад будь-яких введених фраз через OmniRoute ШІ.\n'
+                                '• Кнопка 📥 «Додати всі слова в словник» зберігає всі незнайомі слова з документа в колоду.'
+                              : '• Режим 📷 Камера: мгновенный захват польского текста с вывесок, чеков и писем через ML Kit.\n'
+                                '• Режим 📁 Файл/PDF: импорт фото и многостраничных PDF-документов с перелистыванием страниц.\n'
+                                '• Режим ✍️ Текст: быстрый перевод любых введенных фраз через OmniRoute ИИ.\n'
+                                '• Кнопка 📥 «Добавить все слова в словарь» сохраняет все слова документа в колоду повторения.'),
                     ),
                     const SizedBox(height: 12),
 
@@ -555,19 +500,29 @@ class LearnDashboard extends ConsumerWidget {
                     _GuideCard(
                       icon: Icons.menu_book,
                       color: Colors.orange,
-                      title: isUk ? '4. 📚 Словник та Налаштування' : '4. 📚 Словарь и Настройки',
-                      body: isUk
-                          ? '• Переглядайте картки слів, статус вивчення, транскрипцію та приклади.\n'
-                            '• Озвучування слів в один дотик рідним синтезатором Google TTS.\n'
-                            '• У Налаштуваннях підключається власний шлюз OmniRoute (швидка модель anti/gemini-3.8-flash-high).'
-                          : '• Просматривайте карточки слов, интервалы повторения, транскрипцию и примеры.\n'
-                            '• Озвучивание слов в одно касание синтезатором Google TTS.\n'
-                            '• В Настройках настраивается ИИ-шлюз OmniRoute (быстрая модель anti/gemini-3.8-flash-high).',
+                      title: isPl
+                          ? '4. 📚 Słownik i ustawienia'
+                          : (isUk ? '4. 📚 Словник та Налаштування' : '4. 📚 Словарь и Настройки'),
+                      body: isPl
+                          ? '• Przeglądaj karty słów, statusy nauki i przykłady.\n'
+                            '• Wymowa słów jednym dotknięciem syntezatorem Google TTS.\n'
+                            '• W Ustawieniach skonfigurujesz bramkę OmniRoute (anti/gemini-3.8-flash-high).'
+                          : (isUk
+                              ? '• Переглядайте картки слів, статус вивчення, транскрипцію та приклади.\n'
+                                '• Озвучування слів в один дотик рідним синтезатором Google TTS.\n'
+                                '• У Налаштуваннях підключається власний шлюз OmniRoute (швидка модель anti/gemini-3.8-flash-high).'
+                              : '• Просматривайте карточки слов, интервалы повторения, транскрипцию и примеры.\n'
+                                '• Озвучивание слов в одно касание синтезатором Google TTS.\n'
+                                '• В Настройках настраивается ИИ-шлюз OmniRoute (быстрая модель anti/gemini-3.8-flash-high).'),
                     ),
                     const SizedBox(height: 20),
                     FilledButton(
                       onPressed: () => Navigator.of(sheetCtx).pop(),
-                      child: Text(isUk ? 'Зрозуміло, до навчання! 🚀' : 'Понятно, к обучению! 🚀'),
+                      child: Text(
+                        isPl
+                            ? 'Rozumiem, do nauki! 🚀'
+                            : (isUk ? 'Зрозуміло, до навчання! 🚀' : 'Понятно, к обучению! 🚀'),
+                      ),
                     ),
                   ],
                 );
@@ -576,6 +531,179 @@ class LearnDashboard extends ConsumerWidget {
           },
         );
       },
+    );
+  }
+}
+
+class _ManualWordDialog extends ConsumerStatefulWidget {
+  const _ManualWordDialog();
+
+  @override
+  ConsumerState<_ManualWordDialog> createState() => _ManualWordDialogState();
+}
+
+class _ManualWordDialogState extends ConsumerState<_ManualWordDialog> {
+  final _wordController = TextEditingController();
+  final _transController = TextEditingController();
+  final _noteController = TextEditingController();
+  bool _isTranslating = false;
+  bool _isSaving = false;
+
+  @override
+  void dispose() {
+    _wordController.dispose();
+    _transController.dispose();
+    _noteController.dispose();
+    super.dispose();
+  }
+
+  Future<String?> _performTranslation(String pl) async {
+    final note = _noteController.text.trim();
+    return await ref.read(translationServiceProvider).translateWord(
+      pl,
+      sentence: note.isNotEmpty ? note : null,
+    );
+  }
+
+  Future<void> _onAutoTranslatePressed() async {
+    final pl = _wordController.text.trim();
+    if (pl.isEmpty || _isTranslating) return;
+
+    setState(() => _isTranslating = true);
+    try {
+      final res = await _performTranslation(pl);
+      if (res != null && res.trim().isNotEmpty && mounted) {
+        _transController.text = res.trim();
+      }
+    } finally {
+      if (mounted) setState(() => _isTranslating = false);
+    }
+  }
+
+  Future<void> _onSave() async {
+    final pl = _wordController.text.trim();
+    if (pl.isEmpty || _isSaving) return;
+
+    final strings = ref.read(appStringsProvider);
+    var tr = _transController.text.trim();
+    bool wasAuto = false;
+
+    setState(() => _isSaving = true);
+    try {
+      if (tr.isEmpty) {
+        final autoRes = await _performTranslation(pl);
+        if (autoRes != null && autoRes.trim().isNotEmpty) {
+          tr = autoRes.trim();
+          wasAuto = true;
+        } else {
+          tr = pl;
+        }
+      }
+
+      final uk = ref.read(settingsProvider).isUk;
+      final note = _noteController.text.trim();
+      final added = await ref.read(databaseProvider).addManualWord(
+        lemma: pl,
+        translation: tr,
+        uk: uk,
+        example: note.isNotEmpty ? note : null,
+        note: note.isNotEmpty ? note : null,
+      );
+
+      if (!mounted) return;
+      final messenger = ScaffoldMessenger.of(context);
+      Navigator.of(context).pop();
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(
+            added
+                ? (wasAuto
+                    ? strings.wordAutoTranslated(pl, tr)
+                    : strings.wordAdded(pl))
+                : strings.wordAlreadyExists(pl),
+          ),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _isSaving = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final strings = ref.watch(appStringsProvider);
+
+    return AlertDialog(
+      title: Text(strings.newWordTitle),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: _wordController,
+              autofocus: true,
+              textInputAction: TextInputAction.next,
+              decoration: InputDecoration(
+                labelText: strings.plWordLabel,
+                hintText: strings.plWordHint,
+                border: const OutlineInputBorder(),
+                suffixIcon: _isTranslating
+                    ? const Padding(
+                        padding: EdgeInsets.all(12),
+                        child: SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                      )
+                    : IconButton(
+                        icon: const Icon(Icons.auto_awesome),
+                        tooltip: strings.autoTranslateTooltip,
+                        onPressed: _onAutoTranslatePressed,
+                      ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: _transController,
+              textInputAction: TextInputAction.next,
+              decoration: InputDecoration(
+                labelText: strings.translationLabel,
+                hintText: strings.translationHint,
+                helperText: _isTranslating ? strings.translatingAi : null,
+                border: const OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: _noteController,
+              maxLines: 2,
+              decoration: InputDecoration(
+                labelText: strings.contextLabel,
+                hintText: strings.contextHint,
+                border: const OutlineInputBorder(),
+              ),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: _isSaving ? null : () => Navigator.of(context).pop(),
+          child: Text(strings.cancel),
+        ),
+        FilledButton(
+          onPressed: _isSaving ? null : _onSave,
+          child: _isSaving
+              ? const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                )
+              : Text(strings.save),
+        ),
+      ],
     );
   }
 }

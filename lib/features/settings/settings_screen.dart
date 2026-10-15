@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/ai_client/ai_client.dart';
 import '../../core/di/providers.dart';
+import '../../core/localization/app_strings.dart';
 import '../../core/settings/app_settings.dart';
 import '../../core/updater/app_updater_service.dart';
 import '../scanner/translation_service.dart';
@@ -53,8 +54,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     await ref.read(settingsProvider.notifier).update(_draft());
     if (!mounted) return;
     FocusScope.of(context).unfocus();
+    final strings = ref.read(appStringsProvider);
     ScaffoldMessenger.of(context)
-        .showSnackBar(const SnackBar(content: Text('✅ Настройки сохранены')));
+        .showSnackBar(SnackBar(content: Text(strings.settingsSaved)));
   }
 
   Future<void> _test() async {
@@ -91,8 +93,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Future<void> _clearCache() async {
     final n = await ref.read(databaseProvider).clearCache();
     if (!mounted) return;
+    final strings = ref.read(appStringsProvider);
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Кэш ИИ очищен (записей: $n)')),
+      SnackBar(content: Text(strings.cacheClearedSnack(n))),
     );
   }
 
@@ -101,10 +104,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     try {
       final info = await ref.read(appUpdaterProvider).checkForUpdate();
       if (!mounted) return;
+      final strings = ref.read(appStringsProvider);
       if (!info.hasUpdate) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('✅ У вас установлена актуальная версия (v${info.currentVersion})'),
+            content: Text(strings.alreadyLatestVersion(info.currentVersion)),
             behavior: SnackBarBehavior.floating,
           ),
         );
@@ -125,6 +129,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   void _showUpdateDialog(UpdateInfo info) {
+    final strings = ref.read(appStringsProvider);
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -132,21 +137,21 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           children: [
             const Icon(Icons.new_releases, color: Colors.amber),
             const SizedBox(width: 8),
-            Flexible(child: Text('Обновление v${info.latestVersion}')),
+            Flexible(child: Text(strings.updateAvailable(info.latestVersion))),
           ],
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Текущая версия: v${info.currentVersion}'),
+            Text('${strings.currentVersion}: v${info.currentVersion}'),
             Text(
-              'Новая версия: v${info.latestVersion}',
+              '${strings.newVersion}: v${info.latestVersion}',
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
             if (info.releaseNotes.isNotEmpty) ...[
-              const Text('Что нового:', style: TextStyle(fontWeight: FontWeight.bold)),
+              Text(strings.whatsNew, style: const TextStyle(fontWeight: FontWeight.bold)),
               const SizedBox(height: 4),
               ConstrainedBox(
                 constraints: const BoxConstraints(maxHeight: 180),
@@ -155,13 +160,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 ),
               ),
             ] else
-              const Text('Доступна новая версия с исправлениями и улучшениями.'),
+              Text(strings.isPl
+                  ? 'Dostępna jest nowa wersja z poprawkami i ulepszeniami.'
+                  : (strings.isUk
+                      ? 'Доступна нова версія з виправленнями та покращеннями.'
+                      : 'Доступна новая версия с исправлениями и улучшениями.')),
           ],
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Позже'),
+            child: Text(strings.isPl ? 'Później' : (strings.isUk ? 'Пізніше' : 'Позже')),
           ),
           FilledButton.icon(
             onPressed: () async {
@@ -174,14 +183,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 } else {
                   if (mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Не удалось открыть ссылку: $url')),
+                      SnackBar(content: Text('Error: $url')),
                     );
                   }
                 }
               }
             },
             icon: const Icon(Icons.download),
-            label: const Text('Скачать и обновить'),
+            label: Text(strings.downloadApk),
           ),
         ],
       ),
@@ -192,27 +201,30 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final lang = ref.watch(settingsProvider.select((s) => s.lang));
+    final strings = ref.watch(appStringsProvider);
+
     return Scaffold(
-      appBar: AppBar(title: const Text('⚙️ Настройки')),
+      appBar: AppBar(title: Text(strings.settingsTitle)),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          Text('Язык подсказок', style: theme.textTheme.titleMedium),
+          Text(strings.uiLangTitle, style: theme.textTheme.titleMedium),
           const SizedBox(height: 8),
           SegmentedButton<UiLang>(
             segments: const [
               ButtonSegment(value: UiLang.uk, label: Text('🇺🇦 Українська')),
               ButtonSegment(value: UiLang.ru, label: Text('🇷🇺 Русский')),
+              ButtonSegment(value: UiLang.pl, label: Text('🇵🇱 Polski')),
             ],
             selected: {lang},
             onSelectionChanged: (s) =>
                 ref.read(settingsProvider.notifier).setLang(s.first),
           ),
           const SizedBox(height: 28),
-          Text('ИИ-Шлюз (OpenAI-compatible)', style: theme.textTheme.titleMedium),
+          Text(strings.aiGatewayTitle, style: theme.textTheme.titleMedium),
           const SizedBox(height: 4),
           Text(
-            'OmniRoute / CLIProxyAPI. Запросы идут на {Base URL}/chat/completions.',
+            strings.aiGatewaySub,
             style: theme.textTheme.bodySmall,
           ),
           const SizedBox(height: 12),
@@ -245,7 +257,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             controller: _model,
             autocorrect: false,
             decoration: const InputDecoration(
-              labelText: 'Модель (можно ввести вручную)',
+              labelText: 'Модель (anti/gemini-3.8-flash-high)',
               border: OutlineInputBorder(),
             ),
           ),
@@ -266,7 +278,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               child: FilledButton.icon(
                 onPressed: _save,
                 icon: const Icon(Icons.save),
-                label: const Text('Сохранить'),
+                label: Text(strings.saveSettings),
               ),
             ),
             const SizedBox(width: 12),
@@ -280,7 +292,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : const Icon(Icons.wifi_tethering),
-                label: const Text('Проверить'),
+                label: Text(_testing ? strings.testingConnection : strings.testConnection),
               ),
             ),
           ]),
@@ -295,17 +307,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ),
             ),
           const SizedBox(height: 28),
-          Text('Данные', style: theme.textTheme.titleMedium),
+          Text(strings.dataSection, style: theme.textTheme.titleMedium),
           const SizedBox(height: 8),
           ListTile(
             contentPadding: EdgeInsets.zero,
             leading: const Icon(Icons.cleaning_services),
-            title: const Text('Очистить кэш ИИ-разборов'),
-            subtitle: const Text('Слова в словаре не удаляются'),
+            title: Text(strings.clearCacheTitle),
+            subtitle: Text(strings.clearCacheSub),
             onTap: _clearCache,
           ),
           const SizedBox(height: 28),
-          Text('О приложении и обновления', style: theme.textTheme.titleMedium),
+          Text(strings.aboutAppTitle, style: theme.textTheme.titleMedium),
           const SizedBox(height: 8),
           Card(
             elevation: 0,
@@ -332,7 +344,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                             ),
                             Text(
-                              'Версия: v$currentAppVersion',
+                              strings.versionShort(currentAppVersion),
                               style: theme.textTheme.bodySmall,
                             ),
                           ],
@@ -352,7 +364,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                               child: CircularProgressIndicator(strokeWidth: 2),
                             )
                           : const Icon(Icons.sync),
-                      label: Text(_checkingUpdate ? 'Проверка...' : '🔄 Проверить обновления'),
+                      label: Text(_checkingUpdate ? strings.checkingUpdates : strings.checkUpdatesBtn),
                     ),
                   ),
                 ],

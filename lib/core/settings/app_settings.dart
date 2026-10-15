@@ -28,6 +28,8 @@ class AppSettings {
   final String model;
 
   bool get isUk => lang == UiLang.uk;
+  bool get isRu => lang == UiLang.ru;
+  bool get isPl => lang == UiLang.pl;
   bool get hasKey => apiKey.trim().isNotEmpty;
 
   AppSettings copyWith({
@@ -65,8 +67,13 @@ class SettingsStore {
     } catch (_) {
       // Повреждённое хранилище — ключ придётся ввести заново.
     }
+    final rawLang = _prefs.getString(_kLang);
+    final uiLang = UiLang.values.firstWhere(
+      (l) => l.name == rawLang,
+      orElse: () => UiLang.uk,
+    );
     return AppSettings(
-      lang: _prefs.getString(_kLang) == 'ru' ? UiLang.ru : UiLang.uk,
+      lang: uiLang,
       baseUrl: _prefs.getString(_kUrl) ?? defaultBaseUrl,
       model: _prefs.getString(_kModel) ?? defaultModel,
       apiKey: key,

@@ -9,6 +9,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../../core/ai_client/ai_client.dart';
 import '../../core/di/providers.dart';
+import '../../core/localization/app_strings.dart';
 import '../../core/settings/app_settings.dart';
 import 'ocr_service.dart';
 import 'scanner_providers.dart';
@@ -319,13 +320,14 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
     }
   }
 
-  /// Быстрый связный перевод всего текста через OmniRoute.
+  /// Быстрый связный перевод всего текста.
   Future<void> _translateParagraph(String text) async {
     final trimmed = text.trim();
     if (trimmed.isEmpty) {
       _toast('Нет текста для перевода.');
       return;
     }
+    final strings = ref.read(appStringsProvider);
     final future = ref.read(translationServiceProvider).translate(trimmed);
     await showModalBottomSheet<void>(
       context: context,
@@ -347,7 +349,7 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
                     const Icon(Icons.description_outlined, size: 20),
                     const SizedBox(width: 8),
                     Text(
-                      'Оригинал',
+                      strings.originalText,
                       style: Theme.of(ctx).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
                     ),
                   ],
@@ -360,7 +362,7 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
                     const Icon(Icons.translate, size: 20),
                     const SizedBox(width: 8),
                     Text(
-                      'Перевод (OmniRoute ИИ)',
+                      strings.translationAi,
                       style: Theme.of(ctx).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
                     ),
                   ],
@@ -376,13 +378,18 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
                       );
                     }
                     if (!snap.hasData) {
-                      return const Padding(
-                        padding: EdgeInsets.all(8),
+                      return Padding(
+                        padding: const EdgeInsets.all(8),
                         child: Row(
                           children: [
-                            SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)),
-                            SizedBox(width: 12),
-                            Text('ИИ выполняет связный литературный перевод…'),
+                            const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                strings.translatingParagraph,
+                                softWrap: true,
+                              ),
+                            ),
                           ],
                         ),
                       );
@@ -393,11 +400,6 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
                     );
                   },
                 ),
-                const SizedBox(height: 12),
-                Text(
-                  'Литературный перевод выполнен с помощью искусственного интеллекта OmniRoute.',
-                  style: Theme.of(ctx).textTheme.bodySmall,
-                ),
                 const SizedBox(height: 16),
                 SizedBox(
                   width: double.infinity,
@@ -407,7 +409,7 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
                       _batchAddWords(trimmed);
                     },
                     icon: const Icon(Icons.bookmark_add, size: 20),
-                    label: const Text('📥 Добавить ключевые слова с переводом в словарь'),
+                    label: Text(strings.batchAddWordsBtn),
                   ),
                 ),
               ],

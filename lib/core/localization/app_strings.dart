@@ -109,11 +109,11 @@ class AppStrings {
       ? 'Kto mówi pierwszy:'
       : (isUk ? 'Хто говорить першим:' : 'Кто говорит первым:');
   String get initiatorUserFirst => isPl
-      ? '🗣️ Zaczynam pierwszy'
-      : (isUk ? '🗣️ Я звертаюся першим' : '🗣️ Я обращаюсь первым');
+      ? '🗣️ Zaczynam ja'
+      : (isUk ? '🗣️ Я перший' : '🗣️ Я первый');
   String get initiatorNpcFirst => isPl
-      ? '👂 Do mnie się zwracają'
-      : (isUk ? '👂 До мене звертаються' : '👂 Ко мне обращаются');
+      ? '👂 Rozmówca'
+      : (isUk ? '👂 Співрозмовник' : '👂 Собеседник');
   String get startDialogBtn => isPl
       ? 'Rozpocznij dialog 🚀'
       : (isUk ? 'Розпочати діалог 🚀' : 'Начать диалог 🚀');
@@ -217,10 +217,13 @@ class AppStrings {
   String get modeText => isPl ? 'Tekst' : (isUk ? 'Текст' : 'Текст');
   String get translateAll => isPl ? '📄 Przetłumacz wszystko' : (isUk ? '📄 Перекласти все' : '📄 Перевести всё');
   String get batchAddWordsBtn => isPl
-      ? '📥 Dodaj słowa kluczowe do słownika (AI)'
-      : (isUk ? '📥 Додати ключові слова до словника (ШІ)' : '📥 Добавить ключевые слова в словарь (ИИ)');
+      ? '📥 Dodaj słowa kluczowe do słownika'
+      : (isUk ? '📥 Додати ключові слова до словника' : '📥 Добавить ключевые слова в словарь');
   String get originalText => isPl ? 'Oryginał' : (isUk ? 'Оригінал' : 'Оригинал');
-  String get translationAi => isPl ? 'Tłumaczenie (OmniRoute AI)' : (isUk ? 'Переклад (OmniRoute ШІ)' : 'Перевод (OmniRoute ИИ)');
+  String get translationAi => isPl ? '文A Tłumaczenie' : (isUk ? '文A Переклад' : '文A Перевод');
+  String get translatingParagraph => isPl
+      ? 'Wykonywanie tłumaczenia…'
+      : (isUk ? 'Виконується переклад…' : 'Выполняется перевод…');
 
   // --- Ролевые диалоги ---
   String get roleplayScreenTitle => isPl ? '💬 Dialog sytuacyjny' : (isUk ? '💬 Рольовий діалог' : '💬 Ролевой диалог');

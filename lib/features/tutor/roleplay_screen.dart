@@ -117,8 +117,8 @@ class _RoleplayScreenState extends ConsumerState<RoleplayScreen> {
     final setting = sub?.setting != null ? '${s.setting}\n${sub!.setting}' : s.setting;
 
     final subInfo = sub != null ? '''
-ПОДСЦЕНАРИЙ: ${sub.title}.
-ОПИСАНИЕ СИТУАЦИИ: ${sub.description}.
+ПОДСЦЕНАРИЙ: ${sub.title(lang)}.
+ОПИСАНИЕ СИТУАЦИИ: ${sub.description(lang)}.
 СЮЖЕТНЫЙ ПОВОРОТ / ЖИЗНЕННЫЙ НЮАНС: ${sub.plotTwist}.
 ОБЯЗАТЕЛЬНО: В ходе беседы (примерно на 2-4 реплике) органично разыграй этот реалистичный жизненный поворот или заминку, чтобы диалог был не шаблонным, а проверял реальную реакцию ученика в польской среде.
 ''' : '';
@@ -129,7 +129,7 @@ class _RoleplayScreenState extends ConsumerState<RoleplayScreen> {
 
     return '''
 Ты — «Kasia», добрый и терпеливый польский собеседник и репетитор. Ученик — взрослый человек, живущий в Польше.
-Сцена: ${s.title}${sub != null ? ' — ${sub.title}' : ''}.
+Сцена: ${s.title(lang)}${sub != null ? ' — ${sub.title(lang)}' : ''}.
 Твоя роль: $role.
 Ситуация: $setting.
 Уровень: ${s.level}.
@@ -292,8 +292,9 @@ $initiatorRule
     final sub = widget.subScenario;
     final lang = ref.read(settingsProvider).lang;
     final starterPl = sub?.starterHintPl ?? 'Dzień dobry!';
-    final starterTr = lang == UiLang.uk ? (sub?.starterHintUk ?? 'Доброго дня!') : (sub?.starterHintRu ?? 'Добрый день!');
+    final starterTr = sub?.starterHint(lang) ?? (lang == UiLang.uk ? 'Доброго дня!' : (lang == UiLang.pl ? 'Dzień dobry!' : 'Добрый день!'));
     final isUk = lang == UiLang.uk;
+    final isPl = lang == UiLang.pl;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -312,7 +313,9 @@ $initiatorRule
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  isUk ? 'Ви звертаєтеся першим!' : 'Вы обращаетесь первым!',
+                  isPl
+                      ? 'Zaczynasz dialog jako pierwszy!'
+                      : (isUk ? 'Ви звертаєтеся першим!' : 'Вы обращаетесь первым!'),
                   style: theme.textTheme.titleSmall?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: theme.colorScheme.primary,
@@ -323,9 +326,11 @@ $initiatorRule
           ),
           const SizedBox(height: 8),
           Text(
-            isUk
-                ? 'Почніть розмову голосом (мікрофон) або введіть текст. Зручний варіант початку:'
-                : 'Начните разговор голосом (микрофон) или введите текст. Удобный вариант начала:',
+            isPl
+                ? 'Rozpocznij rozmowę głosowo (mikrofon) lub wpisz tekst. Podpowiedź na początek:'
+                : (isUk
+                    ? 'Почніть розмову голосом (мікрофон) або введіть текст. Зручний варіант початку:'
+                    : 'Начните разговор голосом (микрофон) или введите текст. Удобный вариант начала:'),
             style: const TextStyle(fontSize: 13),
           ),
           const SizedBox(height: 10),
@@ -349,12 +354,12 @@ $initiatorRule
                   ),
                 ),
                 IconButton(
-                  tooltip: isUk ? 'Озвучити' : 'Озвучить',
+                  tooltip: isPl ? 'Odsłuchaj' : (isUk ? 'Озвучити' : 'Озвучить'),
                   icon: const Icon(Icons.volume_up, size: 20),
                   onPressed: () => _speak(starterPl),
                 ),
                 IconButton(
-                  tooltip: isUk ? 'Вставити у поле' : 'Вставить в поле',
+                  tooltip: isPl ? 'Wstaw w pole' : (isUk ? 'Вставити у поле' : 'Вставить в поле'),
                   icon: const Icon(Icons.edit_note, size: 22),
                   onPressed: () {
                     _input.text = starterPl;
@@ -374,29 +379,34 @@ $initiatorRule
     final s = widget.scenario;
     final sub = widget.subScenario;
     final theme = Theme.of(context);
-    final isUk = ref.watch(settingsProvider).isUk;
+    final lang = ref.watch(settingsProvider.select((p) => p.lang));
+    final isUk = lang == UiLang.uk;
+    final isPl = lang == UiLang.pl;
 
     return Scaffold(
       appBar: AppBar(
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('${s.emoji} ${sub?.title ?? s.title}',
+            Text('${s.emoji} ${sub?.title(lang) ?? s.title(lang)}',
                 style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
             if (sub != null)
-              Text(s.title, style: TextStyle(fontSize: 11, color: theme.colorScheme.onSurfaceVariant)),
+              Text(s.title(lang), style: TextStyle(fontSize: 11, color: theme.colorScheme.onSurfaceVariant)),
           ],
         ),
         actions: [
           IconButton(
-            tooltip: 'Озвучка ответов',
+            tooltip: isPl ? 'Głos lektora' : (isUk ? 'Озвучка відповідей' : 'Озвучка ответов'),
             onPressed: () {
               setState(() => _speakNpc = !_speakNpc);
               if (!_speakNpc) _stopSpeaking();
             },
             icon: Icon(_speakNpc ? Icons.volume_up : Icons.volume_off),
           ),
-          TextButton(onPressed: _finish, child: Text(isUk ? 'Завершити' : 'Завершить')),
+          TextButton(
+            onPressed: _finish,
+            child: Text(isPl ? 'Zakończ' : (isUk ? 'Завершити' : 'Завершить')),
+          ),
         ],
       ),
       body: SafeArea(

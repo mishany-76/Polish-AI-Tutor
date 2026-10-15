@@ -323,7 +323,7 @@ class LearnDashboard extends ConsumerWidget {
                           Text(s.emoji, style: const TextStyle(fontSize: 28)),
                           const Spacer(),
                           Text(
-                            s.title,
+                            s.title(strings.lang),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             style: theme.textTheme.titleSmall?.copyWith(fontSize: 13, fontWeight: FontWeight.w600),
@@ -378,7 +378,7 @@ class LearnDashboard extends ConsumerWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                s.title,
+                                s.title(strings.lang),
                                 style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                               ),
                               Text(s.level, style: theme.textTheme.bodySmall),
@@ -429,7 +429,7 @@ class LearnDashboard extends ConsumerWidget {
                                   const SizedBox(width: 8),
                                   Expanded(
                                     child: Text(
-                                      sub.title,
+                                      sub.title(strings.lang),
                                       style: TextStyle(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 14,
@@ -444,7 +444,7 @@ class LearnDashboard extends ConsumerWidget {
                               Padding(
                                 padding: const EdgeInsets.only(left: 26, top: 4),
                                 child: Text(
-                                  sub.description,
+                                  sub.description(strings.lang),
                                   style: TextStyle(fontSize: 12, color: theme.textTheme.bodySmall?.color),
                                 ),
                               ),
@@ -461,28 +461,72 @@ class LearnDashboard extends ConsumerWidget {
                     Row(
                       children: [
                         Expanded(
-                          child: ChoiceChip(
-                            label: Text(
-                              strings.initiatorNpcFirst,
-                              style: const TextStyle(fontSize: 12),
+                          child: InkWell(
+                            onTap: () => setSheetState(() => selectedInitiator = DialogInitiator.npcFirst),
+                            borderRadius: BorderRadius.circular(12),
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 150),
+                              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                              decoration: BoxDecoration(
+                                color: selectedInitiator == DialogInitiator.npcFirst
+                                    ? theme.colorScheme.primaryContainer
+                                    : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.4),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: selectedInitiator == DialogInitiator.npcFirst
+                                      ? theme.colorScheme.primary
+                                      : Colors.transparent,
+                                  width: 1.5,
+                                ),
+                              ),
+                              alignment: Alignment.center,
+                              child: Text(
+                                strings.initiatorNpcFirst,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  color: selectedInitiator == DialogInitiator.npcFirst
+                                      ? theme.colorScheme.primary
+                                      : null,
+                                ),
+                              ),
                             ),
-                            selected: selectedInitiator == DialogInitiator.npcFirst,
-                            onSelected: (val) {
-                              if (val) setSheetState(() => selectedInitiator = DialogInitiator.npcFirst);
-                            },
                           ),
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: 10),
                         Expanded(
-                          child: ChoiceChip(
-                            label: Text(
-                              strings.initiatorUserFirst,
-                              style: const TextStyle(fontSize: 12),
+                          child: InkWell(
+                            onTap: () => setSheetState(() => selectedInitiator = DialogInitiator.userFirst),
+                            borderRadius: BorderRadius.circular(12),
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 150),
+                              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                              decoration: BoxDecoration(
+                                color: selectedInitiator == DialogInitiator.userFirst
+                                    ? theme.colorScheme.primaryContainer
+                                    : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.4),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: selectedInitiator == DialogInitiator.userFirst
+                                      ? theme.colorScheme.primary
+                                      : Colors.transparent,
+                                  width: 1.5,
+                                ),
+                              ),
+                              alignment: Alignment.center,
+                              child: Text(
+                                strings.initiatorUserFirst,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  color: selectedInitiator == DialogInitiator.userFirst
+                                      ? theme.colorScheme.primary
+                                      : null,
+                                ),
+                              ),
                             ),
-                            selected: selectedInitiator == DialogInitiator.userFirst,
-                            onSelected: (val) {
-                              if (val) setSheetState(() => selectedInitiator = DialogInitiator.userFirst);
-                            },
                           ),
                         ),
                       ],
@@ -659,15 +703,15 @@ class LearnDashboard extends ConsumerWidget {
                       body: isPl
                           ? '• Aparat: natychmiastowe rozpoznawanie tekstu z tablic, paragonów i pism.\n'
                             '• Pliki/PDF: import zdjęć oraz dokumentów PDF z podglądem stron.\n'
-                            '• Inteligentne tłumaczenie AI przez OmniRoute oraz dodawanie słów kluczowych.'
+                            '• Inteligentne tłumaczenie AI oraz dodawanie słów kluczowych.'
                           : (isUk
                               ? '• Режим 📷 Камера: миттєвий захват польського тексту з вивісок, чеків, документів через ML Kit.\n'
                                 '• Режим 📁 Файл/PDF: імпорт фото та багатосторінкових PDF-документів із гортанням сторінок.\n'
-                                '• Режим ✍️ Текст: швидкий переклад будь-яких введених фраз через OmniRoute ШІ.\n'
+                                '• Режим ✍️ Текст: швидкий переклад будь-яких введених фраз через сучасний ШІ.\n'
                                 '• Кнопка 📥 «Додати всі слова в словник» зберігає всі незнайомі слова з документа в колоду.'
                               : '• Режим 📷 Камера: мгновенный захват польского текста с вывесок, чеков и писем через ML Kit.\n'
                                 '• Режим 📁 Файл/PDF: импорт фото и многостраничных PDF-документов с перелистыванием страниц.\n'
-                                '• Режим ✍️ Текст: быстрый перевод любых введенных фраз через OmniRoute ИИ.\n'
+                                '• Режим ✍️ Текст: быстрый перевод любых введенных фраз через современный ИИ.\n'
                                 '• Кнопка 📥 «Добавить все слова в словарь» сохраняет все слова документа в колоду повторения.'),
                     ),
                     const SizedBox(height: 12),
@@ -682,14 +726,14 @@ class LearnDashboard extends ConsumerWidget {
                       body: isPl
                           ? '• Przeglądaj karty słów, statusy nauki i przykłady.\n'
                             '• Wymowa słów jednym dotknięciem syntezatorem Google TTS.\n'
-                            '• W Ustawieniach skonfigurujesz bramkę OmniRoute (anti/gemini-3.8-flash-high).'
+                            '• W Ustawieniach skonfigurujesz bramkę AI i język aplikacji.'
                           : (isUk
                               ? '• Переглядайте картки слів, статус вивчення, транскрипцію та приклади.\n'
                                 '• Озвучування слів в один дотик рідним синтезатором Google TTS.\n'
-                                '• У Налаштуваннях підключається власний шлюз OmniRoute (швидка модель anti/gemini-3.8-flash-high).'
+                                '• У Налаштуваннях підключається власний шлюз штучного інтелекту.'
                               : '• Просматривайте карточки слов, интервалы повторения, транскрипцию и примеры.\n'
                                 '• Озвучивание слов в одно касание синтезатором Google TTS.\n'
-                                '• В Настройках настраивается ИИ-шлюз OmniRoute (быстрая модель anti/gemini-3.8-flash-high).'),
+                                '• В Настройках настраивается ИИ-шлюз и язык интерфейса.'),
                     ),
                     const SizedBox(height: 20),
                     FilledButton(

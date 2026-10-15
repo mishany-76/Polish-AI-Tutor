@@ -1,17 +1,17 @@
-# 🇵🇱 Polish AI Tutor (v1.0.8)
+# 🇵🇱 Polish AI Tutor (v1.0.9)
 
 > **Мобильное Android-приложение для изучения польского языка:** живой карманный ИИ-тьютор Kasia, OCR-сканер вывесок и чеков, многосюжетный симулятор диалогов и банк тренировок на 6,000+ заданий.
 
 [![Latest Release](https://img.shields.io/github/v/release/mishany-76/Polish-AI-Tutor?label=Version&color=B81428)](https://github.com/mishany-76/Polish-AI-Tutor/releases/latest)
-[![Download APK](https://img.shields.io/badge/Download-APK%20v1.0.8-success)](https://github.com/mishany-76/Polish-AI-Tutor/releases/download/v1.0.8/Polish_AI_Tutor_v1.0.8.apk)
+[![Download APK](https://img.shields.io/badge/Download-APK%20v1.0.9-success)](https://github.com/mishany-76/Polish-AI-Tutor/releases/download/v1.0.9/Polish_AI_Tutor_v1.0.9.apk)
 
 ---
 
-## 🚀 Актуальная версия: `v1.0.8` (сборка `1.0.8+9`)
+## 🚀 Актуальная версия: `v1.0.9` (сборка `1.0.9+10`)
 
 ### 📥 Скачать приложение
-- **Прямая ссылка на APK:** [Polish_AI_Tutor_v1.0.8.apk](https://github.com/mishany-76/Polish-AI-Tutor/releases/download/v1.0.8/Polish_AI_Tutor_v1.0.8.apk) (243.96 МБ)
-- **Страница релиза на GitHub:** [Release v1.0.8](https://github.com/mishany-76/Polish-AI-Tutor/releases/tag/v1.0.8)
+- **Прямая ссылка на APK:** [Polish_AI_Tutor_v1.0.9.apk](https://github.com/mishany-76/Polish-AI-Tutor/releases/download/v1.0.9/Polish_AI_Tutor_v1.0.9.apk)
+- **Страница релиза на GitHub:** [Release v1.0.9](https://github.com/mishany-76/Polish-AI-Tutor/releases/tag/v1.0.9)
 
 ---
 

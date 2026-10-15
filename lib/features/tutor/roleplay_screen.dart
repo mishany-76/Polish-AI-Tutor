@@ -40,9 +40,16 @@ class _Msg {
 
 /// Ролевой диалог: ИИ играет поляка, пользователь отвечает голосом или текстом.
 class RoleplayScreen extends ConsumerStatefulWidget {
-  const RoleplayScreen({super.key, required this.scenario});
+  const RoleplayScreen({
+    super.key,
+    required this.scenario,
+    this.subScenario,
+    this.initiator = DialogInitiator.npcFirst,
+  });
 
   final Scenario scenario;
+  final SubScenario? subScenario;
+  final DialogInitiator initiator;
 
   @override
   ConsumerState<RoleplayScreen> createState() => _RoleplayScreenState();
@@ -64,11 +71,13 @@ class _RoleplayScreenState extends ConsumerState<RoleplayScreen> {
   @override
   void initState() {
     super.initState();
-    _history.add(const ChatMessage(
-      'user',
-      'Zacznij scenę: przywitaj się jako twoja postać i zadaj pierwsze pytanie.',
-    ));
-    WidgetsBinding.instance.addPostFrameCallback((_) => _requestNpc());
+    if (widget.initiator == DialogInitiator.npcFirst) {
+      _history.add(const ChatMessage(
+        'user',
+        'Zacznij scenę: przywitaj się jako twoja postać i zadaj pierwsze pytanie.',
+      ));
+      WidgetsBinding.instance.addPostFrameCallback((_) => _requestNpc());
+    }
   }
 
   @override
@@ -100,13 +109,33 @@ class _RoleplayScreenState extends ConsumerState<RoleplayScreen> {
 
   String get _systemPrompt {
     final s = widget.scenario;
+    final sub = widget.subScenario;
     final lang = ref.read(settingsProvider).lang;
     final targetLang = lang == UiLang.uk ? 'украинский (українська мова)' : 'русский (русский язык)';
     final uiName = lang == UiLang.uk ? 'украинском' : 'русском';
+    final role = sub?.npcRole ?? s.npcRole;
+    final setting = sub?.setting != null ? '${s.setting}\n${sub!.setting}' : s.setting;
+
+    final subInfo = sub != null ? '''
+ПОДСЦЕНАРИЙ: ${sub.title}.
+ОПИСАНИЕ СИТУАЦИИ: ${sub.description}.
+СЮЖЕТНЫЙ ПОВОРОТ / ЖИЗНЕННЫЙ НЮАНС: ${sub.plotTwist}.
+ОБЯЗАТЕЛЬНО: В ходе беседы (примерно на 2-4 реплике) органично разыграй этот реалистичный жизненный поворот или заминку, чтобы диалог был не шаблонным, а проверял реальную реакцию ученика в польской среде.
+''' : '';
+
+    final initiatorRule = widget.initiator == DialogInitiator.userFirst
+        ? 'ИНИЦИАТИВА ДИАЛОГА: Ученик начинает разговор первым. Отвечай прямо на его обращение или вопрос вежливо и естественно.'
+        : 'ИНИЦИАТИВА ДИАЛОГА: Ты начинаешь диалог первым, здороваешься и задаешь вопрос клиенту/пациенту.';
+
     return '''
 Ты — «Kasia», добрый и терпеливый польский собеседник и репетитор. Ученик — взрослый человек, живущий в Польше.
-Сцена: ${s.title}. Твоя роль: ${s.npcRole}. Ситуация: ${s.setting}. Уровень: ${s.level}.
+Сцена: ${s.title}${sub != null ? ' — ${sub.title}' : ''}.
+Твоя роль: $role.
+Ситуация: $setting.
+Уровень: ${s.level}.
 Язык перевода и подсказок: $targetLang ($uiName).
+$subInfo
+$initiatorRule
 
 ПРАВИЛА:
 1. Реплика персонажа ("npc_pl") — ТОЛЬКО по-польски, строго 1–2 коротких живых предложения (максимум 20–25 слов).
@@ -259,13 +288,105 @@ class _RoleplayScreenState extends ConsumerState<RoleplayScreen> {
     if (mounted) Navigator.of(context).pop();
   }
 
+  Widget _buildStarterGuidance(ThemeData theme) {
+    final sub = widget.subScenario;
+    final lang = ref.read(settingsProvider).lang;
+    final starterPl = sub?.starterHintPl ?? 'Dzień dobry!';
+    final starterTr = lang == UiLang.uk ? (sub?.starterHintUk ?? 'Доброго дня!') : (sub?.starterHintRu ?? 'Добрый день!');
+    final isUk = lang == UiLang.uk;
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.primaryContainer.withValues(alpha: 0.35),
+        border: Border.all(color: theme.colorScheme.primary.withValues(alpha: 0.5)),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Text('🗣️', style: TextStyle(fontSize: 22)),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  isUk ? 'Ви звертаєтеся першим!' : 'Вы обращаетесь первым!',
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: theme.colorScheme.primary,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            isUk
+                ? 'Почніть розмову голосом (мікрофон) або введіть текст. Зручний варіант початку:'
+                : 'Начните разговор голосом (микрофон) или введите текст. Удобный вариант начала:',
+            style: const TextStyle(fontSize: 13),
+          ),
+          const SizedBox(height: 10),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surface,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: theme.dividerColor),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(starterPl, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                      const SizedBox(height: 2),
+                      Text(starterTr, style: TextStyle(fontSize: 12, color: theme.textTheme.bodySmall?.color)),
+                    ],
+                  ),
+                ),
+                IconButton(
+                  tooltip: isUk ? 'Озвучити' : 'Озвучить',
+                  icon: const Icon(Icons.volume_up, size: 20),
+                  onPressed: () => _speak(starterPl),
+                ),
+                IconButton(
+                  tooltip: isUk ? 'Вставити у поле' : 'Вставить в поле',
+                  icon: const Icon(Icons.edit_note, size: 22),
+                  onPressed: () {
+                    _input.text = starterPl;
+                    _input.selection = TextSelection.fromPosition(TextPosition(offset: _input.text.length));
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final s = widget.scenario;
+    final sub = widget.subScenario;
     final theme = Theme.of(context);
+    final isUk = ref.watch(settingsProvider).isUk;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('${s.emoji} ${s.title}', style: const TextStyle(fontSize: 16)),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('${s.emoji} ${sub?.title ?? s.title}',
+                style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+            if (sub != null)
+              Text(s.title, style: TextStyle(fontSize: 11, color: theme.colorScheme.onSurfaceVariant)),
+          ],
+        ),
         actions: [
           IconButton(
             tooltip: 'Озвучка ответов',
@@ -275,7 +396,7 @@ class _RoleplayScreenState extends ConsumerState<RoleplayScreen> {
             },
             icon: Icon(_speakNpc ? Icons.volume_up : Icons.volume_off),
           ),
-          TextButton(onPressed: _finish, child: const Text('Завершить')),
+          TextButton(onPressed: _finish, child: Text(isUk ? 'Завершити' : 'Завершить')),
         ],
       ),
       body: SafeArea(
@@ -285,14 +406,18 @@ class _RoleplayScreenState extends ConsumerState<RoleplayScreen> {
               width: double.infinity,
               color: theme.colorScheme.surfaceContainerHighest,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-              child: Text('${s.level} · ${s.vocab.join(' · ')}',
-                  style: theme.textTheme.bodySmall),
+              child: Text(
+                '${s.level} · ${(sub?.vocab.isNotEmpty == true ? sub!.vocab : s.vocab).join(' · ')}',
+                style: theme.textTheme.bodySmall,
+              ),
             ),
             Expanded(
               child: ListView(
                 controller: _scroll,
                 padding: const EdgeInsets.all(12),
                 children: [
+                  if (_msgs.isEmpty && widget.initiator == DialogInitiator.userFirst)
+                    _buildStarterGuidance(theme),
                   for (final m in _msgs) _bubble(m, theme),
                   if (_loading)
                     Align(

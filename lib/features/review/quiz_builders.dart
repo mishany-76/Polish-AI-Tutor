@@ -54,11 +54,12 @@ QuizQuestion _make({
 }
 
 /// Адаптивный режим 1: «Угадай правильное окончание».
-/// Исключает выученные, в первую очередь повторяет ошибки.
+/// Исключает выученные, в первую очередь повторяет ошибки (1800+ предложений).
 Future<List<QuizQuestion>> buildAdaptiveEndingsQuiz(UiLang lang, {int count = 8}) async {
+  final allItems = await DrillDataLoader.getEndings();
   final chosen = await DrillProgressService.instance.selectAdaptive<EndingItem>(
     category: 'endings',
-    allItems: endingItems,
+    allItems: allItems,
     idOf: (e) => e.sentence,
     count: count,
   );
@@ -98,10 +99,12 @@ List<QuizQuestion> buildEndingsQuiz(UiLang lang, {int count = 8, Random? random}
 }
 
 /// Адаптивный режим 3: «Осторожно, ложные друзья!».
+/// 1200+ карточек, перехват коварных языковых ловушек.
 Future<List<QuizQuestion>> buildAdaptiveFalseFriendsQuiz(UiLang lang, {int count = 8}) async {
+  final allItems = await DrillDataLoader.getFalseFriends();
   final chosen = await DrillProgressService.instance.selectAdaptive<FalseFriendItem>(
     category: 'false_friends',
-    allItems: falseFriendItems,
+    allItems: allItems,
     idOf: (f) => f.pl,
     count: count,
   );
@@ -113,7 +116,7 @@ Future<List<QuizQuestion>> buildAdaptiveFalseFriendsQuiz(UiLang lang, {int count
         final correct = uk ? f.uk : f.ru;
         final trap = uk ? f.trapUk : f.trapRu;
         final others = [
-          for (final o in falseFriendItems)
+          for (final o in allItems)
             if (o.pl != f.pl) uk ? o.uk : o.ru,
         ]..shuffle(rnd);
         return _make(
@@ -160,6 +163,7 @@ List<QuizQuestion> buildFalseFriendsQuiz(UiLang lang, {int count = 8, Random? ra
 }
 
 /// Адаптивный режим 2: «Аудио-тренажёр».
+/// Масштабированная база (1800+ выражений и слов из живой речи).
 Future<List<QuizQuestion>> buildAdaptiveAudioQuiz(
   List<Word> deck,
   UiLang lang, {
@@ -170,6 +174,10 @@ Future<List<QuizQuestion>> buildAdaptiveAudioQuiz(
   for (final w in deck) {
     final tr = w.translation(uk);
     if (tr != null && tr.trim().isNotEmpty) pool[w.lemma] = tr.trim();
+  }
+  final audioWords = await DrillDataLoader.getAudioWords();
+  for (final a in audioWords) {
+    pool.putIfAbsent(a.pl, () => uk ? a.uk : a.ru);
   }
   for (final s in seedWords) {
     pool.putIfAbsent(s.pl, () => uk ? s.uk : s.ru);
@@ -190,8 +198,8 @@ Future<List<QuizQuestion>> buildAdaptiveAudioQuiz(
         final correct = pool[pl]!;
         final wrong = (pool.values.where((t) => t != correct).toSet().toList()
               ..shuffle(rnd))
-            .take(3)
-            .toList();
+              .take(3)
+              .toList();
         return _make(
           id: pl,
           prompt: uk ? 'Послухайте та оберіть переклад' : 'Послушайте и выберите перевод',
@@ -249,11 +257,12 @@ List<QuizQuestion> buildAudioQuiz(
 }
 
 /// Адаптивный режим 4: «Числа, ціни та рахунок».
-/// 88+ вопросов: суммы на кассе, время/часы, коварные десятки и сотни.
+/// 1200+ вопросов: суммы на кассе, время/часы, коварные десятки и сотни.
 Future<List<QuizQuestion>> buildAdaptiveNumbersPricesQuiz(UiLang lang, {int count = 8}) async {
+  final allItems = await DrillDataLoader.getNumbersPrices();
   final chosen = await DrillProgressService.instance.selectAdaptive<NumberPriceItem>(
     category: 'numbers_prices',
-    allItems: numberPriceItems,
+    allItems: allItems,
     idOf: (n) => n.id,
     count: count,
   );

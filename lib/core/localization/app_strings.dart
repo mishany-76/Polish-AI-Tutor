@@ -102,6 +102,21 @@ class AppStrings {
       isPl ? 'Dialogi sytuacyjne' : (isUk ? 'Рольові діалоги' : 'Ролевые диалоги');
   String get readyToChat => isPl ? 'Gotowy' : (isUk ? 'Готовий' : 'Готов');
   String get guideTooltip => isPl ? 'Instrukcja' : (isUk ? 'Інструкція' : 'Инструкция');
+  String get chooseSubSituation => isPl
+      ? 'Wybierz sytuację życiową:'
+      : (isUk ? 'Оберіть життєву ситуацію:' : 'Выберите жизненную ситуацию:');
+  String get whoSpeaksFirst => isPl
+      ? 'Kto mówi pierwszy:'
+      : (isUk ? 'Хто говорить першим:' : 'Кто говорит первым:');
+  String get initiatorUserFirst => isPl
+      ? '🗣️ Zaczynam pierwszy'
+      : (isUk ? '🗣️ Я звертаюся першим' : '🗣️ Я обращаюсь первым');
+  String get initiatorNpcFirst => isPl
+      ? '👂 Do mnie się zwracają'
+      : (isUk ? '👂 До мене звертаються' : '👂 Ко мне обращаются');
+  String get startDialogBtn => isPl
+      ? 'Rozpocznij dialog 🚀'
+      : (isUk ? 'Розпочати діалог 🚀' : 'Начать диалог 🚀');
 
   // --- Диалог ручного ввода (Smart Manual Word Dialog) ---
   String get newWordTitle => isPl ? '✍️ Nowe słowo' : (isUk ? '✍️ Нове слово' : '✍️ Новое слово');

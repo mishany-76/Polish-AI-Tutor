@@ -314,8 +314,7 @@ class LearnDashboard extends ConsumerWidget {
                 Card(
                   clipBehavior: Clip.antiAlias,
                   child: InkWell(
-                    onTap: () =>
-                        _push(context, RoleplayScreen(scenario: s)),
+                    onTap: () => _showScenarioSheet(context, s, strings),
                     child: Padding(
                       padding: const EdgeInsets.all(10),
                       child: Column(
@@ -340,6 +339,183 @@ class LearnDashboard extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+
+  void _showScenarioSheet(BuildContext context, Scenario s, AppStrings strings) {
+    if (s.subScenarios.isEmpty) {
+      _push(context, RoleplayScreen(scenario: s));
+      return;
+    }
+
+    SubScenario selectedSub = s.subScenarios.first;
+    DialogInitiator selectedInitiator = DialogInitiator.npcFirst;
+
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder: (sheetCtx) {
+        final theme = Theme.of(sheetCtx);
+        return StatefulBuilder(
+          builder: (context, setSheetState) {
+            return DraggableScrollableSheet(
+              expand: false,
+              initialChildSize: 0.8,
+              maxChildSize: 0.95,
+              minChildSize: 0.5,
+              builder: (_, scrollCtrl) {
+                return ListView(
+                  controller: scrollCtrl,
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+                  children: [
+                    Row(
+                      children: [
+                        Text(s.emoji, style: const TextStyle(fontSize: 28)),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                s.title,
+                                style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                              ),
+                              Text(s.level, style: theme.textTheme.bodySmall),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      strings.chooseSubSituation,
+                      style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
+                    for (final sub in s.subScenarios)
+                      InkWell(
+                        onTap: () => setSheetState(() => selectedSub = sub),
+                        borderRadius: BorderRadius.circular(12),
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(vertical: 4),
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: selectedSub.id == sub.id
+                                ? theme.colorScheme.primaryContainer.withValues(alpha: 0.4)
+                                : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: selectedSub.id == sub.id
+                                  ? theme.colorScheme.primary
+                                  : Colors.transparent,
+                              width: 1.5,
+                            ),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(
+                                    selectedSub.id == sub.id
+                                        ? Icons.radio_button_checked
+                                        : Icons.radio_button_off,
+                                    size: 18,
+                                    color: selectedSub.id == sub.id
+                                        ? theme.colorScheme.primary
+                                        : theme.colorScheme.onSurfaceVariant,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text(
+                                      sub.title,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 14,
+                                        color: selectedSub.id == sub.id
+                                            ? theme.colorScheme.primary
+                                            : null,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 26, top: 4),
+                                child: Text(
+                                  sub.description,
+                                  style: TextStyle(fontSize: 12, color: theme.textTheme.bodySmall?.color),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    const SizedBox(height: 16),
+                    Text(
+                      strings.whoSpeaksFirst,
+                      style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ChoiceChip(
+                            label: Text(
+                              strings.initiatorNpcFirst,
+                              style: const TextStyle(fontSize: 12),
+                            ),
+                            selected: selectedInitiator == DialogInitiator.npcFirst,
+                            onSelected: (val) {
+                              if (val) setSheetState(() => selectedInitiator = DialogInitiator.npcFirst);
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: ChoiceChip(
+                            label: Text(
+                              strings.initiatorUserFirst,
+                              style: const TextStyle(fontSize: 12),
+                            ),
+                            selected: selectedInitiator == DialogInitiator.userFirst,
+                            onSelected: (val) {
+                              if (val) setSheetState(() => selectedInitiator = DialogInitiator.userFirst);
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    FilledButton.icon(
+                      icon: const Icon(Icons.play_arrow),
+                      label: Text(
+                        strings.startDialogBtn,
+                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                      ),
+                      style: FilledButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                      ),
+                      onPressed: () {
+                        Navigator.of(sheetCtx).pop();
+                        _push(
+                          context,
+                          RoleplayScreen(
+                            scenario: s,
+                            subScenario: selectedSub,
+                            initiator: selectedInitiator,
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+          },
+        );
+      },
     );
   }
 

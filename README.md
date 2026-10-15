@@ -1,17 +1,41 @@
-# polish_ai_tutor
+# 🇵🇱 Polish AI Tutor (v1.0.8)
 
-A new Flutter project.
+> **Мобильное Android-приложение для изучения польского языка:** живой карманный ИИ-тьютор Kasia, OCR-сканер вывесок и чеков, многосюжетный симулятор диалогов и банк тренировок на 6,000+ заданий.
 
-## Getting Started
+[![Latest Release](https://img.shields.io/github/v/release/mishany-76/Polish-AI-Tutor?label=Version&color=B81428)](https://github.com/mishany-76/Polish-AI-Tutor/releases/latest)
+[![Download APK](https://img.shields.io/badge/Download-APK%20v1.0.8-success)](https://github.com/mishany-76/Polish-AI-Tutor/releases/download/v1.0.8/Polish_AI_Tutor_v1.0.8.apk)
 
-This project is a starting point for a Flutter application.
+---
 
-A few resources to get you started if this is your first Flutter project:
+## 🚀 Актуальная версия: `v1.0.8` (сборка `1.0.8+9`)
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+### 📥 Скачать приложение
+- **Прямая ссылка на APK:** [Polish_AI_Tutor_v1.0.8.apk](https://github.com/mishany-76/Polish-AI-Tutor/releases/download/v1.0.8/Polish_AI_Tutor_v1.0.8.apk) (243.96 МБ)
+- **Страница релиза на GitHub:** [Release v1.0.8](https://github.com/mishany-76/Polish-AI-Tutor/releases/tag/v1.0.8)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+---
+
+## 🌟 Основные возможности:
+
+1. **📚 Масштабный банк тренировок (6,155 карточек):**
+   - «Хибні друзі» (1,225 карточек-ловушек)
+   - «Закінчення» (1,850 предложений на все 7 падежей)
+   - «Числа та ціни» (1,230 практических ситуаций с кассами, чеками и часами)
+   - «Аудіо-тренажер» (1,850 выражений живой разговорной речи)
+   - Асинхронная подгрузка JSON-ассетов без расхода оперативной памяти.
+
+2. **🎭 Многосюжетный симулятор диалогов (Dynamic Roleplay):**
+   - Интерактивный выбор под-сценариев (Żabka/Biedronka, Банк, Кафе, Врач, Urząd).
+   - Выбор инициатора диалога: `[ 🗣️ Я звертаюся першим | 👂 До мене звертаються ]`.
+   - Жизненные сюжетные повороты и заминки (Plot Twists) в ходе беседы.
+   - Озвучка диктора (TTS) и синхронный ИИ-перевод реплик.
+
+3. **🌐 Полная локализация интерфейса на 3 языка:**
+   - 🇺🇦 Українська (за замовчуванням)
+   - 🇷🇺 Русский
+   - 🇵🇱 Polski (językowe zanurzenie)
+
+4. **✨ Умный переводчик и словарь:**
+   - OCR-распознавание камерой и из файлов/PDF.
+   - Автоматический перевод через ИИ-шлюз OmniRoute (`anti/gemini-3.8-flash-high`).
+   - Система интервального повторения SM-2.

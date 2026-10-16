@@ -923,6 +923,36 @@ class LearnDashboard extends ConsumerWidget {
                                 '• Режим замедленного воспроизведения (0.3x) и мгновенные мнемонические правила при ошибках.\n'
                                 '• Выбор режима: «Ловушки орфографии» или диктант по «Словам из своего словаря».'),
                     ),
+                    const SizedBox(height: 12),
+
+                    // Карточка 9: Экспорт в Anki / Quizlet
+                    _GuideCard(
+                      icon: Icons.file_upload_outlined,
+                      color: Colors.deepPurple,
+                      title: isPl
+                          ? '9. 📤 Eksport do Anki / Quizlet'
+                          : (isUk ? '9. 📤 Експорт в Anki / Quizlet' : '9. 📤 Экспорт в Anki / Quizlet'),
+                      body: isPl
+                          ? '• Przejdź do zakładki „Słownik” i kliknij ikonę eksportu (📤) w prawym górnym rogu.\n'
+                            '• Dostępne formaty:\n'
+                            '  1) Anki Deck (.txt / TSV) — gotowy do importu w Anki i AnkiDroid z tagami, częściami mowy, przykładami i interwałami SM-2;\n'
+                            '  2) Quizlet (.csv) — import terminu i definicji do fiszek Quizlet;\n'
+                            '  3) Excel / CSV (.csv) — pełna tabela do analizy w Excelu i Google Sheets (kodowanie UTF-8 BOM).\n'
+                            '• Plik można natychmiast wysłać do Telegrama, Google Drive, poczty lub otworzyć bezpośrednio w AnkiDroid.'
+                          : (isUk
+                              ? '• Перейдіть у вкладку «Словник» та натисніть іконку експорту (📤) у правому верхньому кутку.\n'
+                                '• Доступні формати:\n'
+                                '  1) Anki Deck (.txt / TSV) — готовий для імпорту в Anki та AnkiDroid з тегами, частинами мови, прикладами та інтервалами SM-2;\n'
+                                '  2) Quizlet (.csv) — імпорт терміну та визначення для карток Quizlet;\n'
+                                '  3) Excel / CSV (.csv) — повна таблиця для аналізу в Excel та Google Sheets (кодування UTF-8 BOM).\n'
+                                '• Файл можна миттєво надіслати в Telegram, Google Drive, на пошту або відкрити напряму в AnkiDroid.'
+                              : '• Перейдите во вкладку «Словарь» и нажмите иконку экспорта (📤) в правом верхнем углу.\n'
+                                '• Доступные форматы:\n'
+                                '  1) Anki Deck (.txt / TSV) — готов для импорта в Anki и AnkiDroid с тегами, частями речи, примерами и интервалами SM-2;\n'
+                                '  2) Quizlet (.csv) — импорт термина и определения для карточек Quizlet;\n'
+                                '  3) Excel / CSV (.csv) — полная таблица для анализа в Excel и Google Sheets (кодировка UTF-8 BOM).\n'
+                                '• Файл можно мгновенно отправить в Telegram, Google Drive, на почту или открыть напрямую в AnkiDroid.'),
+                    ),
                     const SizedBox(height: 20),
                     FilledButton(
                       onPressed: () => Navigator.of(sheetCtx).pop(),

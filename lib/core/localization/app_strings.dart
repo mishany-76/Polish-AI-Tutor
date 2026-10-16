@@ -179,6 +179,43 @@ class AppStrings {
       ? '🗑️ Słownik wyczyszczony (usunięto słów: $c)'
       : (isUk ? '🗑️ Словник очищено (видалено слів: $c)' : '🗑️ Словарь очищен (удалено слов: $c)');
 
+  // Экспорт колод (Anki / Quizlet / CSV)
+  String get exportDeckTooltip => isPl
+      ? 'Eksportuj słowa (Anki / Quizlet)'
+      : (isUk ? 'Експортувати слова (Anki / Quizlet)' : 'Экспортировать слова (Anki / Quizlet)');
+  String get exportDialogTitle => isPl
+      ? '📤 Eksport do Anki / Quizlet'
+      : (isUk ? '📤 Експорт в Anki / Quizlet' : '📤 Экспорт в Anki / Quizlet');
+  String get exportDialogSub => isPl
+      ? 'Wybierz wygodny format do powtórek w zewnętrznych aplikacjach:'
+      : (isUk
+          ? 'Оберіть зручний формат для повторення у зовнішніх додатках:'
+          : 'Выберите удобный формат для повторения во внешних приложениях:');
+  String get exportAnkiTitle => 'Anki Deck (.txt / TSV)';
+  String get exportAnkiDesc => isPl
+      ? 'Gotowy do importu w Anki / AnkiDroid z tagami, częściami mowy, przykładami zdań i interwałami SM-2.'
+      : (isUk
+          ? 'Готовий для імпорту в Anki / AnkiDroid з тегами, частинами мови, прикладами речень та інтервалами SM-2.'
+          : 'Готов для импорта в Anki / AnkiDroid с тегами, частями речи, примерами предложений и интервалами SM-2.');
+  String get exportQuizletTitle => 'Quizlet (.csv)';
+  String get exportQuizletDesc => isPl
+      ? 'Szybki import terminu i definicji w Quizlet dla nauki na fiszkach.'
+      : (isUk
+          ? 'Швидкий імпорт терміну та визначення в Quizlet для навчання на картках.'
+          : 'Быстрый импорт термина и определения в Quizlet для обучения по карточкам.');
+  String get exportCsvTitle => 'Excel / CSV (.csv)';
+  String get exportCsvDesc => isPl
+      ? 'Pełna tabela z kolumnami dla arkuszy kalkulacyjnych Excel i Google Sheets (kodowanie UTF-8 BOM).'
+      : (isUk
+          ? 'Повна таблиця зі стовпцями для електронних таблиць Excel та Google Sheets (кодування UTF-8 BOM).'
+          : 'Полная таблица со столбцами для электронных таблиц Excel и Google Sheets (кодировка UTF-8 BOM).');
+  String get exportEmptyDictAlert => isPl
+      ? 'Słownik jest pusty. Dodaj słowa przed eksportem!'
+      : (isUk ? 'Словник порожній. Додайте слова перед експортом!' : 'Словарь пуст. Добавьте слова перед экспортом!');
+  String exportSuccessSnack(int count, String format) => isPl
+      ? '📤 Wyeksportowano $count słów ($format)'
+      : (isUk ? '📤 Експортовано $count слів ($format)' : '📤 Экспортировано $count слов ($format)');
+
   // --- Настройки ---
   String get settingsTitle => isPl ? '⚙️ Ustawienia' : (isUk ? '⚙️ Налаштування' : '⚙️ Настройки');
   String get uiLangTitle => isPl ? 'Język interfejsu' : (isUk ? 'Мова інтерфейсу' : 'Язык интерфейса');

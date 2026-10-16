@@ -15,6 +15,7 @@ import 'package:polish_ai_tutor/features/scanner/translation_service.dart';
 import 'package:polish_ai_tutor/features/scanner/word_analysis.dart';
 import 'package:polish_ai_tutor/features/dictation/dictation_item.dart';
 import 'package:polish_ai_tutor/features/dictation/dictation_service.dart';
+import 'package:polish_ai_tutor/features/dictionary/export_deck_service.dart';
 import 'package:polish_ai_tutor/features/wrapped/monthly_stats_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -381,5 +382,83 @@ void main() {
       await db.close();
     });
   });
+
+  group('ExportDeckService (Экспорт в Anki / Quizlet / CSV)', () {
+    const service = ExportDeckService();
+
+    final testWords = [
+      Word(
+        id: 1,
+        lemma: 'dworzec',
+        surfaceForm: 'dworca',
+        pos: 'rzeczownik',
+        gender: 'm',
+        translationUk: 'вокзал',
+        translationRu: 'вокзал',
+        examplePl: 'Idę na dworzec kolejowy.',
+        exampleTr: 'Иду на железнодорожный вокзал.',
+        note: 'Dworzec Główny',
+        isFalseFriend: false,
+        source: 'scan',
+        createdAt: DateTime.now(),
+        easeFactor: 2.5,
+        intervalDays: 25,
+        reps: 4,
+        lapses: 0,
+        dueAt: DateTime.now().add(const Duration(days: 25)),
+        lastReviewAt: DateTime.now(),
+      ),
+      Word(
+        id: 2,
+        lemma: 'dywan',
+        surfaceForm: 'dywan',
+        pos: 'rzeczownik',
+        gender: 'm',
+        translationUk: 'килим',
+        translationRu: 'ковёр',
+        examplePl: 'Nowy dywan w pokoju.',
+        exampleTr: 'Новый ковёр в комнате.',
+        note: 'Не диван!',
+        isFalseFriend: true,
+        source: 'manual',
+        createdAt: DateTime.now(),
+        easeFactor: 2.5,
+        intervalDays: 0,
+        reps: 0,
+        lapses: 0,
+        dueAt: DateTime.now(),
+        lastReviewAt: null,
+      ),
+    ];
+
+    test('generateAnkiTsv генерирует TSV с тегами и HTML', () {
+      final tsv = service.generateAnkiTsv(testWords, isUk: false);
+      expect(tsv, contains('#separator:tab'));
+      expect(tsv, contains('#html:true'));
+      expect(tsv, contains('dworzec\tвокзал'));
+      expect(tsv, contains('rzeczownik (m)'));
+      expect(tsv, contains('<b>Idę na dworzec kolejowy.</b>'));
+      expect(tsv, contains('PolishAI opanowane scan'));
+      expect(tsv, contains('dywan\tковёр'));
+      expect(tsv, contains('⚠️ <b>Fałszywy przyjaciel / Ложный друг</b>'));
+      expect(tsv, contains('PolishAI nowe manual'));
+    });
+
+    test('generateQuizletCsv генерирует экранированный CSV', () {
+      final csv = service.generateQuizletCsv(testWords, isUk: true);
+      expect(csv, contains('"dworzec","вокзал [rzeczownik] (Idę na dworzec kolejowy.)"'));
+      expect(csv, contains('"dywan","килим [rzeczownik] (Nowy dywan w pokoju.)"'));
+    });
+
+    test('generateStandardCsv генерирует полный CSV со всеми столбцами', () {
+      final csv = service.generateStandardCsv(testWords, isUk: false);
+      expect(csv, contains('"Słowo (PL)","Tłumaczenie"'));
+      expect(csv, contains('"dworzec","вокзал","rzeczownik","m"'));
+      expect(csv, contains('"Opanowane","25"'));
+      expect(csv, contains('"dywan","ковёр","rzeczownik","m"'));
+      expect(csv, contains('"Tak","Nowe","0"'));
+    });
+  });
 }
+
 

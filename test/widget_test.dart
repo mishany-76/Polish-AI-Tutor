@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:drift/drift.dart' hide isNull, isNotNull;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:polish_ai_tutor/core/achievements/achievement_service.dart';
@@ -12,6 +13,7 @@ import 'package:polish_ai_tutor/features/scanner/doc_analysis_service.dart';
 import 'package:polish_ai_tutor/features/scanner/ocr_service.dart';
 import 'package:polish_ai_tutor/features/scanner/translation_service.dart';
 import 'package:polish_ai_tutor/features/scanner/word_analysis.dart';
+import 'package:polish_ai_tutor/features/wrapped/monthly_stats_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
@@ -241,6 +243,71 @@ void main() {
       expect(analysis.actions, isEmpty);
       expect(analysis.vocabulary, isEmpty);
       expect(analysis.rawText, 'текст');
+    });
+  });
+
+  group('MonthlyStats', () {
+    test('monthName и title правильно локализуются на 3 языка', () {
+      const stats = MonthlyStats(
+        year: 2026,
+        month: 10,
+        totalWords: 120,
+        wordsAddedThisMonth: 45,
+        wordsMastered: 30,
+        wordsLearning: 90,
+        dialogsDone: 6,
+        scansDone: 4,
+        quizRoundsDone: 8,
+        streakDays: 14,
+        cefrLevel: 'A1 (Początkujący)',
+        cefrTarget: 500,
+        cefrProgressPercent: 24,
+        titleUk: 'Варшавський Переговорник',
+        titleRu: 'Варшавский Переговорщик',
+        titlePl: 'Warszawski Negocjator',
+        titleEmoji: '👑',
+        quotePl: '„Kropla drąży skałę...”',
+      );
+
+      expect(stats.monthName(UiLang.pl), 'Październik');
+      expect(stats.monthName(UiLang.uk), 'Жовтень');
+      expect(stats.monthName(UiLang.ru), 'Октябрь');
+
+      expect(stats.title(UiLang.pl), 'Warszawski Negocjator');
+      expect(stats.title(UiLang.uk), 'Варшавський Переговорник');
+      expect(stats.title(UiLang.ru), 'Варшавский Переговорщик');
+    });
+
+    test('MonthlyStatsService корректно считает CEFR и слова за месяц', () async {
+      final db = AppDatabase(NativeDatabase.memory());
+      final now = DateTime(2026, 10, 16);
+
+      // Добавим 2 слова в этом месяце
+      await db.into(db.words).insert(WordsCompanion.insert(
+        lemma: 'dzień dobry',
+        reps: const Value(5),
+        intervalDays: const Value(25),
+        createdAt: Value(now),
+      ));
+      await db.into(db.words).insert(WordsCompanion.insert(
+        lemma: 'dziękuję',
+        reps: const Value(2),
+        intervalDays: const Value(6),
+        createdAt: Value(now),
+      ));
+
+      final service = MonthlyStatsService(db);
+      final stats = await service.computeStats(forDate: now);
+
+      expect(stats.totalWords, 2);
+      expect(stats.wordsAddedThisMonth, 2);
+      expect(stats.wordsMastered, 1);
+      expect(stats.wordsLearning, 1);
+      expect(stats.cefrLevel, 'A1 (Początkujący)');
+      expect(stats.cefrTarget, 500);
+      expect(stats.cefrProgressPercent, greaterThan(0));
+
+      await db.close();
     });
   });
 }

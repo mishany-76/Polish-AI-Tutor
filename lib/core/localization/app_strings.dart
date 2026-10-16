@@ -325,6 +325,15 @@ class AppStrings {
       : (isUk
           ? 'Наведіть камеру на договір або лист, щоб перевірити ризики'
           : 'Наведите камеру на договор или письмо, чтобы проверить риски');
+
+  // --- Мой польский за месяц (Monthly Progress Wrapped) ---
+  String get monthlyWrappedTitle => isPl
+      ? 'Mój polski w tym miesiącu'
+      : (isUk ? 'Мій польський за місяць' : 'Мой польский за месяц');
+
+  String get monthlyWrappedTooltip => isPl
+      ? 'Mój polski w tym miesiącu'
+      : (isUk ? 'Мій польський за місяць' : 'Мой польский за месяц');
 }
 
 

@@ -15,6 +15,7 @@ import '../scanner/scanner_providers.dart';
 import '../scanner/translation_service.dart';
 import '../tutor/roleplay_screen.dart';
 import '../tutor/scenarios.dart';
+import '../wrapped/monthly_wrapped_screen.dart';
 
 /// Главный экран: тренажёр обучения (повторение, игры, ролевые диалоги).
 class LearnDashboard extends ConsumerWidget {
@@ -74,6 +75,11 @@ class LearnDashboard extends ConsumerWidget {
                 ),
               ],
             ),
+          ),
+          IconButton(
+            tooltip: strings.monthlyWrappedTooltip,
+            icon: const Icon(Icons.insights_rounded),
+            onPressed: () => MonthlyWrappedScreen.show(context),
           ),
           IconButton(
             tooltip: strings.passportTitle,
@@ -166,7 +172,84 @@ class LearnDashboard extends ConsumerWidget {
               ),
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 16),
+
+          // --- Баннер «Мой польский за месяц» ---
+          Card(
+            clipBehavior: Clip.antiAlias,
+            elevation: 1,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+              side: BorderSide(
+                color: theme.colorScheme.primary.withValues(alpha: 0.15),
+              ),
+            ),
+            child: InkWell(
+              onTap: () => MonthlyWrappedScreen.show(context),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      theme.colorScheme.primary.withValues(alpha: 0.08),
+                      Colors.white,
+                    ],
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.primary.withValues(alpha: 0.12),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.insights_rounded,
+                        color: theme.colorScheme.primary,
+                        size: 22,
+                      ),
+                    ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            strings.monthlyWrappedTitle,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14.5,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            strings.isPl
+                                ? 'Podsumowanie słów, poziomu CEFR i osiągnięć'
+                                : (strings.isUk
+                                    ? 'Підсумок слів, рівня CEFR та досягнень'
+                                    : 'Итоги слов, уровня CEFR и достижений'),
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey.shade600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      size: 15,
+                      color: theme.colorScheme.primary.withValues(alpha: 0.6),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
 
           // --- Игры ---
           Text(strings.drillsTitle, style: theme.textTheme.titleLarge),
@@ -786,6 +869,30 @@ class LearnDashboard extends ConsumerWidget {
                               : '• Нажмите иконку паспорта в верхней панели, чтобы увидеть свои печати.\n'
                                 '• Получайте достижения за слова, сканы, диалоги и серии дней (streak).\n'
                                 '• Разблокируйте все 15 печатей и получите почётный Польский Паспорт!'),
+                    ),
+                    const SizedBox(height: 12),
+
+                    // Карточка 7: Мой польский за месяц
+                    _GuideCard(
+                      icon: Icons.insights_rounded,
+                      color: AppTheme.primaryCarmine,
+                      title: isPl
+                          ? '7. 📊 Mój polski w tym miesiącu'
+                          : (isUk ? '7. 📊 Мій польський за місяць' : '7. 📊 Мой польский за месяц'),
+                      body: isPl
+                          ? '• Kliknij ikonę 📊 na górnym pasku lub baner na ekranie głównym.\n'
+                            '• Sprawdź liczbę opanowanych słów, poziom CEFR, dialogi oraz analizy pism.\n'
+                            '• Otrzymaj swój comiesięczny tytuł językowy (np. „Warszawski Negocjator”, „Leksykalny Snajper”).\n'
+                            '• Skopiuj oficjalne podsumowanie i udostępnij znajomym jednym kliknięciem!'
+                          : (isUk
+                              ? '• Натисніть іконку 📊 на верхній панелі або банер на головному екрані.\n'
+                                '• Переглядайте кількість вивчених слів, рівень CEFR, діалоги та аналізи документів.\n'
+                                '• Отримуйте персональний щомісячний мовний титул (наприклад, «Варшавський Переговорник»).\n'
+                                '• Скопіюйте офіційні підсумки та поділіться з друзями в один дотик!'
+                              : '• Нажмите иконку 📊 в верхней панели или баннер на главном экране.\n'
+                                '• Просматривайте число выученных слов, уровень CEFR, диалоги и анализы документов.\n'
+                                '• Получайте персональный ежемесячный языковой титул (например, «Варшавский Переговорщик»).\n'
+                                '• Скопируйте официальные итоги и делитесь с друзьями в одно касание!'),
                     ),
                     const SizedBox(height: 20),
                     FilledButton(

@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../achievements/achievement_service.dart';
+
 /// Сервис отслеживания ежедневной серии входов (Streak).
 /// Сохраняет дату последнего визита и число дней подряд в SharedPreferences.
 class StreakNotifier extends AsyncNotifier<int> {
@@ -16,17 +18,19 @@ class StreakNotifier extends AsyncNotifier<int> {
 
     final lastDateStr = prefs.getString(_kLastDate);
     final currentStreak = prefs.getInt(_kCount) ?? 0;
-
     if (lastDateStr == null) {
       // Первый запуск приложения
       await prefs.setString(_kLastDate, todayStr);
       await prefs.setInt(_kCount, 1);
+      ref.read(achievementsProvider.notifier).syncStreak(1);
       return 1;
     }
 
     if (lastDateStr == todayStr) {
       // Уже заходили сегодня
-      return currentStreak > 0 ? currentStreak : 1;
+      final s = currentStreak > 0 ? currentStreak : 1;
+      ref.read(achievementsProvider.notifier).syncStreak(s);
+      return s;
     }
 
     try {
@@ -40,16 +44,19 @@ class StreakNotifier extends AsyncNotifier<int> {
         final newStreak = currentStreak + 1;
         await prefs.setString(_kLastDate, todayStr);
         await prefs.setInt(_kCount, newStreak);
+        ref.read(achievementsProvider.notifier).syncStreak(newStreak);
         return newStreak;
       } else {
         // Пропущен день — серия сбрасывается до 1
         await prefs.setString(_kLastDate, todayStr);
         await prefs.setInt(_kCount, 1);
+        ref.read(achievementsProvider.notifier).syncStreak(1);
         return 1;
       }
     } catch (_) {
       await prefs.setString(_kLastDate, todayStr);
       await prefs.setInt(_kCount, 1);
+      ref.read(achievementsProvider.notifier).syncStreak(1);
       return 1;
     }
   }

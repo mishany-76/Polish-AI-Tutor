@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/achievements/achievement_service.dart';
 import '../../core/di/providers.dart';
 import '../../core/localization/app_strings.dart';
 import '../../core/settings/app_settings.dart';
 import '../../core/streak/streak_service.dart';
 import '../../core/theme/app_theme.dart';
+import '../passport/passport_screen.dart';
 import '../review/quiz_builders.dart';
 import '../review/quiz_screen.dart';
 import '../review/review_screen.dart';
@@ -72,6 +74,11 @@ class LearnDashboard extends ConsumerWidget {
                 ),
               ],
             ),
+          ),
+          IconButton(
+            tooltip: strings.passportTitle,
+            icon: const Icon(Icons.badge_outlined),
+            onPressed: () => _push(context, const PassportScreen()),
           ),
           IconButton(
             tooltip: strings.guideTooltip,
@@ -735,6 +742,27 @@ class LearnDashboard extends ConsumerWidget {
                                 '• Озвучивание слов в одно касание синтезатором Google TTS.\n'
                                 '• В Настройках настраивается ИИ-шлюз и язык интерфейса.'),
                     ),
+                    const SizedBox(height: 12),
+
+                    // Карточка 5: Польский паспорт
+                    _GuideCard(
+                      icon: Icons.badge_outlined,
+                      color: Colors.redAccent,
+                      title: isPl
+                          ? '5. 🇵🇱 Polski Paszport'
+                          : (isUk ? '5. 🇵🇱 Польський паспорт' : '5. 🇵🇱 Польский паспорт'),
+                      body: isPl
+                          ? '• Kliknij ikonę paszportu na górnym pasku, aby zobaczyć swoje pieczęcie.\n'
+                            '• Zdobywaj osiągnięcia za słowa, skany, dialogi i serie dni (streak).\n'
+                            '• Odblokuj wszystkie 15 pieczęci i zdobądź oficjalny Polski Paszport!'
+                          : (isUk
+                              ? '• Натисніть іконку паспорта у верхній панелі, щоб переглянути свої печатки.\n'
+                                '• Отримуйте досягнення за вивчені слова, скани, діалоги та дні поспіль (streak).\n'
+                                '• Розблокуйте всі 15 печаток та отримайте почесний Польський Паспорт!'
+                              : '• Нажмите иконку паспорта в верхней панели, чтобы увидеть свои печати.\n'
+                                '• Получайте достижения за слова, сканы, диалоги и серии дней (streak).\n'
+                                '• Разблокируйте все 15 печатей и получите почётный Польский Паспорт!'),
+                    ),
                     const SizedBox(height: 20),
                     FilledButton(
                       onPressed: () => Navigator.of(sheetCtx).pop(),
@@ -829,6 +857,10 @@ class _ManualWordDialogState extends ConsumerState<_ManualWordDialog> {
         example: note.isNotEmpty ? note : null,
         note: note.isNotEmpty ? note : null,
       );
+
+      if (added) {
+        AchievementService.instance.increment('words_added');
+      }
 
       if (!mounted) return;
       final messenger = ScaffoldMessenger.of(context);

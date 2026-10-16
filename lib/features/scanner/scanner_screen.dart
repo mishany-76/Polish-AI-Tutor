@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pdfx/pdfx.dart' as pdfx;
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../core/achievements/achievement_service.dart';
 import '../../core/ai_client/ai_client.dart';
 import '../../core/di/providers.dart';
 import '../../core/localization/app_strings.dart';
@@ -133,6 +134,9 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
         _result = result;
         _selected = null;
       });
+      if (result.words.isNotEmpty) {
+        AchievementService.instance.increment('scans_done');
+      }
       if (result.words.isEmpty) {
         _toast('Текст не найден. Попробуйте поближе или другой файл.');
       }
@@ -286,6 +290,9 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
       }
 
       final added = await db.batchAddAiWords(parsed, uk: isUk);
+      if (added > 0) {
+        AchievementService.instance.increment('words_added', by: added);
+      }
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

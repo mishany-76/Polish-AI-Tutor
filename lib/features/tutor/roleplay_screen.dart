@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../core/achievements/achievement_service.dart';
 import '../../core/ai_client/ai_client.dart';
 import '../../core/di/providers.dart';
 import '../../core/settings/app_settings.dart';
@@ -210,6 +211,9 @@ $initiatorRule
     if (text.isEmpty || _loading) return;
     _input.clear();
     _stopSpeaking();
+    if (_history.where((m) => m.role == 'user').isEmpty) {
+      AchievementService.instance.increment('dialogs_done');
+    }
     _history.add(ChatMessage('user', text));
     setState(() => _msgs.add(_Msg.user(text)));
     _scrollDown();

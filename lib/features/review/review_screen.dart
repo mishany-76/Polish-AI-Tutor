@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/achievements/achievement_service.dart';
 import '../../core/db/app_database.dart';
 import '../../core/di/providers.dart';
 import '../../core/settings/app_settings.dart';
+import '../../core/srs/sm2.dart';
 
 /// Повторение просроченных слов по SM-2: показать ответ → оценить 1–4.
 class ReviewScreen extends ConsumerStatefulWidget {
@@ -34,7 +36,18 @@ class _ReviewScreenState extends ConsumerState<ReviewScreen> {
   }
 
   Future<void> _rate(Word w, int rating) async {
+    final prevMastered = w.intervalDays >= 21;
     await ref.read(databaseProvider).applyReview(w, rating);
+    final res = sm2(
+      ease: w.easeFactor,
+      intervalDays: w.intervalDays,
+      reps: w.reps,
+      lapses: w.lapses,
+      rating: rating,
+    );
+    if (!prevMastered && res.intervalDays >= 21) {
+      AchievementService.instance.increment('words_mastered');
+    }
     if (!mounted) return;
     setState(() {
       _done++;

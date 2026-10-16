@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/achievements/achievement_service.dart';
 import '../../core/ai_client/ai_client.dart';
 import '../../core/di/providers.dart';
 import '../../core/settings/app_settings.dart';
@@ -59,6 +60,9 @@ class _WordSheetState extends ConsumerState<WordSheet> {
           uk: settings.isUk,
           examplePl: widget.word.lineText.isEmpty ? null : widget.word.lineText,
         );
+    if (added) {
+      AchievementService.instance.increment('words_added');
+    }
     if (!mounted) return;
     setState(() => _inDeck = true);
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(

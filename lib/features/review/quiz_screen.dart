@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/achievements/achievement_service.dart';
 import '../../core/ai_client/ai_client.dart';
 import '../../core/di/providers.dart';
 import '../../core/settings/app_settings.dart';
@@ -48,6 +49,10 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
     super.initState();
     _currentQuestions = widget.questions;
     WidgetsBinding.instance.addPostFrameCallback((_) => _speak());
+    AchievementService.instance.increment('quiz_rounds_done');
+    if (widget.category != null) {
+      AchievementService.instance.increment('drills_used');
+    }
   }
 
   @override

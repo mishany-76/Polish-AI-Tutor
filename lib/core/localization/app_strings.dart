@@ -232,7 +232,42 @@ class AppStrings {
   String get inputMessageHint => isPl
       ? 'Napisz odpowiedź po polsku…'
       : (isUk ? 'Напишіть відповідь польською…' : 'Напишите ответ по-польски…');
+
+  // --- Паспорт достижений ---
+  String get passportTitle =>
+      isPl ? '🇵🇱 Polski Paszport' : (isUk ? '🇵🇱 Польський паспорт' : '🇵🇱 Польский паспорт');
+
+  String get passportSubtitle => isPl
+      ? 'Twoje osiągnięcia w nauce polskiego'
+      : (isUk ? 'Ваші досягнення у вивченні польської' : 'Ваши достижения в изучении польского');
+
+  String passportProgressLabel(int obtained, int total) => isPl
+      ? 'Odblokowano $obtained z $total pieczęci'
+      : (isUk ? 'Отримано $obtained з $total печаток' : 'Получено $obtained из $total печатей');
+
+  String get passportShareTooltip => isPl
+      ? 'Podziel się paszportem'
+      : (isUk ? 'Поділитися паспортом' : 'Поделиться паспортом');
+
+  String get passportShareHint => isPl
+      ? 'Zrób zrzut ekranu i pochwal się w mediach społecznościowych! 🇵🇱'
+      : (isUk ? 'Зробіть скріншот та поділіться у соцмережах! 🇵🇱' : 'Сделайте скриншот и поделитесь в соцсетях! 🇵🇱');
+
+  String get passportNavLabel =>
+      isPl ? 'Paszport' : (isUk ? 'Паспорт' : 'Паспорт');
+
+  String get achievementUnlocked =>
+      isPl ? '✅ Odblokowane!' : (isUk ? '✅ Отримано!' : '✅ Получено!');
+
+  String get achievementLocked => isPl
+      ? '🔒 Jeszcze nie odblokowane'
+      : (isUk ? '🔒 Ще не отримано' : '🔒 Ещё не получено');
+
+  String get achievementToastTitle => isPl
+      ? '🎉 Nowe osiągnięcie!'
+      : (isUk ? '🎉 Нове досягнення!' : '🎉 Новое достижение!');
 }
+
 
 final appStringsProvider = Provider<AppStrings>((ref) {
   final lang = ref.watch(settingsProvider.select((s) => s.lang));

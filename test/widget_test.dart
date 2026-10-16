@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:polish_ai_tutor/core/achievements/achievement_service.dart';
 import 'package:polish_ai_tutor/core/ai_client/ai_client.dart';
 import 'package:polish_ai_tutor/core/db/app_database.dart';
 import 'package:polish_ai_tutor/core/srs/sm2.dart';
@@ -10,8 +11,12 @@ import 'package:polish_ai_tutor/features/review/quiz_builders.dart';
 import 'package:polish_ai_tutor/features/scanner/ocr_service.dart';
 import 'package:polish_ai_tutor/features/scanner/translation_service.dart';
 import 'package:polish_ai_tutor/features/scanner/word_analysis.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences.setMockInitialValues({});
+
   group('OcrWord', () {
     test('clean убирает знаки препинания по краям', () {
       const w = OcrWord(text: '„Mleko,"', box: Rect.zero);
@@ -150,4 +155,38 @@ void main() {
       expect(await db.cacheGet('k'), isNull);
     });
   });
+
+  group('AchievementService (Польский паспорт)', () {
+    test('15 базовых достижений определены корректно', () {
+      expect(kAllAchievements.length, 15);
+      expect(kAllAchievements.last.id, 'passport_complete');
+    });
+
+    test('разблокировка достижений и проверка уникальности', () async {
+      final service = AchievementService.instance;
+      await service.reset();
+
+      final first = await service.unlock('first_word');
+      expect(first, isTrue);
+
+      final second = await service.unlock('first_word');
+      expect(second, isFalse);
+
+      final unlocked = await service.getUnlocked();
+      expect(unlocked.contains('first_word'), isTrue);
+    });
+
+    test('пороги счетчиков активируют достижения', () async {
+      final service = AchievementService.instance;
+      await service.reset();
+
+      final newIds = await service.increment('words_added', by: 10);
+      expect(newIds.contains('first_word'), isTrue);
+      expect(newIds.contains('words_10'), isTrue);
+
+      final unlocked = await service.getUnlocked();
+      expect(unlocked.length, greaterThanOrEqualTo(2));
+    });
+  });
 }
+

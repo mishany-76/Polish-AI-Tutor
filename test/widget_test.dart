@@ -8,6 +8,7 @@ import 'package:polish_ai_tutor/core/ai_client/ai_client.dart';
 import 'package:polish_ai_tutor/core/db/app_database.dart';
 import 'package:polish_ai_tutor/core/srs/sm2.dart';
 import 'package:polish_ai_tutor/features/review/quiz_builders.dart';
+import 'package:polish_ai_tutor/features/scanner/doc_analysis_service.dart';
 import 'package:polish_ai_tutor/features/scanner/ocr_service.dart';
 import 'package:polish_ai_tutor/features/scanner/translation_service.dart';
 import 'package:polish_ai_tutor/features/scanner/word_analysis.dart';
@@ -186,6 +187,60 @@ void main() {
 
       final unlocked = await service.getUnlocked();
       expect(unlocked.length, greaterThanOrEqualTo(2));
+    });
+  });
+
+  group('DocAnalysis (Разбор польских документов)', () {
+    test('корректно парсит JSON со всеми секциями документа', () {
+      final json = {
+        'doc_type': 'Umowa najmu lokalu mieszkalnego (Договор аренды жилья)',
+        'original_title': 'UMOWA NAJMU LOKALU',
+        'summary': 'Договор аренды квартиры на 1 год между Jan Kowalski и Ivan Petrenko.',
+        'financials': [
+          {'label': 'Czynsz najmu', 'value': '3000 PLN / miesiąc'},
+          {'label': 'Kaucja', 'value': '3000 PLN (zwrotna)'},
+        ],
+        'risks': [
+          {
+            'title': 'Okres wypowiedzenia',
+            'description': 'Срок предупреждения о расторжении — 3 месяца.',
+            'is_high_priority': true,
+          },
+        ],
+        'actions': [
+          {'text': 'Оплатить кауцию в течение 3 дней', 'deadline': '3 dni'},
+        ],
+        'vocabulary': [
+          {
+            'polish_term': 'kaucja',
+            'translation': 'залог',
+            'explanation': 'Возвратный депозит на случай ущерба',
+          },
+        ],
+      };
+
+      final analysis = DocAnalysis.fromJson(json, 'UMOWA NAJMU LOKALU...');
+      expect(analysis.docType, contains('Umowa najmu'));
+      expect(analysis.originalTitle, 'UMOWA NAJMU LOKALU');
+      expect(analysis.financials.length, 2);
+      expect(analysis.financials.first.value, '3000 PLN / miesiąc');
+      expect(analysis.risks.length, 1);
+      expect(analysis.risks.first.isHighPriority, isTrue);
+      expect(analysis.actions.length, 1);
+      expect(analysis.actions.first.deadline, '3 dni');
+      expect(analysis.vocabulary.length, 1);
+      expect(analysis.vocabulary.first.polishTerm, 'kaucja');
+    });
+
+    test('терпим к пустым и null полям', () {
+      final analysis = DocAnalysis.fromJson({}, 'текст');
+      expect(analysis.docType, 'Польский документ');
+      expect(analysis.originalTitle, isNull);
+      expect(analysis.financials, isEmpty);
+      expect(analysis.risks, isEmpty);
+      expect(analysis.actions, isEmpty);
+      expect(analysis.vocabulary, isEmpty);
+      expect(analysis.rawText, 'текст');
     });
   });
 }

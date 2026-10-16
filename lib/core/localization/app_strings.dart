@@ -266,6 +266,65 @@ class AppStrings {
   String get achievementToastTitle => isPl
       ? '🎉 Nowe osiągnięcie!'
       : (isUk ? '🎉 Нове досягнення!' : '🎉 Новое достижение!');
+
+  // --- Разбор польских документов (Smart Doc Scanner) ---
+  String get docAnalysisBtn => isPl
+      ? '⚖️ Analiza dokumentu (AI)'
+      : (isUk ? '⚖️ Аналіз документа (ШІ)' : '⚖️ Анализ документа (ИИ)');
+
+  String get docAnalysisTitle => isPl
+      ? 'Analiza dokumentu'
+      : (isUk ? 'Аналіз документа' : 'Анализ документа');
+
+  String get docAnalyzing => isPl
+      ? 'AI analizuje warunki, opłaty i ryzyka…'
+      : (isUk ? 'ШІ аналізує умови, платежі та ризики…' : 'ИИ анализирует условия, платежи и риски…');
+
+  String get docSectionSummary => isPl
+      ? '💡 Sedno dokumentu'
+      : (isUk ? '💡 Суть документа' : '💡 Суть документа');
+
+  String get docSectionFinancials => isPl
+      ? '💰 Warunki finansowe i opłaty'
+      : (isUk ? '💰 Фінансові умови та платежі' : '💰 Финансовые условия и платежи');
+
+  String get docSectionRisks => isPl
+      ? '⚠️ Ukryte ryzyka i pułapki'
+      : (isUk ? '⚠️ Підводні камені та ризики' : '⚠️ Подводные камни и риски');
+
+  String get docSectionActions => isPl
+      ? '📋 Wymagane działania (Co zrobić)'
+      : (isUk ? '📋 Що потрібно зробити (Дії)' : '📋 Что нужно сделать (Действия)');
+
+  String get docSectionVocab => isPl
+      ? '📚 Terminy urzędowe z dokumentu'
+      : (isUk ? '📚 Офіційні терміни з документа' : '📚 Официальные термины из документа');
+
+  String get docAddVocabBtn => isPl
+      ? '📥 Dodaj terminy do słownika'
+      : (isUk ? '📥 Додати терміни до словника' : '📥 Добавить термины в словарь');
+
+  String get docCopySummary => isPl
+      ? 'Kopiuj analizę'
+      : (isUk ? 'Копіювати аналіз' : 'Скопировать анализ');
+
+  String get docCopiedSnack => isPl
+      ? '📋 Skopiowano analizę do schowka'
+      : (isUk ? '📋 Аналіз скопійовано в буфер обміну' : '📋 Анализ скопирован в буфер обмена');
+
+  String get docNoRisks => isPl
+      ? 'Nie wykryto krytycznych ukrytych ryzyk'
+      : (isUk ? 'Критичних прихованих ризиків не виявлено' : 'Критических скрытых рисков не обнаружено');
+
+  String get docNoFinancials => isPl
+      ? 'Brak określonych zobowiązań finansowych'
+      : (isUk ? 'Фінансові зобов\'язання не вказані' : 'Финансовые обязательства не указаны');
+
+  String get docAnalysisTip => isPl
+      ? 'Skieruj aparat na umowę lub pismo urzędowe, aby sprawdzić ryzyka'
+      : (isUk
+          ? 'Наведіть камеру на договір або лист, щоб перевірити ризики'
+          : 'Наведите камеру на договор или письмо, чтобы проверить риски');
 }
 
 

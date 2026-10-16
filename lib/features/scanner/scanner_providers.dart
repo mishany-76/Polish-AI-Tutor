@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/di/providers.dart';
 import '../../core/settings/app_settings.dart';
+import 'doc_analysis_service.dart';
 import 'ocr_service.dart';
 import 'translation_service.dart';
 import 'word_analysis.dart';
@@ -32,4 +33,12 @@ final wordAnalysisServiceProvider = Provider<WordAnalysisService>((ref) {
     ref.watch(databaseProvider),
   );
 });
+
+final docAnalysisServiceProvider = Provider<DocAnalysisService>((ref) {
+  return DocAnalysisService(
+    ref.watch(aiClientProvider),
+    ref.watch(databaseProvider),
+  );
+});
+
 

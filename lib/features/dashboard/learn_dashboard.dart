@@ -723,13 +723,37 @@ class LearnDashboard extends ConsumerWidget {
                     ),
                     const SizedBox(height: 12),
 
-                    // Карточка 4: Словник
+                    // Карточка 4: Разбор польских документов
+                    _GuideCard(
+                      icon: Icons.gavel_rounded,
+                      color: AppTheme.primaryCarmine,
+                      title: isPl
+                          ? '4. ⚖️ Inteligentna analiza dokumentów'
+                          : (isUk ? '4. ⚖️ Розумний аналіз польських документів' : '4. ⚖️ Умный разбор польских документов'),
+                      body: isPl
+                          ? '• Skieruj aparat lub zaimportuj umowę (o pracę, najmu), pismo z urzędu lub ZUS.\n'
+                            '• Naciśnij «⚖️ Analiza dokumentu (AI)» — asystent prawny wyjaśni sedno prostym językiem.\n'
+                            '• Wykrywanie ukrytych ryzyk, kar umownych, terminów wypowiedzenia oraz kwot brutto/netto.\n'
+                            '• Lista wymaganych działań z terminami oraz dodawanie oficjalnych terminów do słownika.'
+                          : (isUk
+                              ? '• Сфотографуйте або завантажте договір (найму, umowa o pracę/zlecenie), лист із ZUS чи податкової.\n'
+                                '• Натисніть «⚖️ Аналіз документа (ШІ)» — юридичний асистент розкладе суть простою мовою.\n'
+                                '• Виявлення прихованих ризиків, штрафів, строків розірвання та фінансових зобов\'язань.\n'
+                                '• Покроковий план дій із дедлайнами та пакетне додавання офіційних термінів у словник.'
+                              : '• Сфотографируйте или загрузите договор (аренды, трудовой), письмо из ZUS или налоговой (Urząd).\n'
+                                '• Нажмите «⚖️ Анализ документа (ИИ)» — юридический ассистент разложит суть простыми словами.\n'
+                                '• Выявление скрытых рисков, штрафов, сроков расторжения и финансовых обязательств.\n'
+                                '• Пошаговый план действий с дедлайнами и пакетное добавление официальных терминов в словарь.'),
+                    ),
+                    const SizedBox(height: 12),
+
+                    // Карточка 5: Словник
                     _GuideCard(
                       icon: Icons.menu_book,
                       color: Colors.orange,
                       title: isPl
-                          ? '4. 📚 Słownik i ustawienia'
-                          : (isUk ? '4. 📚 Словник та Налаштування' : '4. 📚 Словарь и Настройки'),
+                          ? '5. 📚 Słownik i ustawienia'
+                          : (isUk ? '5. 📚 Словник та Налаштування' : '5. 📚 Словарь и Настройки'),
                       body: isPl
                           ? '• Przeglądaj karty słów, statusy nauki i przykłady.\n'
                             '• Wymowa słów jednym dotknięciem syntezatorem Google TTS.\n'
@@ -744,13 +768,13 @@ class LearnDashboard extends ConsumerWidget {
                     ),
                     const SizedBox(height: 12),
 
-                    // Карточка 5: Польский паспорт
+                    // Карточка 6: Польский паспорт
                     _GuideCard(
                       icon: Icons.badge_outlined,
                       color: Colors.redAccent,
                       title: isPl
-                          ? '5. 🇵🇱 Polski Paszport'
-                          : (isUk ? '5. 🇵🇱 Польський паспорт' : '5. 🇵🇱 Польский паспорт'),
+                          ? '6. 🇵🇱 Polski Paszport'
+                          : (isUk ? '6. 🇵🇱 Польський паспорт' : '6. 🇵🇱 Польский паспорт'),
                       body: isPl
                           ? '• Kliknij ikonę paszportu na górnym pasku, aby zobaczyć swoje pieczęcie.\n'
                             '• Zdobywaj osiągnięcia za słowa, skany, dialogi i serie dni (streak).\n'

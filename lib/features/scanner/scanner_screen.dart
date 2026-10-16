@@ -12,6 +12,8 @@ import '../../core/ai_client/ai_client.dart';
 import '../../core/di/providers.dart';
 import '../../core/localization/app_strings.dart';
 import '../../core/settings/app_settings.dart';
+import '../../core/theme/app_theme.dart';
+import 'doc_analysis_sheet.dart';
 import 'ocr_service.dart';
 import 'scanner_providers.dart';
 import 'translation_service.dart';
@@ -419,12 +421,141 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
                     label: Text(strings.batchAddWordsBtn),
                   ),
                 ),
+                const SizedBox(height: 8),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: () {
+                      Navigator.of(ctx).pop();
+                      _analyzeDocument(trimmed);
+                    },
+                    icon: const Icon(
+                      Icons.gavel_rounded,
+                      size: 18,
+                      color: AppTheme.primaryCarmine,
+                    ),
+                    label: Text(
+                      strings.docAnalysisBtn,
+                      style: const TextStyle(
+                        color: AppTheme.primaryCarmine,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
         ),
       ),
     );
+  }
+
+  /// Глубокий юридическо-практический разбор польского документа (Smart Doc Scanner).
+  Future<void> _analyzeDocument(String text) async {
+    final trimmed = text.trim();
+    if (trimmed.isEmpty) {
+      _toast(ref.read(appStringsProvider).isPl
+          ? 'Brak tekstu do analizy.'
+          : (ref.read(appStringsProvider).isUk
+              ? 'Немає тексту для аналізу.'
+              : 'Нет текста для анализа.'));
+      return;
+    }
+
+    final aiClient = ref.read(aiClientProvider);
+    if (aiClient.apiKey.trim().isEmpty) {
+      _toast(ref.read(appStringsProvider).isPl
+          ? '⚠️ Podaj klucz API w Ustawieniach, aby analizować dokumenty.'
+          : (ref.read(appStringsProvider).isUk
+              ? '⚠️ Вкажіть API-ключ у Налаштуваннях для аналізу документів.'
+              : '⚠️ Укажите API-ключ в Настройках для анализа документов.'));
+      return;
+    }
+
+    final strings = ref.read(appStringsProvider);
+    final lang = ref.read(settingsProvider.select((s) => s.lang));
+
+    // Показываем индикатор прогресса анализа
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogCtx) => PopScope(
+        canPop: false,
+        child: AlertDialog(
+          backgroundColor: AppTheme.bgWarmMilk,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          content: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            child: Row(
+              children: [
+                const SizedBox(
+                  width: 28,
+                  height: 28,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 3,
+                    color: AppTheme.primaryCarmine,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Text(
+                    strings.docAnalyzing,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    try {
+      final analysis = await ref.read(docAnalysisServiceProvider).analyze(
+            text: trimmed,
+            lang: lang,
+          );
+
+      // Закрываем диалог загрузки
+      if (mounted && Navigator.of(context, rootNavigator: true).canPop()) {
+        Navigator.of(context, rootNavigator: true).pop();
+      }
+
+      AchievementService.instance.increment('scans_done');
+
+      if (mounted) {
+        await DocAnalysisSheet.show(context, analysis);
+      }
+    } on AiException catch (e) {
+      if (mounted && Navigator.of(context, rootNavigator: true).canPop()) {
+        Navigator.of(context, rootNavigator: true).pop();
+      }
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('⚠️ ${e.message}'),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted && Navigator.of(context, rootNavigator: true).canPop()) {
+        Navigator.of(context, rootNavigator: true).pop();
+      }
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('⚠️ Ошибка анализа: $e'),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    }
   }
 
   void _toast(String msg) {
@@ -520,6 +651,7 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
   }
 
   Widget _buildBody() {
+    final strings = ref.watch(appStringsProvider);
     if (_busy) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -551,16 +683,27 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   child: Wrap(
-                    spacing: 12,
+                    spacing: 10,
+                    runSpacing: 8,
+                    alignment: WrapAlignment.center,
                     children: [
                       FilledButton.icon(
+                        onPressed: () => _analyzeDocument(_result!.fullText),
+                        icon: const Icon(Icons.gavel_rounded, size: 18),
+                        label: Text(strings.docAnalysisBtn),
+                        style: FilledButton.styleFrom(
+                          backgroundColor: AppTheme.primaryCarmine,
+                          foregroundColor: Colors.white,
+                        ),
+                      ),
+                      FilledButton.tonalIcon(
                         onPressed: () => _translateParagraph(_result!.fullText),
-                        icon: const Icon(Icons.translate),
-                        label: const Text('📄 Перевести весь текст'),
+                        icon: const Icon(Icons.translate, size: 18),
+                        label: Text(strings.translateAll),
                       ),
                       OutlinedButton.icon(
                         onPressed: _pickDocumentOrImage,
-                        icon: const Icon(Icons.folder_open),
+                        icon: const Icon(Icons.folder_open, size: 18),
                         label: const Text('Выбрать другой файл'),
                       ),
                     ],
@@ -641,6 +784,12 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
                         icon: const Icon(Icons.translate),
                         label: Text(_translatingText ? 'Перевожу…' : 'Перевести'),
                       ),
+                    ),
+                    const SizedBox(width: 8),
+                    FilledButton.tonalIcon(
+                      onPressed: () => _analyzeDocument(_textInputController.text),
+                      icon: const Icon(Icons.gavel_rounded, size: 16),
+                      label: Text(strings.isPl ? 'Analiza' : (strings.isUk ? 'Аналіз' : 'Анализ')),
                     ),
                     const SizedBox(width: 8),
                     IconButton(
@@ -755,6 +904,7 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
   }
 
   Widget _buildCameraControls(bool hasShot) {
+    final strings = ref.watch(appStringsProvider);
     return SafeArea(
       top: false,
       child: Padding(
@@ -767,20 +917,33 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
                       : 'Слов: ${_result!.words.length} · коснитесь слова',
                   style: const TextStyle(color: Colors.white70),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 10),
                 Wrap(
-                  spacing: 12,
+                  spacing: 10,
                   runSpacing: 8,
                   alignment: WrapAlignment.center,
                   children: [
                     FilledButton.icon(
-                      onPressed: _result!.words.isEmpty ? null : () => _translateParagraph(_result!.fullText),
-                      icon: const Icon(Icons.translate),
-                      label: const Text('📄 Перевести весь абзац'),
+                      onPressed: _result!.words.isEmpty
+                          ? null
+                          : () => _analyzeDocument(_result!.fullText),
+                      icon: const Icon(Icons.gavel_rounded, size: 18),
+                      label: Text(strings.docAnalysisBtn),
+                      style: FilledButton.styleFrom(
+                        backgroundColor: AppTheme.primaryCarmine,
+                        foregroundColor: Colors.white,
+                      ),
+                    ),
+                    FilledButton.tonalIcon(
+                      onPressed: _result!.words.isEmpty
+                          ? null
+                          : () => _translateParagraph(_result!.fullText),
+                      icon: const Icon(Icons.translate, size: 18),
+                      label: Text(strings.translateAll),
                     ),
                     OutlinedButton.icon(
                       onPressed: _retake,
-                      icon: const Icon(Icons.refresh),
+                      icon: const Icon(Icons.refresh, size: 18),
                       label: const Text('Снять заново'),
                     ),
                   ],

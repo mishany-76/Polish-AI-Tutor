@@ -343,10 +343,20 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                               'Polish AI Tutor',
                               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                             ),
-                            Text(
-                              strings.versionShort(currentAppVersion),
-                              style: theme.textTheme.bodySmall,
-                            ),
+                            ref.watch(currentAppVersionProvider).when(
+                                  data: (v) => Text(
+                                    strings.versionShort(v),
+                                    style: theme.textTheme.bodySmall,
+                                  ),
+                                  loading: () => Text(
+                                    strings.versionShort(fallbackAppVersion),
+                                    style: theme.textTheme.bodySmall,
+                                  ),
+                                  error: (_, _) => Text(
+                                    strings.versionShort(fallbackAppVersion),
+                                    style: theme.textTheme.bodySmall,
+                                  ),
+                                ),
                           ],
                         ),
                       ),

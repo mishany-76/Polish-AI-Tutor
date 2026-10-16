@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
+import 'package:package_info_plus/package_info_plus.dart';
 
 class UpdateInfo {
   final bool hasUpdate;
@@ -20,14 +21,28 @@ class UpdateInfo {
   });
 }
 
-const currentAppVersion = "1.0.9";
+/// Резервная константа на случай сбоя платформенного канала
+const fallbackAppVersion = "1.4.0";
 
 class AppUpdaterService {
-  static const String currentVersion = currentAppVersion;
   static const String _releasesApiUrl =
       'https://api.github.com/repos/mishany-76/Polish-AI-Tutor/releases/latest';
 
+  /// Динамически получает актуальную версию сборки из системы (pubspec.yaml / AndroidManifest)
+  Future<String> getCurrentVersion() async {
+    try {
+      final info = await PackageInfo.fromPlatform();
+      if (info.version.isNotEmpty) {
+        return info.version;
+      }
+    } catch (_) {
+      // Игнорируем ошибку платформы (например, в некоторых headless тестах)
+    }
+    return fallbackAppVersion;
+  }
+
   Future<UpdateInfo> checkForUpdate() async {
+    final currentVer = await getCurrentVersion();
     try {
       final response = await http.get(
         Uri.parse(_releasesApiUrl),
@@ -57,34 +72,32 @@ class AppUpdaterService {
         }
 
         final downloadTarget = apkUrl ?? htmlUrl;
-        final isNewer = _isVersionNewer(cleanTag, currentVersion);
+        final isNewer = isVersionNewer(cleanTag, currentVer);
 
         return UpdateInfo(
           hasUpdate: isNewer,
-          currentVersion: currentVersion,
-          latestVersion: cleanTag.isNotEmpty ? cleanTag : currentVersion,
+          currentVersion: currentVer,
+          latestVersion: cleanTag.isNotEmpty ? cleanTag : currentVer,
           releaseNotes: body,
           downloadUrl: downloadTarget,
           htmlUrl: htmlUrl,
         );
       } else if (response.statusCode == 404) {
-        // No releases published yet on this repository
-        return const UpdateInfo(
+        return UpdateInfo(
           hasUpdate: false,
-          currentVersion: currentVersion,
-          latestVersion: currentVersion,
+          currentVersion: currentVer,
+          latestVersion: currentVer,
           releaseNotes: 'Нові релізи поки відсутні на GitHub.',
         );
       } else {
         throw Exception('GitHub API returned status ${response.statusCode}');
       }
     } catch (e) {
-      // Re-throw or handle network errors gracefully
       rethrow;
     }
   }
 
-  static bool _isVersionNewer(String remote, String current) {
+  static bool isVersionNewer(String remote, String current) {
     if (remote.isEmpty) return false;
     final rParts = remote.split('.').map((e) => int.tryParse(e) ?? 0).toList();
     final cParts = current.split('.').map((e) => int.tryParse(e) ?? 0).toList();
@@ -104,3 +117,7 @@ final appUpdaterProvider = Provider<AppUpdaterService>((ref) {
   return AppUpdaterService();
 });
 
+final currentAppVersionProvider = FutureProvider<String>((ref) async {
+  final updater = ref.watch(appUpdaterProvider);
+  return updater.getCurrentVersion();
+});

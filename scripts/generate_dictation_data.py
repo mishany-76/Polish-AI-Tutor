@@ -1,0 +1,537 @@
+import json
+import os
+
+words = [
+    # --- rz vs ż ---
+    {
+        "id": "dict_morze",
+        "word": "morze",
+        "category": "rz_z",
+        "translationUk": "море",
+        "translationRu": "море",
+        "translationPl": "zbiornik słonej wody",
+        "ruleUk": "Пишеться «rz», бо чергується з «r» (морський ↔ morski). Не плутайте з «może» (може бути)!",
+        "ruleRu": "Пишется «rz», так как чередуется с «r» (морской ↔ morski). Не путать с «może» (может быть)!",
+        "rulePl": "Piszemy «rz», bo wymienia się na «r» (morze ↔ morski). Nie mylić ze słowem «może»!",
+        "examplePl": "Latem chętnie jeździmy nad polskie morze."
+    },
+    {
+        "id": "dict_moze",
+        "word": "może",
+        "category": "rz_z",
+        "translationUk": "може бути / можливо",
+        "translationRu": "может быть / возможно",
+        "translationPl": "być może, prawdopodobnie",
+        "ruleUk": "Пишеться з «ż». Не плутайте з «morze» (море)!",
+        "ruleRu": "Пишется через «ż». Не путать с «morze» (море)!",
+        "rulePl": "Piszemy «ż» w znaczeniu przypuszczenia. Nie mylić z «morzem»!",
+        "examplePl": "Może jutro pójdziemy do kina?"
+    },
+    {
+        "id": "dict_rzeka",
+        "word": "rzeka",
+        "category": "rz_z",
+        "translationUk": "річка",
+        "translationRu": "река",
+        "translationPl": "naturalny strumień wody",
+        "ruleUk": "«rz» чергується з «r» (річковий ↔ rzeczny / rzeka ↔ rzeczka).",
+        "ruleRu": "«rz» чередуется с «r» (речной ↔ rzeczny / rzeka).",
+        "rulePl": "Piszemy «rz», wymiana historyczna na «r».",
+        "examplePl": "Wisła to najdłuższa rzeka w Polsce."
+    },
+    {
+        "id": "dict_zaba",
+        "word": "żaba",
+        "category": "rz_z",
+        "translationUk": "жаба",
+        "translationRu": "лягушка",
+        "translationPl": "płaz bezogonowy",
+        "ruleUk": "Пишеться з «ż» з крапкою. Запам'ятайте написання!",
+        "ruleRu": "Пишется с «ż» с точкой. Запомните написание!",
+        "rulePl": "Piszemy «ż» — słowo rodzime o utrwalonej pisowni.",
+        "examplePl": "Zielona żaba skacze po trawie."
+    },
+    {
+        "id": "dict_zona",
+        "word": "żona",
+        "category": "rz_z",
+        "translationUk": "дружина",
+        "translationRu": "жена",
+        "translationPl": "poślubiona kobieta",
+        "ruleUk": "Пишеться з «ż» з крапкою (чергування з ж/женщина).",
+        "ruleRu": "Пишется с «ż» с точкой (жена).",
+        "rulePl": "Piszemy «ż» z kropką.",
+        "examplePl": "Moja żona ma dziś urodziny."
+    },
+    {
+        "id": "dict_drzewo",
+        "word": "drzewo",
+        "category": "rz_z",
+        "translationUk": "дерево",
+        "translationRu": "дерево",
+        "translationPl": "roślina wieloletnia z pniem",
+        "ruleUk": "«rz» завжди пишеться після приголосних b, p, d, t, g, k, ch, j, w (після «d» пишемо «rz»).",
+        "ruleRu": "«rz» пишется после согласных b, p, d, t, g, k, ch, j, w (после «d» пишем «rz»).",
+        "rulePl": "Piszemy «rz» po spółgłoskach (po d: drzewo).",
+        "examplePl": "W parku rośnie wysokie drzewo."
+    },
+    {
+        "id": "dict_grzyb",
+        "word": "grzyb",
+        "category": "rz_z",
+        "translationUk": "гриб",
+        "translationRu": "гриб",
+        "translationPl": "organizm leśny z kapeluszem",
+        "ruleUk": "«rz» після приголосної «g» (grzyb, grzać, grzmot).",
+        "ruleRu": "«rz» после согласной «g» (grzyb, grzmot).",
+        "rulePl": "Piszemy «rz» po spółgłosce g.",
+        "examplePl": "Jesienią zbieramy grzyby w lesie."
+    },
+    {
+        "id": "dict_przepraszam",
+        "word": "przepraszam",
+        "category": "rz_z",
+        "translationUk": "перепрошую / вибачте",
+        "translationRu": "извините / прошу прощения",
+        "translationPl": "zwrot grzecznościowy",
+        "ruleUk": "«rz» після приголосної «p» (prze-, przy-).",
+        "ruleRu": "«rz» после согласной «p» (prze-, przy-).",
+        "rulePl": "Piszemy «rz» po spółgłosce p w przedrostkach prze- i przy-.",
+        "examplePl": "Przepraszam, która jest godzina?"
+    },
+    {
+        "id": "dict_trzy",
+        "word": "trzy",
+        "category": "rz_z",
+        "translationUk": "три",
+        "translationRu": "три",
+        "translationPl": "liczba 3",
+        "ruleUk": "«rz» після приголосної «t» (trzy, trzeba).",
+        "ruleRu": "«rz» после согласной «t» (trzy, trzeba).",
+        "rulePl": "Piszemy «rz» po spółgłosce t.",
+        "examplePl": "Poproszę trzy bilety normalne."
+    },
+    {
+        "id": "dict_ksiazka",
+        "word": "książka",
+        "category": "rz_z",
+        "translationUk": "книга",
+        "translationRu": "книга",
+        "translationPl": "publikacja z kartkami",
+        "ruleUk": "«ż» чергується з «g» (książka ↔ księga). А також носове «ą»!",
+        "ruleRu": "«ż» чередуется с «g» (książka ↔ księga). А также носовое «ą»!",
+        "rulePl": "Piszemy «ż», bo wymienia się na «g» (książka ↔ księga).",
+        "examplePl": "Czytam ciekawą książkę po polsku."
+    },
+    {
+        "id": "dict_nozka",
+        "word": "nóżka",
+        "category": "rz_z",
+        "translationUk": "ніжка",
+        "translationRu": "ножка",
+        "translationPl": "mała noga",
+        "ruleUk": "«ż» чергується з «g» (nóżka ↔ noga), а «ó» чергується з «o»!",
+        "ruleRu": "«ż» чередуется с «g» (nóżka ↔ noga), а «ó» чередуется с «o»!",
+        "rulePl": "Piszemy «ż» (wymiana: noga) oraz «ó» (noga).",
+        "examplePl": "Stół ma złamaną nóżkę."
+    },
+    {
+        "id": "dict_orzech",
+        "word": "orzech",
+        "category": "rz_z",
+        "translationUk": "горіх",
+        "translationRu": "орех",
+        "translationPl": "owoc o twardej łupinie",
+        "ruleUk": "«rz» чергується з «r» (orzech ↔ orzeszek), а в кінці «ch»!",
+        "ruleRu": "«rz» чередуется с «r», а в конце пишется «ch»!",
+        "rulePl": "Piszemy «rz» (wymiana: orzeszek) oraz «ch» na końcu.",
+        "examplePl": "Wiewiórka chowa orzechy w dziupli."
+    },
+    {
+        "id": "dict_dworzec",
+        "word": "dworzec",
+        "category": "rz_z",
+        "translationUk": "вокзал",
+        "translationRu": "вокзал",
+        "translationPl": "stacja kolejowa lub autobusowa",
+        "ruleUk": "«rz» чергується з «r» (dworzec ↔ dworcowy / dwór).",
+        "ruleRu": "«rz» чередуется с «r» (dworzec ↔ dworcowy).",
+        "rulePl": "Piszemy «rz», wymiana na «r» (dworzec ↔ dworcowy).",
+        "examplePl": "Spotkajmy się jutro na dworcu centralnym."
+    },
+    {
+        "id": "dict_lekarz",
+        "word": "lekarz",
+        "category": "rz_z",
+        "translationUk": "лікар",
+        "translationRu": "врач",
+        "translationPl": "doktor medycyny",
+        "ruleUk": "«rz» у суфіксах назв професій (-arz, -erz: lekarz, malarz, piekarz).",
+        "ruleRu": "«rz» в суффиксах профессий (-arz, -erz: lekarz, malarz, piekarz).",
+        "rulePl": "Piszemy «rz» w przyrostkach nazw zawodów -arz.",
+        "examplePl": "Lekarz przepisał mi skuteczne lekarstwo."
+    },
+
+    # --- ó vs u ---
+    {
+        "id": "dict_gora",
+        "word": "góra",
+        "category": "u_o",
+        "translationUk": "гора",
+        "translationRu": "гора",
+        "translationPl": "wysokie wzniesienie",
+        "ruleUk": "«ó» чергується з «o» або «e» (góra ↔ pagórek / górny). Не плутати з «kura»!",
+        "ruleRu": "«ó» чередуется с «o» или «e» (góra ↔ górny). Не путать с «kura»!",
+        "rulePl": "Piszemy «ó» z kreską (wymiana: góra ↔ górny).",
+        "examplePl": "Zimą jedziemy w góry na narty."
+    },
+    {
+        "id": "dict_kura",
+        "word": "kura",
+        "category": "u_o",
+        "translationUk": "курка",
+        "translationRu": "курица",
+        "translationPl": "ptak domowy",
+        "ruleUk": "Пишеться звичайне «u»! Не плутайте з «góra».",
+        "ruleRu": "Пишется обычное «u»! Не путать с «góra».",
+        "rulePl": "Piszemy zwykłe «u».",
+        "examplePl": "Kura zniosła świeże jajko."
+    },
+    {
+        "id": "dict_moj",
+        "word": "mój",
+        "category": "u_o",
+        "translationUk": "мій",
+        "translationRu": "мой",
+        "translationPl": "należący do mnie",
+        "ruleUk": "«ó» чергується з «o» (mój ↔ mojego). Завжди з рискою!",
+        "ruleRu": "«ó» чередуется с «o» (mój ↔ моего/mojego). Всегда с черточкой!",
+        "rulePl": "Piszemy «ó», bo wymienia się na «o» (mój ↔ mojego).",
+        "examplePl": "To jest mój nowy numer telefonu."
+    },
+    {
+        "id": "dict_twoj",
+        "word": "twój",
+        "category": "u_o",
+        "translationUk": "твій",
+        "translationRu": "твой",
+        "translationPl": "należący do ciebie",
+        "ruleUk": "«ó» чергується з «o» (twój ↔ twojego).",
+        "ruleRu": "«ó» чередуется с «o» (twój ↔ твоего/twojego).",
+        "rulePl": "Piszemy «ó», bo wymienia się na «o» (twój ↔ twojego).",
+        "examplePl": "Czy to jest twój klucz?"
+    },
+    {
+        "id": "dict_stol",
+        "word": "stół",
+        "category": "u_o",
+        "translationUk": "стіл",
+        "translationRu": "стол",
+        "translationPl": "mebel z blatem i nogami",
+        "ruleUk": "«ó» чергується з «o» (stół ↔ stoły).",
+        "ruleRu": "«ó» чередуется с «o» (stół ↔ столы/stoły).",
+        "rulePl": "Piszemy «ó», bo wymienia się na «o» (stół ↔ stoły).",
+        "examplePl": "Połóż zakupy na stół w kuchni."
+    },
+    {
+        "id": "dict_pokoj",
+        "word": "pokój",
+        "category": "u_o",
+        "translationUk": "кімната / мир",
+        "translationRu": "комната / мир",
+        "translationPl": "pomieszczenie w mieszkaniu",
+        "ruleUk": "«ó» чергується з «o» (pokój ↔ pokoje).",
+        "ruleRu": "«ó» чередуется с «o» (pokój ↔ комнаты/pokoje).",
+        "rulePl": "Piszemy «ó», bo wymienia się na «o» (pokój ↔ pokoje).",
+        "examplePl": "Wynajmuję jasny pokój w Warszawie."
+    },
+    {
+        "id": "dict_samochod",
+        "word": "samochód",
+        "category": "u_o",
+        "translationUk": "автомобіль",
+        "translationRu": "автомобиль",
+        "translationPl": "pojazd silnikowy",
+        "ruleUk": "«ó» чергується з «o» (samochód ↔ samochodu).",
+        "ruleRu": "«ó» чередуется с «o» (samochód ↔ автомобиля/samochodu).",
+        "rulePl": "Piszemy «ó», bo wymienia się na «o» (samochód ↔ samochodu).",
+        "examplePl": "Mój samochód stoi na parkingu."
+    },
+    {
+        "id": "dict_cukier",
+        "word": "cukier",
+        "category": "u_o",
+        "translationUk": "цукор",
+        "translationRu": "сахар",
+        "translationPl": "słodka substancja",
+        "ruleUk": "Пишеться звичайне «u» (не «ó»).",
+        "ruleRu": "Пишется обычное «u» (не «ó»).",
+        "rulePl": "Piszemy zwykłe «u».",
+        "examplePl": "Piję czarną kawę bez cukru."
+    },
+    {
+        "id": "dict_corka",
+        "word": "córka",
+        "category": "u_o",
+        "translationUk": "дочка",
+        "translationRu": "дочь",
+        "translationPl": "dziecko płci żeńskiej",
+        "ruleUk": "Незмінне «ó» з рискою (слово-виняток, потрібно запам'ятати: córka).",
+        "ruleRu": "Нечередующееся «ó» с черточкой (слово-исключение: córka).",
+        "rulePl": "Piszemy «ó» niewymienne (do zapamiętania).",
+        "examplePl": "Moja córka uczy się w polskiej szkole."
+    },
+    {
+        "id": "dict_rachunek",
+        "word": "rachunek",
+        "category": "u_o",
+        "translationUk": "рахунок",
+        "translationRu": "счёт",
+        "translationPl": "dokument do zapłaty",
+        "ruleUk": "Суфікс «-unek» завжди пишеться через звичайне «u» (rachunek, pakunek, rysunek).",
+        "ruleRu": "Суффикс «-unek» всегда пишется через обычное «u» (rachunek, rysunek).",
+        "rulePl": "Piszemy «u» w przyrostkach -unek.",
+        "examplePl": "Poproszę rachunek za kolację."
+    },
+
+    # --- ch vs h ---
+    {
+        "id": "dict_chleb",
+        "word": "chleb",
+        "category": "ch_h",
+        "translationUk": "хліб",
+        "translationRu": "хлеб",
+        "translationPl": "pieczywo",
+        "ruleUk": "Пишеться «ch». У польських корінних словах звук [х] пишеться як «ch».",
+        "ruleRu": "Пишется «ch». В исконных польских словах звук [х] пишется как «ch».",
+        "rulePl": "Piszemy «ch» w słowach rodzimych.",
+        "examplePl": "Kup w piekarni świeży chleb."
+    },
+    {
+        "id": "dict_herbata",
+        "word": "herbata",
+        "category": "ch_h",
+        "translationUk": "чай",
+        "translationRu": "чай",
+        "translationPl": "gorący napój",
+        "ruleUk": "Пишеться з «h» (латинське herba). Слова іншомовного походження пишуться з «h».",
+        "ruleRu": "Пишется с «h» (от латинского herba). Слова иностранного происхождения пишутся с «h».",
+        "rulePl": "Piszemy «h» w wyrazach obcego pochodzenia.",
+        "examplePl": "Piję gorącą herbatę z cytryną."
+    },
+    {
+        "id": "dict_mucha",
+        "word": "mucha",
+        "category": "ch_h",
+        "translationUk": "муха",
+        "translationRu": "муха",
+        "translationPl": "owad latający",
+        "ruleUk": "«ch» чергується з «sz» (mucha ↔ muszka).",
+        "ruleRu": "«ch» чередуется с «sz» (mucha ↔ muszka).",
+        "rulePl": "Piszemy «ch», bo wymienia się na «sz» (mucha ↔ muszka).",
+        "examplePl": "Mucha usiadła na parapecie."
+    },
+    {
+        "id": "dict_ucho",
+        "word": "ucho",
+        "category": "ch_h",
+        "translationUk": "вухо",
+        "translationRu": "ухо",
+        "translationPl": "narząd słuchu",
+        "ruleUk": "«ch» чергується з «sz» (ucho ↔ uszko).",
+        "ruleRu": "«ch» чередуется с «sz» (ucho ↔ uszko).",
+        "rulePl": "Piszemy «ch», bo wymienia się na «sz» (ucho ↔ uszko).",
+        "examplePl": "Boli mnie prawe ucho."
+    },
+    {
+        "id": "dict_dach",
+        "word": "dach",
+        "category": "ch_h",
+        "translationUk": "дах",
+        "translationRu": "крыша",
+        "translationPl": "zadaszenie budynku",
+        "ruleUk": "На кінці польських слів завжди пишеться «ch» (dach, brzuch, orzech).",
+        "ruleRu": "На конце польских слов всегда пишется «ch» (dach, brzuch, orzech).",
+        "rulePl": "Na końcu wyrazów zawsze piszemy «ch».",
+        "examplePl": "Na dachu domu siedzi kot."
+    },
+    {
+        "id": "dict_hotel",
+        "word": "hotel",
+        "category": "ch_h",
+        "translationUk": "готель",
+        "translationRu": "отель / гостиница",
+        "translationPl": "budynek dla gości",
+        "ruleUk": "Пишеться з «h» (міжнародне запозичення).",
+        "ruleRu": "Пишется с «h» (международное заимствование).",
+        "rulePl": "Piszemy «h» w wyrazach zapożyczonych.",
+        "examplePl": "Zarezerwowałem pokój w hotelu."
+    },
+    {
+        "id": "dict_historia",
+        "word": "historia",
+        "category": "ch_h",
+        "translationUk": "історія",
+        "translationRu": "история",
+        "translationPl": "dzieje, przeszłość",
+        "ruleUk": "Пишеться з «h» (грецьке запозичення).",
+        "ruleRu": "Пишется с «h» (греческое заимствование).",
+        "rulePl": "Piszemy «h» w słowach pochodzenia greckiego.",
+        "examplePl": "Polska ma bogatą i ciekawą historię."
+    },
+
+    # --- ą / ę vs om / on / em / en ---
+    {
+        "id": "dict_kat",
+        "word": "kąt",
+        "category": "nasal",
+        "translationUk": "кут",
+        "translationRu": "угол",
+        "translationPl": "miejsce zbiegu ścian",
+        "ruleUk": "Пишеться з «ą» з хвостиком. Не плутати з «konto» (банківський рахунок) або «kont»!",
+        "ruleRu": "Пишется с «ą» с хвостиком. Не путать с «konto» (банковский счет) или «kont»!",
+        "rulePl": "Piszemy «ą». Nie mylić ze słowem «konto»!",
+        "examplePl": "W kącie pokoju stoi wygodny fotel."
+    },
+    {
+        "id": "dict_zab",
+        "word": "ząb",
+        "category": "nasal",
+        "translationUk": "зуб",
+        "translationRu": "зуб",
+        "translationPl": "kość w jamie ustnej",
+        "ruleUk": "Перед приголосними «b» та «p» буква «ą» звучить як [om], але пишеться з хвостиком!",
+        "ruleRu": "Перед согласными «b» и «p» буква «ą» звучит как [om], но пишется с хвостиком!",
+        "rulePl": "Przed b i p piszemy «ą», mimo że wymawiamy [om].",
+        "examplePl": "Dentysta wyleczył mi chory ząb."
+    },
+    {
+        "id": "dict_reka",
+        "word": "ręka",
+        "category": "nasal",
+        "translationUk": "рука",
+        "translationRu": "рука",
+        "translationPl": "kończyna górna",
+        "ruleUk": "Пишеться з «ę» (носовий голосний з хвостиком).",
+        "ruleRu": "Пишется с «ę» (носовой гласный с хвостиком).",
+        "rulePl": "Piszemy «ę» w rdzeniu wyrazu.",
+        "examplePl": "Podaj mi rękę na powitanie."
+    },
+    {
+        "id": "dict_pociag",
+        "word": "pociąg",
+        "category": "nasal",
+        "translationUk": "поїзд",
+        "translationRu": "поезд",
+        "translationPl": "skład wagonów",
+        "ruleUk": "Пишеться з «ą» (pociąg ↔ pociągi).",
+        "ruleRu": "Пишется с «ą» (pociąg ↔ pociągi).",
+        "rulePl": "Piszemy «ą» w rdzeniu.",
+        "examplePl": "Nasz pociąg odjeżdża z peronu drugiego."
+    },
+    {
+        "id": "dict_dziekuje",
+        "word": "dziękuję",
+        "category": "nasal",
+        "translationUk": "дякую",
+        "translationRu": "спасибо / благодарю",
+        "translationPl": "wyraz wdzięczności",
+        "ruleUk": "Перше «ę» з хвостиком, а закінчення дієслова першої особи однини — «-ę»!",
+        "ruleRu": "Первая «ę» с хвостиком, и окончание глагола первого лица — «-ę»!",
+        "rulePl": "Piszemy «ę» w rdzeniu oraz na końcu formy czasu teraźniejszego.",
+        "examplePl": "Bardzo dziękuję za pomoc!"
+    },
+    {
+        "id": "dict_prosze",
+        "word": "proszę",
+        "category": "nasal",
+        "translationUk": "будь ласка / прошу",
+        "translationRu": "пожалуйста / прошу",
+        "translationPl": "zwrot uprzejmy",
+        "ruleUk": "Закінчення першої особи однини пишеться з «-ę» з хвостиком (proszę, robię, mówię).",
+        "ruleRu": "Окончание первого лица пишется с «-ę» с хвостиком (proszę, robię, mówię).",
+        "rulePl": "Piszemy «-ę» na końcu czasowników w 1. os. lp.",
+        "examplePl": "Proszę usiąść i chwilę poczekać."
+    },
+
+    # --- Мягкость и диакритика ---
+    {
+        "id": "dict_milosc",
+        "word": "miłość",
+        "category": "soft",
+        "translationUk": "любов",
+        "translationRu": "любовь",
+        "translationPl": "głębokie uczucie",
+        "ruleUk": "Буква «ł» та м'які закінчення «-ść» (miłość, radość).",
+        "ruleRu": "Буква «ł» и мягкие окончания «-ść» (miłość, radość).",
+        "rulePl": "Piszemy «ł» oraz «ść» na końcu rzeczowników żeńskich.",
+        "examplePl": "Miłość i szacunek są najważniejsze."
+    },
+    {
+        "id": "dict_szczescie",
+        "word": "szczęście",
+        "category": "soft",
+        "translationUk": "щастя",
+        "translationRu": "счастье",
+        "translationPl": "pomyślność, radość",
+        "ruleUk": "Поєднання «szcz», носова «ę» та м'яке закінчення «-cie» (sz-czę-ście)!",
+        "ruleRu": "Сочетание «szcz», носовая «ę» и мягкое окончание «-cie» (sz-czę-ście)!",
+        "rulePl": "Piszemy «szcz», «ę» oraz «cie».",
+        "examplePl": "Życzę ci dużo zdrowia i szczęścia!"
+    },
+    {
+        "id": "dict_dzien",
+        "word": "dzień",
+        "category": "soft",
+        "translationUk": "день",
+        "translationRu": "день",
+        "translationPl": "pora od wschodu do zachodu",
+        "ruleUk": "Початок «dz» перед «i», на кінці м'яка «ń» з рискою (dzień).",
+        "ruleRu": "Начало «dz» перед «i», на конце мягкая «ń» с черточкой (dzień).",
+        "rulePl": "Piszemy «dz» zmiękczone przez «i» oraz «ń» na końcu.",
+        "examplePl": "Dzień dobry, miło cię widzieć!"
+    },
+    {
+        "id": "dict_jablko",
+        "word": "jabłko",
+        "category": "soft",
+        "translationUk": "яблуко",
+        "translationRu": "яблоко",
+        "translationPl": "owoc jabłoni",
+        "ruleUk": "Увага на «ł» у середині слова (jabłko) — не пропускайте її!",
+        "ruleRu": "Внимание на «ł» в середине слова (jabłko) — не пропускайте её!",
+        "rulePl": "Piszemy «ł» w środku wyrazu (jabłko).",
+        "examplePl": "Zjadłem słodkie czerwone jabłko."
+    },
+    {
+        "id": "dict_czlowiek",
+        "word": "człowiek",
+        "category": "soft",
+        "translationUk": "людина",
+        "translationRu": "человек",
+        "translationPl": "istota ludzka",
+        "ruleUk": "«cz» на початку, «ł» у середині (człowiek).",
+        "ruleRu": "«cz» в начале, «ł» в середине (człowiek).",
+        "rulePl": "Piszemy «cz» oraz «ł» (człowiek).",
+        "examplePl": "To bardzo mądry i życzliwy człowiek."
+    },
+    {
+        "id": "dict_swiat",
+        "word": "świat",
+        "category": "soft",
+        "translationUk": "світ",
+        "translationRu": "мир / свет",
+        "translationPl": "ziemia, kosmos, ludzkość",
+        "ruleUk": "«ś» з рискою (перед приголосною «w»). Перед голосними було б «si».",
+        "ruleRu": "«ś» с черточкой (перед согласной «w»). Перед гласными было бы «si».",
+        "rulePl": "Piszemy «ś» z kreską przed spółgłoską.",
+        "examplePl": "Podróżuję i poznaję cały świat."
+    }
+]
+
+out_path = os.path.join("assets", "drills", "dictation_words.json")
+with open(out_path, "w", encoding="utf-8") as f:
+    json.dump(words, f, ensure_ascii=False, indent=2)
+
+print(f"Generated {len(words)} dictation items to {out_path}")
+

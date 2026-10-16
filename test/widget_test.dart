@@ -13,6 +13,8 @@ import 'package:polish_ai_tutor/features/scanner/doc_analysis_service.dart';
 import 'package:polish_ai_tutor/features/scanner/ocr_service.dart';
 import 'package:polish_ai_tutor/features/scanner/translation_service.dart';
 import 'package:polish_ai_tutor/features/scanner/word_analysis.dart';
+import 'package:polish_ai_tutor/features/dictation/dictation_item.dart';
+import 'package:polish_ai_tutor/features/dictation/dictation_service.dart';
 import 'package:polish_ai_tutor/features/wrapped/monthly_stats_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -306,6 +308,75 @@ void main() {
       expect(stats.cefrLevel, 'A1 (Początkujący)');
       expect(stats.cefrTarget, 500);
       expect(stats.cefrProgressPercent, greaterThan(0));
+
+      await db.close();
+    });
+  });
+
+  group('Dictation (Режим Диктант)', () {
+    test('checkAnswer: нечувствителен к регистру и знакам препинания', () {
+      expect(DictationService.checkAnswer('Morze.', 'morze'), isTrue);
+      expect(DictationService.checkAnswer('  żółw! ', 'żółw'), isTrue);
+      expect(DictationService.checkAnswer('„chleb”', 'chleb'), isTrue);
+      expect(DictationService.checkAnswer('może', 'morze'), isFalse);
+      expect(DictationService.checkAnswer('hleb', 'chleb'), isFalse);
+    });
+
+    test('detectOrthographyMistake: выявляет пары rz/ż, ó/u, ch/h, ą/ę', () {
+      final rzError = DictationService.detectOrthographyMistake('może', 'morze');
+      expect(rzError, contains('«rz»'));
+
+      final uError = DictationService.detectOrthographyMistake('kura', 'góra');
+      expect(uError, contains('«ó»'));
+
+      final chError = DictationService.detectOrthographyMistake('hleb', 'chleb');
+      expect(chError, contains('«ch»'));
+
+      final nasalError = DictationService.detectOrthographyMistake('zomb', 'ząb');
+      expect(nasalError, contains('хвостиком'));
+
+      expect(DictationService.detectOrthographyMistake('morze', 'morze'), isNull);
+    });
+
+    test('DictationItem: корректно парсит json и локализует правила', () {
+      final item = DictationItem.fromJson({
+        'id': 'dict_morze',
+        'word': 'morze',
+        'category': 'rz_z',
+        'translationUk': 'море',
+        'translationRu': 'море',
+        'translationPl': 'zbiornik słonej wody',
+        'ruleUk': 'Пишеться «rz», бо чергується з «r».',
+        'ruleRu': 'Пишется «rz», так как чередуется с «r».',
+        'rulePl': 'Piszemy «rz», bo wymienia się na «r».',
+        'examplePl': 'Morze jest spokojne.',
+      });
+
+      expect(item.word, 'morze');
+      expect(item.translation(UiLang.pl), 'zbiornik słonej wody');
+      expect(item.translation(UiLang.uk), 'море');
+      expect(item.translation(UiLang.ru), 'море');
+
+      expect(item.rule(UiLang.pl), contains('Piszemy «rz»'));
+      expect(item.rule(UiLang.uk), contains('чергується'));
+      expect(item.rule(UiLang.ru), contains('чередуется'));
+      expect(item.examplePl, 'Morze jest spokojne.');
+    });
+
+    test('DictationService.buildRound для myDeck строит задания из БД', () async {
+      final db = AppDatabase(NativeDatabase.memory());
+      await db.into(db.words).insert(WordsCompanion.insert(
+        lemma: 'herbata',
+        translationRu: const Value('чай'),
+        translationUk: const Value('чай'),
+      ));
+
+      final service = DictationService(db);
+      final items = await service.buildRound(mode: DictationMode.myDeck, count: 5);
+
+      expect(items, isNotEmpty);
+      expect(items.first.word, 'herbata');
+      expect(items.first.category, 'deck');
 
       await db.close();
     });

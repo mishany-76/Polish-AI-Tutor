@@ -16,6 +16,7 @@ import '../scanner/translation_service.dart';
 import '../tutor/roleplay_screen.dart';
 import '../tutor/scenarios.dart';
 import '../wrapped/monthly_wrapped_screen.dart';
+import '../dictation/dictation_screen.dart';
 
 /// Главный экран: тренажёр обучения (повторение, игры, ролевые диалоги).
 class LearnDashboard extends ConsumerWidget {
@@ -336,6 +337,12 @@ class LearnDashboard extends ConsumerWidget {
                 ),
               );
             },
+          ),
+          _DrillTile(
+            icon: Icons.spellcheck_rounded,
+            title: strings.drillDictationTitle,
+            subtitle: strings.drillDictationSub,
+            onTap: () => DictationScreen.show(context),
           ),
           const SizedBox(height: 24),
 
@@ -893,6 +900,28 @@ class LearnDashboard extends ConsumerWidget {
                                 '• Просматривайте число выученных слов, уровень CEFR, диалоги и анализы документов.\n'
                                 '• Получайте персональный ежемесячный языковой титул (например, «Варшавский Переговорщик»).\n'
                                 '• Скопируйте официальные итоги и делитесь с друзьями в одно касание!'),
+                    ),
+                    // Карточка 8: Режим Диктант
+                    _GuideCard(
+                      icon: Icons.spellcheck_rounded,
+                      color: Colors.indigo,
+                      title: isPl
+                          ? '8. 🎯 Tryb Dyktando i pisownia'
+                          : (isUk ? '8. 🎯 Режим «Диктант» (Правопис)' : '8. 🎯 Режим «Диктант» (Правописание)'),
+                      body: isPl
+                          ? '• Ćwicz pisanie ze słuchu i eliminuj błędy ortograficzne (rz/ż, ch/h, ó/u, ą/ę).\n'
+                            '• Pasek szybkiego wprowadzania polskich znaków (ą, ć, ę, ł, ń, ó, ś, ź, ż) dla wygody pisania.\n'
+                            '• Tryb wolnego odtwarzania (0.3x) oraz natychmiastowe reguły ortograficzne przy pomyłce.\n'
+                            '• Możliwość wyboru: „Pułapki ortograficzne” lub dyktando ze „Słów z mojego słownika”.'
+                          : (isUk
+                              ? '• Тренуйте письмо на слух та усувайте типові орфографічні помилки (rz/ż, ch/h, ó/u, ą/ę).\n'
+                                '• Швидка панель польських літер (ą, ć, ę, ł, ń, ó, ś, ź, ż) дозволяє друкувати без польської клавіатури.\n'
+                                '• Режим уповільненого озвучення (0.3x) та миттєві мнемонічні правила при помилках.\n'
+                                '• Вибір режиму: «Пастки орфографії» або диктант за «Словами з власного словника».'
+                              : '• Тренируйте письмо на слух и устраняйте типичные орфографические ошибки (rz/ż, ch/h, ó/u, ą/ę).\n'
+                                '• Быстрая панель польских букв (ą, ć, ę, ł, ń, ó, ś, ź, ż) позволяет печатать без польской раскладки.\n'
+                                '• Режим замедленного воспроизведения (0.3x) и мгновенные мнемонические правила при ошибках.\n'
+                                '• Выбор режима: «Ловушки орфографии» или диктант по «Словам из своего словаря».'),
                     ),
                     const SizedBox(height: 20),
                     FilledButton(

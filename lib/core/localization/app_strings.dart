@@ -98,6 +98,12 @@ class AppStrings {
       ? 'Rozumienie polskiego ze słuchu'
       : (isUk ? 'Сприйняття польської мови на слух' : 'Восприятие польской речи на слух');
 
+  String get drillDictationTitle =>
+      isPl ? 'Dyktando i pisownia' : (isUk ? 'Режим «Диктант»' : 'Режим «Диктант»');
+  String get drillDictationSub => isPl
+      ? 'Pisanie ze słuchu i pułapki (rz/ż, ch/h, ó/u)'
+      : (isUk ? 'Письмо на слух та пастки (rz/ż, ch/h, ó/u)' : 'Письмо на слух и ловушки (rz/ż, ch/h, ó/u)');
+
   String get roleplayTitle =>
       isPl ? 'Dialogi sytuacyjne' : (isUk ? 'Рольові діалоги' : 'Ролевые диалоги');
   String get readyToChat => isPl ? 'Gotowy' : (isUk ? 'Готовий' : 'Готов');
@@ -334,6 +340,67 @@ class AppStrings {
   String get monthlyWrappedTooltip => isPl
       ? 'Mój polski w tym miesiącu'
       : (isUk ? 'Мій польський за місяць' : 'Мой польский за месяц');
+
+  // --- Режим «Диктант» (Active Recall Speller) ---
+  String get dictationListenHint => isPl
+      ? 'Posłuchaj i wpisz usłyszane słowo:'
+      : (isUk ? 'Послухайте та введіть почуте слово:' : 'Послушайте и введите услышанное слово:');
+  String get dictationInputPlaceholder => isPl
+      ? 'Wpisz po polsku...'
+      : (isUk ? 'Введіть польською...' : 'Введите по-польски...');
+  String get dictationCheckBtn => isPl
+      ? 'Sprawdź'
+      : (isUk ? 'Перевірити' : 'Проверить');
+  String get dictationNextBtn => isPl
+      ? 'Następne słowo →'
+      : (isUk ? 'Наступне слово →' : 'Следующее слово →');
+  String get dictationSlowBtn => isPl
+      ? 'Wolniej (0.3x)'
+      : (isUk ? 'Повільніше (0.3x)' : 'Медленнее (0.3x)');
+  String get dictationNormalBtn => isPl
+      ? 'Normalnie'
+      : (isUk ? 'Звичайно' : 'Обычная');
+  String get dictationCorrectTitle => isPl
+      ? '🎉 Brawo! Idealnie!'
+      : (isUk ? '🎉 Чудово! Ідеально!' : '🎉 Отлично! Идеально!');
+  String get dictationIncorrectTitle => isPl
+      ? '⚠️ Prawie! Zwróć uwagę na pisownię:'
+      : (isUk ? '⚠️ Майже! Зверніть увагу на написання:' : '⚠️ Почти! Обратите внимание на написание:');
+  String get dictationYourInputLabel => isPl
+      ? 'Twój zapis:'
+      : (isUk ? 'Ваш варіант:' : 'Ваш вариант:');
+  String get dictationCorrectWordLabel => isPl
+      ? 'Prawidłowo:'
+      : (isUk ? 'Правильно:' : 'Правильно:');
+  String get dictationRuleTipLabel => isPl
+      ? '💡 Reguła ortograficzna:'
+      : (isUk ? '💡 Правило орфографії:' : '💡 Правило орфографии:');
+  String get dictationMeaningLabel => isPl
+      ? 'Znaczenie:'
+      : (isUk ? 'Значення:' : 'Значение:');
+  String get dictationExampleLabel => isPl
+      ? 'Przykład w zdaniu:'
+      : (isUk ? 'Приклад у реченні:' : 'Пример в предложении:');
+  String get dictationModeTraps => isPl
+      ? '🎯 Pułapki ortograficzne (rz/ż, ch/h, ó/u)'
+      : (isUk ? '🎯 Пастки орфографії (rz/ż, ch/h, ó/u)' : '🎯 Ловушки орфографии (rz/ż, ch/h, ó/u)');
+  String get dictationModeDeck => isPl
+      ? '📚 Słowa z mojego słownika'
+      : (isUk ? '📚 Слова з мого словника' : '📚 Слова из моего словаря');
+  String get dictationEmptyDeckNotice => isPl
+      ? 'Brak słów w Twoim słowniku. Dodaj słowa przez skaner lub wpis ręczny!'
+      : (isUk
+          ? 'У вашому словнику ще немає слів. Додайте слова через сканер або вручну!'
+          : 'В вашем словаре пока нет слов. Добавьте слова через сканер или вручную!');
+  String dictationProgress(int cur, int total) => isPl
+      ? 'Słowo $cur z $total'
+      : (isUk ? 'Слово $cur з $total' : 'Слово $cur из $total');
+  String get dictationFinishedTitle => isPl
+      ? '🏆 Runda dyktanda ukończona!'
+      : (isUk ? '🏆 Раунд диктанту завершено!' : '🏆 Раунд диктанта завершен!');
+  String get dictationNewRoundBtn => isPl
+      ? 'Kolejna runda'
+      : (isUk ? 'Наступний раунд' : 'Следующий раунд');
 }
 
 

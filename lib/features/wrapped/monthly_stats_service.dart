@@ -66,16 +66,46 @@ class MonthlyStats {
 
   String monthName(UiLang lang) {
     const plMonths = [
-      'Styczeń', 'Luty', 'Marzec', 'Kwiecień', 'Maj', 'Czerwiec',
-      'Lipiec', 'Sierpień', 'Wrzesień', 'Październik', 'Listopad', 'Grudzień'
+      'Styczeń',
+      'Luty',
+      'Marzec',
+      'Kwiecień',
+      'Maj',
+      'Czerwiec',
+      'Lipiec',
+      'Sierpień',
+      'Wrzesień',
+      'Październik',
+      'Listopad',
+      'Grudzień',
     ];
     const ukMonths = [
-      'Січень', 'Лютий', 'Березень', 'Квітень', 'Травень', 'Червень',
-      'Липень', 'Серпень', 'Вересень', 'Жовтень', 'Листопад', 'Грудень'
+      'Січень',
+      'Лютий',
+      'Березень',
+      'Квітень',
+      'Травень',
+      'Червень',
+      'Липень',
+      'Серпень',
+      'Вересень',
+      'Жовтень',
+      'Листопад',
+      'Грудень',
     ];
     const ruMonths = [
-      'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
-      'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'
+      'Январь',
+      'Февраль',
+      'Март',
+      'Апрель',
+      'Май',
+      'Июнь',
+      'Июль',
+      'Август',
+      'Сентябрь',
+      'Октябрь',
+      'Ноябрь',
+      'Декабрь',
     ];
 
     final index = (month >= 1 && month <= 12) ? month - 1 : 0;
@@ -101,13 +131,17 @@ class MonthlyStatsService {
     final allWords = await _db.allWords();
 
     final wordsAddedThisMonth = allWords
-        .where((w) => w.createdAt.year == now.year && w.createdAt.month == now.month)
+        .where(
+          (w) => w.createdAt.year == now.year && w.createdAt.month == now.month,
+        )
         .length;
 
-    final wordsMastered =
-        allWords.where((w) => w.status == WordStatus.mastered).length;
-    final wordsLearning =
-        allWords.where((w) => w.status == WordStatus.learning).length;
+    final wordsMastered = allWords
+        .where((w) => w.status == WordStatus.mastered)
+        .length;
+    final wordsLearning = allWords
+        .where((w) => w.status == WordStatus.learning)
+        .length;
 
     // Счётчики событий из SharedPreferences
     final prefs = await SharedPreferences.getInstance();
@@ -174,7 +208,8 @@ class MonthlyStatsService {
       titlePl = 'Aktywny Student';
     }
 
-    const quotePl = '„Kropla drąży skałę nie siłą, lecz częstym spadaniem.” Każdy dzień w Polish AI Tutor przybliża Cię do płynności językowej!';
+    const quotePl =
+        '„Kropla drąży skałę nie siłą, lecz częstym spadaniem.” Każdy dzień w Polish AI Tutor przybliża Cię do płynności językowej!';
 
     return MonthlyStats(
       year: now.year,
@@ -203,6 +238,8 @@ final monthlyStatsServiceProvider = Provider<MonthlyStatsService>((ref) {
   return MonthlyStatsService(ref.watch(databaseProvider));
 });
 
-final monthlyStatsFutureProvider = FutureProvider.autoDispose<MonthlyStats>((ref) {
+final monthlyStatsFutureProvider = FutureProvider.autoDispose<MonthlyStats>((
+  ref,
+) {
   return ref.watch(monthlyStatsServiceProvider).computeStats();
 });

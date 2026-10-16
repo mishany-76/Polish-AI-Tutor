@@ -15,9 +15,14 @@ class TtsService {
   }
 
   /// Возвращает false, если озвучить не удалось (нет голоса pl-PL и т.п.).
-  Future<bool> speak(String text) async {
+  Future<bool> speak(String text, {double? rate}) async {
     try {
       await _init();
+      if (rate != null) {
+        await _tts.setSpeechRate(rate);
+      } else {
+        await _tts.setSpeechRate(0.45);
+      }
       await _tts.stop();
       final r = await _tts.speak(text);
       return r == 1;

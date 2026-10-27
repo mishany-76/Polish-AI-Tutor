@@ -98,8 +98,21 @@ List<QuizQuestion> buildEndingsQuiz(UiLang lang, {int count = 8, Random? random}
   ];
 }
 
+String _resolveTrapPolish(FalseFriendItem f) {
+  final note = f.noteRu;
+  final match = RegExp(r'[—–-]\s*([a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ]{3,})').allMatches(note);
+  if (match.length >= 2) {
+    final candidate = match.last.group(1)?.trim();
+    if (candidate != null && candidate.toLowerCase() != f.pl.toLowerCase()) {
+      return candidate;
+    }
+  }
+  return '';
+}
+
 /// Адаптивный режим 3: «Осторожно, ложные друзья!».
 /// 1200+ карточек, перехват коварных языковых ловушек.
+/// Ответы содержат дубляж польского слова и перевода для привыкания глаз.
 Future<List<QuizQuestion>> buildAdaptiveFalseFriendsQuiz(UiLang lang, {int count = 8}) async {
   final allItems = await DrillDataLoader.getFalseFriends();
   final chosen = await DrillProgressService.instance.selectAdaptive<FalseFriendItem>(
@@ -113,19 +126,28 @@ Future<List<QuizQuestion>> buildAdaptiveFalseFriendsQuiz(UiLang lang, {int count
   return [
     for (final f in chosen)
       () {
-        final correct = uk ? f.uk : f.ru;
-        final trap = uk ? f.trapUk : f.trapRu;
-        final others = [
-          for (final o in allItems)
-            if (o.pl != f.pl) uk ? o.uk : o.ru,
-        ]..shuffle(rnd);
+        final correctTr = uk ? f.uk : f.ru;
+        final correctOption = '${f.pl} — $correctTr';
+
+        final trapTr = uk ? f.trapUk : f.trapRu;
+        final trapPl = _resolveTrapPolish(f);
+        final trapOption = trapPl.isNotEmpty
+            ? '$trapPl — $trapTr'
+            : '$trapTr (${f.pl} ➔ хибний зміст)';
+
+        final otherItems = allItems.where((o) => o.pl != f.pl).toList()..shuffle(rnd);
+        final otherOptions = [
+          for (final o in otherItems.take(2))
+            '${o.pl} — ${uk ? o.uk : o.ru}',
+        ];
+
         return _make(
           id: f.pl,
           prompt: f.pl,
-          sub: uk ? 'Що це насправді означає?' : 'Что это значит на самом деле?',
+          sub: uk ? '⚠️ Оберіть правильне значення та переклад:' : '⚠️ Выберите правильное значение и перевод:',
           speak: f.pl,
-          correct: correct,
-          wrong: [trap, ...others.where((o) => o != correct && o != trap).take(2)],
+          correct: correctOption,
+          wrong: [trapOption, ...otherOptions],
           explanation: uk ? f.noteUk : f.noteRu,
           rnd: rnd,
         );
@@ -142,19 +164,28 @@ List<QuizQuestion> buildFalseFriendsQuiz(UiLang lang, {int count = 8, Random? ra
   return [
     for (final f in chosen)
       () {
-        final correct = uk ? f.uk : f.ru;
-        final trap = uk ? f.trapUk : f.trapRu;
-        final others = [
-          for (final o in falseFriendItems)
-            if (o.pl != f.pl) uk ? o.uk : o.ru,
-        ]..shuffle(rnd);
+        final correctTr = uk ? f.uk : f.ru;
+        final correctOption = '${f.pl} — $correctTr';
+
+        final trapTr = uk ? f.trapUk : f.trapRu;
+        final trapPl = _resolveTrapPolish(f);
+        final trapOption = trapPl.isNotEmpty
+            ? '$trapPl — $trapTr'
+            : '$trapTr (${f.pl} ➔ хибний зміст)';
+
+        final otherItems = falseFriendItems.where((o) => o.pl != f.pl).toList()..shuffle(rnd);
+        final otherOptions = [
+          for (final o in otherItems.take(2))
+            '${o.pl} — ${uk ? o.uk : o.ru}',
+        ];
+
         return _make(
           id: f.pl,
           prompt: f.pl,
-          sub: uk ? 'Що це насправді означає?' : 'Что это значит на самом деле?',
+          sub: uk ? '⚠️ Оберіть правильне значення та переклад:' : '⚠️ Выберите правильное значение и перевод:',
           speak: f.pl,
-          correct: correct,
-          wrong: [trap, ...others.where((o) => o != correct && o != trap).take(2)],
+          correct: correctOption,
+          wrong: [trapOption, ...otherOptions],
           explanation: uk ? f.noteUk : f.noteRu,
           rnd: rnd,
         );
@@ -164,6 +195,7 @@ List<QuizQuestion> buildFalseFriendsQuiz(UiLang lang, {int count = 8, Random? ra
 
 /// Адаптивный режим 2: «Аудио-тренажёр».
 /// Масштабированная база (1800+ выражений и слов из живой речи).
+/// Вопрос показывает польский текст крупно, а варианты ответов дублируют польский и перевод.
 Future<List<QuizQuestion>> buildAdaptiveAudioQuiz(
   List<Word> deck,
   UiLang lang, {
@@ -195,18 +227,23 @@ Future<List<QuizQuestion>> buildAdaptiveAudioQuiz(
   return [
     for (final pl in chosen)
       () {
-        final correct = pool[pl]!;
-        final wrong = (pool.values.where((t) => t != correct).toSet().toList()
-              ..shuffle(rnd))
-              .take(3)
-              .toList();
+        final correctTr = pool[pl]!;
+        final correctOption = '$pl — $correctTr';
+
+        final otherKeys = pool.keys.where((k) => k != pl).toList()..shuffle(rnd);
+        final wrongOptions = [
+          for (final oKey in otherKeys.take(3))
+            '$oKey — ${pool[oKey]!}',
+        ];
+
         return _make(
           id: pl,
-          prompt: uk ? 'Послухайте та оберіть переклад' : 'Послушайте и выберите перевод',
+          prompt: pl,
+          sub: uk ? '🎧 Послухайте та оберіть переклад:' : '🎧 Послушайте и выберите перевод:',
           speak: pl,
-          correct: correct,
-          wrong: wrong,
-          explanation: '$pl — $correct',
+          correct: correctOption,
+          wrong: wrongOptions,
+          explanation: '$pl — $correctTr',
           rnd: rnd,
         );
       }(),
@@ -238,18 +275,23 @@ List<QuizQuestion> buildAudioQuiz(
   return [
     for (final pl in order)
       () {
-        final correct = pool[pl]!;
-        final wrong = (pool.values.where((t) => t != correct).toSet().toList()
-              ..shuffle(rnd))
-            .take(3)
-            .toList();
+        final correctTr = pool[pl]!;
+        final correctOption = '$pl — $correctTr';
+
+        final otherKeys = pool.keys.where((k) => k != pl).toList()..shuffle(rnd);
+        final wrongOptions = [
+          for (final oKey in otherKeys.take(3))
+            '$oKey — ${pool[oKey]!}',
+        ];
+
         return _make(
           id: pl,
-          prompt: uk ? 'Послухайте та оберіть переклад' : 'Послушайте и выберите перевод',
+          prompt: pl,
+          sub: uk ? '🎧 Послухайте та оберіть переклад:' : '🎧 Послушайте и выберите перевод:',
           speak: pl,
-          correct: correct,
-          wrong: wrong,
-          explanation: '$pl — $correct',
+          correct: correctOption,
+          wrong: wrongOptions,
+          explanation: '$pl — $correctTr',
           rnd: rnd,
         );
       }(),
@@ -258,6 +300,7 @@ List<QuizQuestion> buildAudioQuiz(
 
 /// Адаптивный режим 4: «Числа, ціни та рахунок».
 /// 1200+ вопросов: суммы на кассе, время/часы, коварные десятки и сотни.
+/// Польский текст вопроса всегда виден крупно и четко перед глазами!
 Future<List<QuizQuestion>> buildAdaptiveNumbersPricesQuiz(UiLang lang, {int count = 8}) async {
   final allItems = await DrillDataLoader.getNumbersPrices();
   final chosen = await DrillProgressService.instance.selectAdaptive<NumberPriceItem>(
@@ -267,16 +310,17 @@ Future<List<QuizQuestion>> buildAdaptiveNumbersPricesQuiz(UiLang lang, {int coun
     count: count,
   );
   final rnd = Random();
+  final uk = lang == UiLang.uk;
   return [
     for (final n in chosen)
       _make(
         id: n.id,
-        prompt: n.promptPl ?? (lang == UiLang.uk ? '🎧 Послухайте та оберіть значення:' : '🎧 Послушайте и выберите значение:'),
-        sub: '🔊 ${n.spokenPl}',
+        prompt: n.spokenPl,
+        sub: n.promptPl ?? (uk ? '🎧 Послухайте та оберіть значення:' : '🎧 Послушайте и выберите значение:'),
         speak: n.spokenPl,
         correct: n.correct,
         wrong: n.wrong,
-        explanation: '${lang == UiLang.uk ? n.explainUk : n.explainRu} («${n.spokenPl}» ➔ ${n.correct})',
+        explanation: '${uk ? n.explainUk : n.explainRu} («${n.spokenPl}» ➔ ${n.correct})',
         rnd: rnd,
       ),
   ];
@@ -285,16 +329,17 @@ Future<List<QuizQuestion>> buildAdaptiveNumbersPricesQuiz(UiLang lang, {int coun
 List<QuizQuestion> buildNumbersPricesQuiz(UiLang lang, {int count = 8, Random? random}) {
   final rnd = random ?? Random();
   final items = [...numberPriceItems]..shuffle(rnd);
+  final uk = lang == UiLang.uk;
   return [
     for (final n in items.take(count))
       _make(
         id: n.id,
-        prompt: n.promptPl ?? (lang == UiLang.uk ? '🎧 Послухайте та оберіть значення:' : '🎧 Послушайте и выберите значение:'),
-        sub: '🔊 ${n.spokenPl}',
+        prompt: n.spokenPl,
+        sub: n.promptPl ?? (uk ? '🎧 Послухайте та оберіть значення:' : '🎧 Послушайте и выберите значение:'),
         speak: n.spokenPl,
         correct: n.correct,
         wrong: n.wrong,
-        explanation: '${lang == UiLang.uk ? n.explainUk : n.explainRu} («${n.spokenPl}» ➔ ${n.correct})',
+        explanation: '${uk ? n.explainUk : n.explainRu} («${n.spokenPl}» ➔ ${n.correct})',
         rnd: rnd,
       ),
   ];

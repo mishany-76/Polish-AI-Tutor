@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../di/providers.dart';
 
 /// Модель одного достижения «Польского паспорта».
 class Achievement {
@@ -184,6 +186,9 @@ class AchievementService {
   AchievementService._();
   static final AchievementService instance = AchievementService._();
 
+  /// Глобальный нотификатор для мгновенной реактивной синхронизации по всему приложению.
+  static final ValueNotifier<int> changeNotifier = ValueNotifier<int>(0);
+
   static const _kUnlockedKey = 'achievements_unlocked_v1';
   static const _kCountersKey = 'achievements_counters_v1';
 
@@ -220,6 +225,7 @@ class AchievementService {
     }
     final prefs = await _getPrefs();
     await prefs.setString(_kUnlockedKey, jsonEncode(unlocked.toList()));
+    changeNotifier.value++;
     return true;
   }
 
@@ -297,43 +303,94 @@ class AchievementService {
     final prefs = await _getPrefs();
     await prefs.remove(_kUnlockedKey);
     await prefs.remove(_kCountersKey);
+    changeNotifier.value++;
   }
 }
 
 // ---- Riverpod провайдер ----
 
 class AchievementsNotifier extends AsyncNotifier<Set<String>> {
+  VoidCallback? _changeListener;
+
   @override
   Future<Set<String>> build() async {
+    // Подписываемся на любые глобальные изменения AchievementService
+    _changeListener ??= () async {
+      final updated = await _syncAndFetch();
+      state = AsyncData(updated);
+    };
+    AchievementService.changeNotifier.removeListener(_changeListener!);
+    AchievementService.changeNotifier.addListener(_changeListener!);
+
+    ref.onDispose(() {
+      if (_changeListener != null) {
+        AchievementService.changeNotifier.removeListener(_changeListener!);
+      }
+    });
+
+    return _syncAndFetch();
+  }
+
+  Future<Set<String>> _syncAndFetch() async {
+    // 1. Синхронизируем количество слов из реальной SQLite БД
+    try {
+      final db = ref.read(databaseProvider);
+      final words = await db.allWords();
+      final wordsCount = words.length;
+      if (wordsCount > 0) {
+        final currentCount = await AchievementService.instance.getCounter('words_added');
+        if (wordsCount > currentCount) {
+          await AchievementService.instance.increment('words_added', by: wordsCount - currentCount);
+        }
+      }
+
+      // 2. Синхронизируем освоенные слова (SM-2 интервал >= 7 дней или 3+ повторения)
+      final mastered = words.where((w) => w.reps >= 3 || w.intervalDays >= 7).length;
+      if (mastered > 0) {
+        final currentMastered = await AchievementService.instance.getCounter('words_mastered');
+        if (mastered > currentMastered) {
+          await AchievementService.instance.increment('words_mastered', by: mastered - currentMastered);
+        }
+      }
+    } catch (_) {}
+
+    // 3. Синхронизируем streak
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final streakDays = prefs.getInt('streak_count') ?? 0;
+      if (streakDays > 0) {
+        await syncStreak(streakDays);
+      }
+    } catch (_) {}
+
     return AchievementService.instance.getUnlocked();
+  }
+
+  /// Принудительное обновление состояния
+  Future<void> refresh() async {
+    state = AsyncData(await _syncAndFetch());
   }
 
   /// Вызывается извне при новом событии. Обновляет UI при появлении достижений.
   Future<List<String>> recordEvent(String counter, {int by = 1}) async {
     final newIds =
         await AchievementService.instance.increment(counter, by: by);
-    if (newIds.isNotEmpty) {
-      state = AsyncData(await AchievementService.instance.getUnlocked());
-    }
+    state = AsyncData(await AchievementService.instance.getUnlocked());
     return newIds;
   }
 
   /// Синхронизировать streak с существующим StreakService.
   Future<void> syncStreak(int streakDays) async {
-    await AchievementService.instance
-        ._getCounters()
-        .then((counters) async {
-      // Обновляем счётчик до текущего значения стрика (не инкрементируем)
-      final prefs = await AchievementService.instance._getPrefs();
-      counters['streak_days'] = streakDays;
-      await prefs.setString(
-          AchievementService._kCountersKey, jsonEncode(counters));
-      final newIds = await AchievementService.instance
-          ._checkThresholds('streak_days', streakDays);
-      if (newIds.isNotEmpty) {
-        state = AsyncData(await AchievementService.instance.getUnlocked());
-      }
-    });
+    final counters = await AchievementService.instance._getCounters();
+    final prefs = await AchievementService.instance._getPrefs();
+    counters['streak_days'] = streakDays;
+    await prefs.setString(
+        AchievementService._kCountersKey, jsonEncode(counters));
+    final newIds = await AchievementService.instance
+        ._checkThresholds('streak_days', streakDays);
+    if (newIds.isNotEmpty) {
+      AchievementService.changeNotifier.value++;
+    }
   }
 }
 

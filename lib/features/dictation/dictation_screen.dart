@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -53,9 +54,64 @@ class _DictationScreenState extends ConsumerState<DictationScreen> {
     'ą', 'ć', 'ę', 'ł', 'ń', 'ó', 'ś', 'ź', 'ż',
   ];
 
+  List<String> _currentLetterTiles = [];
+
   DictationItem? get _currentItem {
     if (_items.isEmpty || _currentIndex >= _items.length) return null;
     return _items[_currentIndex];
+  }
+
+  void _updateLetterTiles() {
+    final item = _currentItem;
+    if (item == null) {
+      _currentLetterTiles = [];
+    } else {
+      _currentLetterTiles = _generateLetterBank(item.word);
+    }
+  }
+
+  static List<String> _generateLetterBank(String targetWord) {
+    final clean = targetWord.toLowerCase().trim();
+    final wordLetters = <String>[];
+    for (int i = 0; i < clean.length; i++) {
+      final ch = clean[i];
+      if (RegExp(r'[\p{L}\p{N}]', unicode: true).hasMatch(ch)) {
+        wordLetters.add(ch);
+      }
+    }
+
+    // Добавляем реалистичные ложные буквы / орфографические ловушки
+    final distractors = <String>{};
+    if (clean.contains('ó')) distractors.add('u');
+    if (clean.contains('u')) distractors.add('ó');
+    if (clean.contains('rz')) distractors.add('ż');
+    if (clean.contains('ż')) distractors.add('z');
+    if (clean.contains('ch')) distractors.add('h');
+    if (clean.contains('h')) distractors.add('c');
+    if (clean.contains('ą')) { distractors.add('ę'); distractors.add('o'); }
+    if (clean.contains('ę')) { distractors.add('ą'); distractors.add('e'); }
+    if (clean.contains('ś')) { distractors.add('s'); distractors.add('sz'); }
+    if (clean.contains('ć')) { distractors.add('c'); distractors.add('cz'); }
+    if (clean.contains('ź')) { distractors.add('z'); distractors.add('ż'); }
+    if (clean.contains('ł')) distractors.add('l');
+    if (clean.contains('ń')) distractors.add('n');
+
+    // Общий пул польских букв для дополнения кассетницы
+    const pool = [
+      'a', 'e', 'i', 'o', 'k', 'm', 'n', 'p', 'r', 's', 't', 'w', 'y', 'z',
+      'ą', 'ę', 'ł', 'ń', 'ó', 'ś', 'ź', 'ż'
+    ];
+    final rnd = Random(targetWord.hashCode);
+    final shuffledPool = [...pool]..shuffle(rnd);
+    for (final ch in shuffledPool) {
+      if (distractors.length >= 4) break;
+      if (!wordLetters.contains(ch)) {
+        distractors.add(ch);
+      }
+    }
+
+    final combined = [...wordLetters, ...distractors]..shuffle(rnd);
+    return combined;
   }
 
   @override
@@ -91,6 +147,7 @@ class _DictationScreenState extends ConsumerState<DictationScreen> {
       setState(() {
         _items = items;
         _isLoading = false;
+        _updateLetterTiles();
       });
       if (items.isNotEmpty) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -106,6 +163,52 @@ class _DictationScreenState extends ConsumerState<DictationScreen> {
     if (item == null) return;
     final rate = (slow ?? _isSlowSpeed) ? 0.28 : 0.45;
     await ref.read(ttsProvider).speak(item.word, rate: rate);
+  }
+
+  void _onLetterTileTap(String char) {
+    if (_isAnswerChecked) return;
+    HapticFeedback.lightImpact();
+    final text = _textController.text;
+    final selection = _textController.selection;
+
+    if (selection.start >= 0 && selection.end >= 0) {
+      final newText = text.replaceRange(selection.start, selection.end, char);
+      final newPosition = selection.start + char.length;
+      _textController.value = TextEditingValue(
+        text: newText,
+        selection: TextSelection.collapsed(offset: newPosition),
+      );
+    } else {
+      _textController.text = text + char;
+      _textController.selection = TextSelection.collapsed(offset: _textController.text.length);
+    }
+    setState(() {});
+  }
+
+  void _onBackspaceTap() {
+    if (_isAnswerChecked) return;
+    HapticFeedback.lightImpact();
+    final text = _textController.text;
+    if (text.isEmpty) return;
+    final selection = _textController.selection;
+    if (selection.start > 0 && selection.start == selection.end) {
+      final newText = text.replaceRange(selection.start - 1, selection.start, '');
+      final newPosition = selection.start - 1;
+      _textController.value = TextEditingValue(
+        text: newText,
+        selection: TextSelection.collapsed(offset: newPosition),
+      );
+    } else if (selection.start >= 0 && selection.end > selection.start) {
+      final newText = text.replaceRange(selection.start, selection.end, '');
+      _textController.value = TextEditingValue(
+        text: newText,
+        selection: TextSelection.collapsed(offset: selection.start),
+      );
+    } else {
+      _textController.text = text.substring(0, text.length - 1);
+      _textController.selection = TextSelection.collapsed(offset: _textController.text.length);
+    }
+    setState(() {});
   }
 
   void _insertDiacritic(String char) {
@@ -173,6 +276,7 @@ class _DictationScreenState extends ConsumerState<DictationScreen> {
       _detectedMistakeTip = null;
       _userSubmittedText = '';
       _textController.clear();
+      _updateLetterTiles();
     });
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -514,9 +618,96 @@ class _DictationScreenState extends ConsumerState<DictationScreen> {
                   ),
                   onSubmitted: (_) => _checkAnswer(),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 14),
 
-                // ПАНЕЛЬ БЫСТРЫХ ДИАКРИТИК (ą, ć, ę, ł, ń, ó, ś, ź, ż)
+                // 1. КАССЕТНИЦА БУКВ ДЛЯ СОСТАВЛЕНИЯ СЛОВА (все нужные буквы + ложные буквы)
+                if (_currentLetterTiles.isNotEmpty) ...[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        strings.dictationLetterBankLabel,
+                        style: TextStyle(
+                          fontSize: 12.5,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey.shade700,
+                        ),
+                      ),
+                      if (!_isAnswerChecked && _textController.text.isNotEmpty)
+                        InkWell(
+                          onTap: _onBackspaceTap,
+                          borderRadius: BorderRadius.circular(6),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(Icons.backspace_outlined, size: 16, color: AppTheme.primaryCarmine),
+                                const SizedBox(width: 4),
+                                Text(
+                                  strings.dictationBackspace,
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppTheme.primaryCarmine,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      for (final char in _currentLetterTiles)
+                        InkWell(
+                          onTap: _isAnswerChecked ? null : () => _onLetterTileTap(char),
+                          borderRadius: BorderRadius.circular(10),
+                          child: Container(
+                            constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: AppTheme.bgWarmMilk,
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: Colors.grey.shade300, width: 1.2),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.04),
+                                  blurRadius: 3,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: Text(
+                              char,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 14),
+                ],
+
+                // 2. БЫСТРАЯ ПАНЕЛЬ ПОЛЬСКОЙ ДИАКРИТИКИ (ą, ć, ę, ł, ń, ó, ś, ź, ż)
+                Text(
+                  strings.dictationDiacriticsLabel,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
+                const SizedBox(height: 6),
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
@@ -527,18 +718,18 @@ class _DictationScreenState extends ConsumerState<DictationScreen> {
                           onTap: _isAnswerChecked ? null : () => _insertDiacritic(char),
                           borderRadius: BorderRadius.circular(10),
                           child: Container(
-                            width: 38,
-                            height: 38,
+                            width: 36,
+                            height: 36,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
-                              color: AppTheme.bgWarmMilk,
+                              color: AppTheme.surfaceWhite,
                               borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: Colors.grey.shade300),
+                              border: Border.all(color: AppTheme.primaryCarmine.withValues(alpha: 0.3)),
                             ),
                             child: Text(
                               char,
                               style: const TextStyle(
-                                fontSize: 18,
+                                fontSize: 17,
                                 fontWeight: FontWeight.bold,
                                 color: AppTheme.primaryCarmine,
                               ),

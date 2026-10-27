@@ -56,9 +56,12 @@ class PassportScreen extends ConsumerWidget {
               ),
               // --- Сетка достижений ---
               Expanded(
-                child: _PassportGrid(
-                  unlocked: unlocked,
-                  strings: strings,
+                child: RefreshIndicator(
+                  onRefresh: () => ref.read(achievementsProvider.notifier).refresh(),
+                  child: _PassportGrid(
+                    unlocked: unlocked,
+                    strings: strings,
+                  ),
                 ),
               ),
             ],

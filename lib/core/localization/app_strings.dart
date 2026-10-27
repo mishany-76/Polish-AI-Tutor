@@ -429,6 +429,16 @@ class AppStrings {
       : (isUk
           ? 'У вашому словнику ще немає слів. Додайте слова через сканер або вручну!'
           : 'В вашем словаре пока нет слов. Добавьте слова через сканер или вручную!');
+  String get dictationLetterBankLabel => isPl
+      ? 'Wybierz litery do słowa:'
+      : (isUk ? 'Літери для складання слова:' : 'Буквы для составления слова:');
+  String get dictationDiacriticsLabel => isPl
+      ? 'Polskie znaki:'
+      : (isUk ? 'Польські діакритики:' : 'Польская диакритика:');
+  String get dictationBackspace => isPl
+      ? 'Cofnij'
+      : (isUk ? 'Стерти' : 'Стереть');
+
   String dictationProgress(int cur, int total) => isPl
       ? 'Słowo $cur z $total'
       : (isUk ? 'Слово $cur з $total' : 'Слово $cur из $total');

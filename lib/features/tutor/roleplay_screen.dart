@@ -272,6 +272,9 @@ $initiatorRule
       if (mounted) Navigator.of(context).pop();
       return;
     }
+    // Засчитываем успешно завершенный диалог для Польского паспорта
+    await AchievementService.instance.increment('dialogs_done');
+
     if (!mounted) return;
     final lang = ref.read(settingsProvider).lang;
     final uiName = lang == UiLang.uk ? 'украинском' : 'русском';
@@ -776,6 +779,9 @@ class _SummaryDialog extends ConsumerWidget {
                         )) {
                           added++;
                         }
+                      }
+                      if (added > 0) {
+                        await AchievementService.instance.increment('words_added', by: added);
                       }
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(

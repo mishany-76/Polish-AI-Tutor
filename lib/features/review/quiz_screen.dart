@@ -159,6 +159,10 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
         isCorrect,
       );
     }
+
+    if (_index + 1 >= _currentQuestions.length) {
+      AchievementService.instance.increment('quiz_rounds_done');
+    }
   }
 
   void _next() {
@@ -416,13 +420,24 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
             ),
           ),
         if (q.promptSub != null)
-          Padding(
-            padding: const EdgeInsets.only(top: 6),
+          Container(
+            margin: const EdgeInsets.only(top: 10, bottom: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.65),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: theme.colorScheme.primary.withValues(alpha: 0.25),
+              ),
+            ),
             child: Text(
               q.promptSub!,
               textAlign: TextAlign.center,
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.outline,
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+                color: theme.colorScheme.onSurface,
+                height: 1.3,
               ),
             ),
           ),
@@ -558,15 +573,66 @@ class _OptionButton extends StatelessWidget {
       _OptState.wrong => Colors.red,
       _OptState.idle => null,
     };
+
+    // Проверяем, есть ли дубляж польский + перевод через « — »
+    final parts = label.split(' — ');
+    Widget labelWidget;
+    if (parts.length == 2) {
+      labelWidget = RichText(
+        textAlign: TextAlign.center,
+        text: TextSpan(
+          style: DefaultTextStyle.of(context).style.copyWith(
+            color: color ?? Theme.of(context).textTheme.bodyLarge?.color,
+          ),
+          children: [
+            TextSpan(
+              text: parts[0],
+              style: const TextStyle(
+                fontSize: 17,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 0.2,
+              ),
+            ),
+            const TextSpan(
+              text: '  —  ',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+                color: Colors.grey,
+              ),
+            ),
+            TextSpan(
+              text: parts[1],
+              style: TextStyle(
+                fontSize: 15.5,
+                fontWeight: FontWeight.w500,
+                color: color ?? Theme.of(context).textTheme.bodyMedium?.color,
+              ),
+            ),
+          ],
+        ),
+      );
+    } else {
+      labelWidget = Text(
+        label,
+        textAlign: TextAlign.center,
+        style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+      );
+    }
+
     return OutlinedButton(
       style: OutlinedButton.styleFrom(
-        minimumSize: const Size.fromHeight(52),
+        minimumSize: const Size.fromHeight(54),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         foregroundColor: color,
-        side: color == null ? null : BorderSide(color: color, width: 2),
+        side: color == null
+            ? BorderSide(color: Theme.of(context).dividerColor)
+            : BorderSide(color: color, width: 2),
         backgroundColor: color?.withValues(alpha: 0.12),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       ),
       onPressed: onTap,
-      child: Text(label, style: const TextStyle(fontSize: 18)),
+      child: labelWidget,
     );
   }
 }

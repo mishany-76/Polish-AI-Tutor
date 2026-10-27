@@ -50,10 +50,6 @@ class _DictationScreenState extends ConsumerState<DictationScreen> {
   String _userSubmittedText = '';
   String? _detectedMistakeTip;
 
-  static const List<String> _polishDiacritics = [
-    'ą', 'ć', 'ę', 'ł', 'ń', 'ó', 'ś', 'ź', 'ż',
-  ];
-
   List<String> _currentLetterTiles = [];
 
   DictationItem? get _currentItem {
@@ -209,25 +205,6 @@ class _DictationScreenState extends ConsumerState<DictationScreen> {
       _textController.selection = TextSelection.collapsed(offset: _textController.text.length);
     }
     setState(() {});
-  }
-
-  void _insertDiacritic(String char) {
-    HapticFeedback.lightImpact();
-    final text = _textController.text;
-    final selection = _textController.selection;
-
-    if (selection.start >= 0 && selection.end >= 0) {
-      final newText = text.replaceRange(selection.start, selection.end, char);
-      final newPosition = selection.start + char.length;
-      _textController.value = TextEditingValue(
-        text: newText,
-        selection: TextSelection.collapsed(offset: newPosition),
-      );
-    } else {
-      _textController.text = text + char;
-      _textController.selection = TextSelection.collapsed(offset: _textController.text.length);
-    }
-    _focusNode.requestFocus();
   }
 
   void _checkAnswer() {
@@ -659,87 +636,48 @@ class _DictationScreenState extends ConsumerState<DictationScreen> {
                     ],
                   ),
                   const SizedBox(height: 8),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: [
-                      for (final char in _currentLetterTiles)
-                        InkWell(
-                          onTap: _isAnswerChecked ? null : () => _onLetterTileTap(char),
-                          borderRadius: BorderRadius.circular(10),
-                          child: Container(
-                            constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              color: AppTheme.bgWarmMilk,
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    physics: const BouncingScrollPhysics(),
+                    child: Row(
+                      children: [
+                        for (final char in _currentLetterTiles)
+                          Padding(
+                            padding: const EdgeInsets.only(right: 8),
+                            child: InkWell(
+                              onTap: _isAnswerChecked ? null : () => _onLetterTileTap(char),
                               borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: Colors.grey.shade300, width: 1.2),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.04),
-                                  blurRadius: 3,
-                                  offset: const Offset(0, 2),
+                              child: Container(
+                                constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
+                                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: AppTheme.bgWarmMilk,
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(color: Colors.grey.shade300, width: 1.2),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withValues(alpha: 0.04),
+                                      blurRadius: 3,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                            child: Text(
-                              char,
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black87,
+                                child: Text(
+                                  char,
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black87,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                    ],
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: 14),
                 ],
-
-                // 2. БЫСТРАЯ ПАНЕЛЬ ПОЛЬСКОЙ ДИАКРИТИКИ (ą, ć, ę, ł, ń, ó, ś, ź, ż)
-                Text(
-                  strings.dictationDiacriticsLabel,
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.grey.shade600,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: _polishDiacritics.map((char) {
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 6),
-                        child: InkWell(
-                          onTap: _isAnswerChecked ? null : () => _insertDiacritic(char),
-                          borderRadius: BorderRadius.circular(10),
-                          child: Container(
-                            width: 36,
-                            height: 36,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              color: AppTheme.surfaceWhite,
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: AppTheme.primaryCarmine.withValues(alpha: 0.3)),
-                            ),
-                            child: Text(
-                              char,
-                              style: const TextStyle(
-                                fontSize: 17,
-                                fontWeight: FontWeight.bold,
-                                color: AppTheme.primaryCarmine,
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                ),
               ],
             ),
           ),

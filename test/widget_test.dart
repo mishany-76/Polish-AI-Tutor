@@ -16,6 +16,7 @@ import 'package:polish_ai_tutor/features/scanner/word_analysis.dart';
 import 'package:polish_ai_tutor/features/dictation/dictation_item.dart';
 import 'package:polish_ai_tutor/features/dictation/dictation_service.dart';
 import 'package:polish_ai_tutor/features/dictionary/export_deck_service.dart';
+import 'package:polish_ai_tutor/features/tutor/scenarios.dart';
 import 'package:polish_ai_tutor/features/wrapped/monthly_stats_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -457,6 +458,58 @@ void main() {
       expect(csv, contains('"Opanowane","25"'));
       expect(csv, contains('"dywan","ковёр","rzeczownik","m"'));
       expect(csv, contains('"Tak","Nowe","0"'));
+    });
+  });
+
+  group('Scenarios & SubScenarios (Ролевые диалоги)', () {
+    test('Все 5 сценариев имеют уникальные ключи и под-сценарии', () {
+      expect(scenarios.length, 5);
+      final keys = scenarios.map((s) => s.key).toSet();
+      expect(keys.length, 5);
+      expect(keys, containsAll(['zabka', 'bank', 'cafe', 'doctor', 'urzad']));
+    });
+
+    test('Каждый из 15 под-сценариев имеет индивидуальную роль NPC, сеттинг и стартовые реплики', () {
+      var totalSub = 0;
+      for (final s in scenarios) {
+        expect(s.subScenarios.isNotEmpty, true, reason: 'Сценарий ${s.key} должен иметь под-сценарии');
+        for (final sub in s.subScenarios) {
+          totalSub++;
+          expect(sub.npcRole, isNotNull, reason: 'npcRole в ${sub.id} не должен быть null');
+          expect(sub.npcRole!.isNotEmpty, true);
+          expect(sub.setting, isNotNull, reason: 'setting в ${sub.id} не должен быть null');
+          expect(sub.setting!.isNotEmpty, true);
+          expect(sub.npcFirstInstruction, isNotNull, reason: 'npcFirstInstruction в ${sub.id} не должен быть null');
+          expect(sub.npcFirstInstruction!.isNotEmpty, true);
+          expect(sub.npcFirstStarterPl, isNotNull, reason: 'npcFirstStarterPl в ${sub.id} не должен быть null');
+          expect(sub.npcFirstStarterPl!.isNotEmpty, true);
+          expect(sub.starterHintPl.isNotEmpty, true, reason: 'starterHintPl в ${sub.id} не должен быть пустым');
+          expect(sub.plotTwist.isNotEmpty, true, reason: 'plotTwist в ${sub.id} не должен быть пустым');
+          expect(sub.vocab.isNotEmpty, true, reason: 'vocab в ${sub.id} не должен быть пустым');
+        }
+      }
+      expect(totalSub, 15, reason: 'Должно быть ровно 15 детализированных под-сценариев');
+    });
+
+    test('Специфика под-сценария Возврат/рекламация в Żabka', () {
+      final zabka = scenarios.firstWhere((s) => s.key == 'zabka');
+      final refund = zabka.subScenarios.firstWhere((sub) => sub.id == 'zabka_refund');
+      expect(refund.npcRole, contains('reklamacj'));
+      expect(refund.setting, contains('reklamacj'));
+      expect(refund.npcFirstStarterPl, contains('reklamacj'));
+      expect(refund.starterHintPl, contains('reklamacj'));
+    });
+
+    test('Специфика под-сценариев у врача и в аптеке', () {
+      final doctor = scenarios.firstWhere((s) => s.key == 'doctor');
+      final pharmacy = doctor.subScenarios.firstWhere((sub) => sub.id == 'doctor_pharmacy');
+      expect(pharmacy.npcRole, contains('farmacj'));
+      expect(pharmacy.npcFirstStarterPl, contains('e-recepty'));
+      expect(pharmacy.npcFirstStarterPl, contains('PESEL'));
+
+      final registry = doctor.subScenarios.firstWhere((sub) => sub.id == 'doctor_registry');
+      expect(registry.npcRole, contains('rejestratorka'));
+      expect(registry.npcFirstStarterPl, contains('zarejestrować'));
     });
   });
 }

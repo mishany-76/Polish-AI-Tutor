@@ -73,10 +73,16 @@ class _RoleplayScreenState extends ConsumerState<RoleplayScreen> {
   void initState() {
     super.initState();
     if (widget.initiator == DialogInitiator.npcFirst) {
-      _history.add(const ChatMessage(
-        'user',
-        'Zacznij scenę: przywitaj się jako twoja postać i zadaj pierwsze pytanie.',
-      ));
+      final sub = widget.subScenario;
+      final role = sub?.npcRole ?? widget.scenario.npcRole;
+      final instruction = sub?.npcFirstInstruction ??
+          'Zacznij scenę w roli: $role. Przywitaj się uprzejmie po polsku i zadaj pierwsze naturalne pytanie pasujące do tej sytuacji: ${sub?.titlePl ?? widget.scenario.titlePl}.';
+      final exampleStarter = sub?.npcFirstStarterPl;
+      final promptForNpc = exampleStarter != null
+          ? '$instruction (Przykładowa naturalna kwestia powitalna: "$exampleStarter").'
+          : instruction;
+
+      _history.add(ChatMessage('user', promptForNpc));
       WidgetsBinding.instance.addPostFrameCallback((_) => _requestNpc());
     }
   }
@@ -115,7 +121,7 @@ class _RoleplayScreenState extends ConsumerState<RoleplayScreen> {
     final targetLang = lang == UiLang.uk ? 'украинский (українська мова)' : 'русский (русский язык)';
     final uiName = lang == UiLang.uk ? 'украинском' : 'русском';
     final role = sub?.npcRole ?? s.npcRole;
-    final setting = sub?.setting != null ? '${s.setting}\n${sub!.setting}' : s.setting;
+    final setting = sub?.setting ?? s.setting;
 
     final subInfo = sub != null ? '''
 ПОДСЦЕНАРИЙ: ${sub.title(lang)}.
@@ -125,8 +131,8 @@ class _RoleplayScreenState extends ConsumerState<RoleplayScreen> {
 ''' : '';
 
     final initiatorRule = widget.initiator == DialogInitiator.userFirst
-        ? 'ИНИЦИАТИВА ДИАЛОГА: Ученик начинает разговор первым. Отвечай прямо на его обращение или вопрос вежливо и естественно.'
-        : 'ИНИЦИАТИВА ДИАЛОГА: Ты начинаешь диалог первым, здороваешься и задаешь вопрос клиенту/пациенту.';
+        ? 'ИНИЦИАТИВА ДИАЛОГА: Ученик начинает разговор первым (обращается к тебе в своей роли). Твоя задача — внимательно отреагировать на его слова в своей роли ($role) строго в рамках этой ситуации.'
+        : 'ИНИЦИАТИВА ДИАЛОГА: Ты начинаешь диалог первым в роли ($role). Первая реплика в истории — это техническая команда старта ("Zacznij scenę..."). В ответ на неё начни диалог: поздоровайся и задай вопрос строго по ситуации (${sub?.titlePl ?? s.titlePl}).';
 
     return '''
 Ты — «Kasia», добрый и терпеливый польский собеседник и репетитор. Ученик — взрослый человек, живущий в Польше.

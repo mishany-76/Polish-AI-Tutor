@@ -29,6 +29,17 @@ class QuizQuestion {
   final String explanation;
 }
 
+/// Очищает текст от технических номеров, решёток (#1, #6) и служебных пометок.
+String cleanDrillText(String s) {
+  return s
+      .replaceAll(RegExp(r'\s*#\s*\d+'), '')
+      .replaceAll(RegExp(r'\s*№\s*\d+'), '')
+      .replaceAll(RegExp(r'\s*\(употребление\s*#?\d*\)', caseSensitive: false), '')
+      .replaceAll(RegExp(r'\s*\(вживання\s*#?\d*\)', caseSensitive: false), '')
+      .replaceAll(RegExp(r'\s*w\s+kontekście\s*#?\d*', caseSensitive: false), '')
+      .trim();
+}
+
 QuizQuestion _make({
   required String id,
   required String prompt,
@@ -40,16 +51,18 @@ QuizQuestion _make({
   required String explanation,
   required Random rnd,
 }) {
-  final options = [correct, ...wrong]..shuffle(rnd);
+  final cleanCorrect = cleanDrillText(correct);
+  final cleanWrong = wrong.map(cleanDrillText).where((w) => w != cleanCorrect).toList();
+  final options = [cleanCorrect, ...cleanWrong]..shuffle(rnd);
   return QuizQuestion(
     id: id,
-    prompt: prompt,
-    promptSub: sub,
-    speakText: speak,
-    translation: translation,
+    prompt: cleanDrillText(prompt),
+    promptSub: sub != null ? cleanDrillText(sub) : null,
+    speakText: speak != null ? cleanDrillText(speak) : null,
+    translation: translation != null ? cleanDrillText(translation) : null,
     options: options,
-    correctIndex: options.indexOf(correct),
-    explanation: explanation,
+    correctIndex: options.indexOf(cleanCorrect),
+    explanation: cleanDrillText(explanation),
   );
 }
 

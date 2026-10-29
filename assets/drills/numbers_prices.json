@@ -1420,20 +1420,6 @@
     "promptPl": "💵 Піца Маргарита по акції:"
   },
   {
-    "id": "gen_price_19_90",
-    "spokenPl": "Dziewiętnaście złotych dziewięćdziesiąt groszy",
-    "correct": "19,90 zł",
-    "wrong": [
-      "29",
-      "90 zł",
-      "90",
-      "19 zł"
-    ],
-    "explainUk": "«Dziewiętnaście złotych dziewięćdziesiąt groszy» ➔ 19,90 zł.",
-    "explainRu": "«Dziewiętnaście złotych dziewięćdziesiąt groszy» ➔ 19,90 zł.",
-    "promptPl": "💵 Пачка кави меленої Lavazza 250г:"
-  },
-  {
     "id": "gen_price_21_40",
     "spokenPl": "Dwadzieścia jeden złotych czterdzieści groszy",
     "correct": "21,40 zł",
@@ -1610,18 +1596,6 @@
     "promptPl": "💵 Кошик продуктів на вихідні:"
   },
   {
-    "id": "gen_price_55_0",
-    "spokenPl": "Pięćdziesiąt pięć złotych",
-    "correct": "55 zł",
-    "wrong": [
-      "65 zł",
-      "75 zł"
-    ],
-    "explainUk": "«Pięćdziesiąt pięć złotych» ➔ 55 zł.",
-    "explainRu": "«Pięćdziesiąt pięć złotych» ➔ 55 zł.",
-    "promptPl": "💵 Чоловіча стрижка в барбершопі:"
-  },
-  {
     "id": "gen_price_59_90",
     "spokenPl": "Pięćdziesiąt dziewięć złotych dziewięćdziesiąt groszy",
     "correct": "59,90 zł",
@@ -1766,18 +1740,6 @@
     "explainUk": "«Sto dwanaście złotych pięćdziesiąt groszy» ➔ 112,50 zł.",
     "explainRu": "«Sto dwanaście złotych pięćdziesiąt groszy» ➔ 112,50 zł.",
     "promptPl": "💵 Щотижнева закупівля в Lidl:"
-  },
-  {
-    "id": "gen_price_125_0",
-    "spokenPl": "Sto dwadzieścia pięć złotych",
-    "correct": "125 zł",
-    "wrong": [
-      "25 zł",
-      "145 zł"
-    ],
-    "explainUk": "«Sto dwadzieścia pięć złotych» ➔ 125 zł.",
-    "explainRu": "«Sto dwadzieścia pięć złotych» ➔ 125 zł.",
-    "promptPl": "💵 Квиток на поїзд Pendolino експрес:"
   },
   {
     "id": "gen_price_139_90",
@@ -1988,18 +1950,6 @@
     "explainUk": "«Dziewięćset dziewięćdziesiąt złotych» ➔ 990 zł.",
     "explainRu": "«Dziewięćset dziewięćdziesiąt złotych» ➔ 990 zł.",
     "promptPl": "💵 Новий смартфон середнього класу:"
-  },
-  {
-    "id": "gen_price_1200_0",
-    "spokenPl": "Tysiąc dwieście złotych",
-    "correct": "1200 zł",
-    "wrong": [
-      "1100 zł",
-      "1220 zł"
-    ],
-    "explainUk": "«Tysiąc dwieście złotych» ➔ 1200 zł.",
-    "explainRu": "«Tysiąc dwieście złotych» ➔ 1200 zł.",
-    "promptPl": "💵 Ноутбук для роботи та навчання:"
   },
   {
     "id": "gen_price_1450_0",
@@ -5394,18 +5344,6 @@
     "promptPl": "💵 Рахунок у супермаркеті Biedronka:"
   },
   {
-    "id": "price_zab_1_49_1",
-    "spokenPl": "Jeden złoty czterdzieści dziewięć groszy",
-    "correct": "1,49 zł",
-    "wrong": [
-      "11,49 zł",
-      "1,79 zł"
-    ],
-    "explainUk": "«Jeden złoty czterdzieści dziewięć groszy» = 1,49 zł.",
-    "explainRu": "«Jeden złoty czterdzieści dziewięć groszy» = 1,49 zł.",
-    "promptPl": "💵 Чек у магазині Żabka:"
-  },
-  {
     "id": "price_apt_1_50_2",
     "spokenPl": "Jeden złoty pięćdziesiąt groszy",
     "correct": "1,50 zł",
@@ -5454,18 +5392,6 @@
     "promptPl": "💵 Оплата залізничного квитка PKP:"
   },
   {
-    "id": "price_clo_1_99_6",
-    "spokenPl": "Jeden złoty dziewięćdziesiąt dziewięć groszy",
-    "correct": "1,99 zł",
-    "wrong": [
-      "11,99 zł",
-      "1,29 zł"
-    ],
-    "explainUk": "«Jeden złoty dziewięćdziesiąt dziewięć groszy» = 1,99 zł.",
-    "explainRu": "«Jeden złoty dziewięćdziesiąt dziewięć groszy» = 1,99 zł.",
-    "promptPl": "💵 Покупка одягу в магазині:"
-  },
-  {
     "id": "price_caf_2_20_7",
     "spokenPl": "Dwa złote dwadzieścia groszy",
     "correct": "2,20 zł",
@@ -5476,18 +5402,6 @@
     "explainUk": "«Dwa złote dwadzieścia groszy» = 2,20 zł.",
     "explainRu": "«Dwa złote dwadzieścia groszy» = 2,20 zł.",
     "promptPl": "💵 Оплата кави та випічки в кав'ярні:"
-  },
-  {
-    "id": "price_bie_2_49_8",
-    "spokenPl": "Dwa złote czterdzieści dziewięć groszy",
-    "correct": "2,49 zł",
-    "wrong": [
-      "12,49 zł",
-      "2,79 zł"
-    ],
-    "explainUk": "«Dwa złote czterdzieści dziewięć groszy» = 2,49 zł.",
-    "explainRu": "«Dwa złote czterdzieści dziewięć groszy» = 2,49 zł.",
-    "promptPl": "💵 Рахунок у супермаркеті Biedronka:"
   },
   {
     "id": "price_zab_2_50_9",
@@ -5562,18 +5476,6 @@
     "promptPl": "💵 Покупка одягу в магазині:"
   },
   {
-    "id": "price_caf_3_49_15",
-    "spokenPl": "Trzy złote czterdzieści dziewięć groszy",
-    "correct": "3,49 zł",
-    "wrong": [
-      "13,49 zł",
-      "3,79 zł"
-    ],
-    "explainUk": "«Trzy złote czterdzieści dziewięć groszy» = 3,49 zł.",
-    "explainRu": "«Trzy złote czterdzieści dziewięć groszy» = 3,49 zł.",
-    "promptPl": "💵 Оплата кави та випічки в кав'ярні:"
-  },
-  {
     "id": "price_bie_3_50_16",
     "spokenPl": "Trzy złote pięćdziesiąt groszy",
     "correct": "3,50 zł",
@@ -5584,30 +5486,6 @@
     "explainUk": "«Trzy złote pięćdziesiąt groszy» = 3,50 zł.",
     "explainRu": "«Trzy złote pięćdziesiąt groszy» = 3,50 zł.",
     "promptPl": "💵 Рахунок у супермаркеті Biedronka:"
-  },
-  {
-    "id": "price_zab_3_75_17",
-    "spokenPl": "Trzy złote siedemdziesiąt pięć groszy",
-    "correct": "3,75 zł",
-    "wrong": [
-      "13,75 zł",
-      "3,05 zł"
-    ],
-    "explainUk": "«Trzy złote siedemdziesiąt pięć groszy» = 3,75 zł.",
-    "explainRu": "«Trzy złote siedemdziesiąt pięć groszy» = 3,75 zł.",
-    "promptPl": "💵 Чек у магазині Żabka:"
-  },
-  {
-    "id": "price_apt_3_80_18",
-    "spokenPl": "Trzy złote osiemdziesiąt groszy",
-    "correct": "3,80 zł",
-    "wrong": [
-      "13,80 zł",
-      "3,10 zł"
-    ],
-    "explainUk": "«Trzy złote osiemdziesiąt groszy» = 3,80 zł.",
-    "explainRu": "«Trzy złote osiemdziesiąt groszy» = 3,80 zł.",
-    "promptPl": "💵 Оплата за ліки в аптеці:"
   },
   {
     "id": "price_res_3_90_19",
@@ -5658,18 +5536,6 @@
     "promptPl": "💵 Покупка одягу в магазині:"
   },
   {
-    "id": "price_caf_4_50_23",
-    "spokenPl": "Cztery złote pięćdziesiąt groszy",
-    "correct": "4,50 zł",
-    "wrong": [
-      "14,50 zł",
-      "4,80 zł"
-    ],
-    "explainUk": "«Cztery złote pięćdziesiąt groszy» = 4,50 zł.",
-    "explainRu": "«Cztery złote pięćdziesiąt groszy» = 4,50 zł.",
-    "promptPl": "💵 Оплата кави та випічки в кав'ярні:"
-  },
-  {
     "id": "price_bie_4_75_24",
     "spokenPl": "Cztery złote siedemdziesiąt pięć groszy",
     "correct": "4,75 zł",
@@ -5704,18 +5570,6 @@
     "explainUk": "«Cztery złote dziewięćdziesiąt groszy» = 4,90 zł.",
     "explainRu": "«Cztery złote dziewięćdziesiąt groszy» = 4,90 zł.",
     "promptPl": "💵 Оплата за ліки в аптеці:"
-  },
-  {
-    "id": "price_res_4_99_27",
-    "spokenPl": "Cztery złote dziewięćdziesiąt dziewięć groszy",
-    "correct": "4,99 zł",
-    "wrong": [
-      "14,99 zł",
-      "4,29 zł"
-    ],
-    "explainUk": "«Cztery złote dziewięćdziesiąt dziewięć groszy» = 4,99 zł.",
-    "explainRu": "«Cztery złote dziewięćdziesiąt dziewięć groszy» = 4,99 zł.",
-    "promptPl": "💵 Рахунок за вечерю в ресторані:"
   },
   {
     "id": "price_orl_5_20_28",
@@ -5766,18 +5620,6 @@
     "promptPl": "💵 Оплата кави та випічки в кав'ярні:"
   },
   {
-    "id": "price_bie_5_80_32",
-    "spokenPl": "Pięć złotych osiemdziesiąt groszy",
-    "correct": "5,80 zł",
-    "wrong": [
-      "15,80 zł",
-      "5,10 zł"
-    ],
-    "explainUk": "«Pięć złotych osiemdziesiąt groszy» = 5,80 zł.",
-    "explainRu": "«Pięć złotych osiemdziesiąt groszy» = 5,80 zł.",
-    "promptPl": "💵 Рахунок у супермаркеті Biedronka:"
-  },
-  {
     "id": "price_zab_5_90_33",
     "spokenPl": "Pięć złotych dziewięćdziesiąt groszy",
     "correct": "5,90 zł",
@@ -5802,18 +5644,6 @@
     "promptPl": "💵 Оплата за ліки в аптеці:"
   },
   {
-    "id": "price_res_6_20_35",
-    "spokenPl": "Sześć złotych dwadzieścia groszy",
-    "correct": "6,20 zł",
-    "wrong": [
-      "16,20 zł",
-      "6,50 zł"
-    ],
-    "explainUk": "«Sześć złotych dwadzieścia groszy» = 6,20 zł.",
-    "explainRu": "«Sześć złotych dwadzieścia groszy» = 6,20 zł.",
-    "promptPl": "💵 Рахунок за вечерю в ресторані:"
-  },
-  {
     "id": "price_orl_6_49_36",
     "spokenPl": "Sześć złotych czterdzieści dziewięć groszy",
     "correct": "6,49 zł",
@@ -5824,18 +5654,6 @@
     "explainUk": "«Sześć złotych czterdzieści dziewięć groszy» = 6,49 zł.",
     "explainRu": "«Sześć złotych czterdzieści dziewięć groszy» = 6,49 zł.",
     "promptPl": "💵 Чек за пальне на АЗС Orlen:"
-  },
-  {
-    "id": "price_pkp_6_50_37",
-    "spokenPl": "Sześć złotych pięćdziesiąt groszy",
-    "correct": "6,50 zł",
-    "wrong": [
-      "16,50 zł",
-      "6,80 zł"
-    ],
-    "explainUk": "«Sześć złotych pięćdziesiąt groszy» = 6,50 zł.",
-    "explainRu": "«Sześć złotych pięćdziesiąt groszy» = 6,50 zł.",
-    "promptPl": "💵 Оплата залізничного квитка PKP:"
   },
   {
     "id": "price_clo_6_75_38",
@@ -5872,42 +5690,6 @@
     "explainUk": "«Sześć złotych dziewięćdziesiąt groszy» = 6,90 zł.",
     "explainRu": "«Sześć złotych dziewięćdziesiąt groszy» = 6,90 zł.",
     "promptPl": "💵 Рахунок у супермаркеті Biedronka:"
-  },
-  {
-    "id": "price_zab_6_99_41",
-    "spokenPl": "Sześć złotych dziewięćdziesiąt dziewięć groszy",
-    "correct": "6,99 zł",
-    "wrong": [
-      "16,99 zł",
-      "6,29 zł"
-    ],
-    "explainUk": "«Sześć złotych dziewięćdziesiąt dziewięć groszy» = 6,99 zł.",
-    "explainRu": "«Sześć złotych dziewięćdziesiąt dziewięć groszy» = 6,99 zł.",
-    "promptPl": "💵 Чек у магазині Żabka:"
-  },
-  {
-    "id": "price_apt_7_20_42",
-    "spokenPl": "Siedem złotych dwadzieścia groszy",
-    "correct": "7,20 zł",
-    "wrong": [
-      "17,20 zł",
-      "7,50 zł"
-    ],
-    "explainUk": "«Siedem złotych dwadzieścia groszy» = 7,20 zł.",
-    "explainRu": "«Siedem złotych dwadzieścia groszy» = 7,20 zł.",
-    "promptPl": "💵 Оплата за ліки в аптеці:"
-  },
-  {
-    "id": "price_res_7_49_43",
-    "spokenPl": "Siedem złotych czterdzieści dziewięć groszy",
-    "correct": "7,49 zł",
-    "wrong": [
-      "17,49 zł",
-      "7,79 zł"
-    ],
-    "explainUk": "«Siedem złotych czterdzieści dziewięć groszy» = 7,49 zł.",
-    "explainRu": "«Siedem złotych czterdzieści dziewięć groszy» = 7,49 zł.",
-    "promptPl": "💵 Рахунок за вечерю в ресторані:"
   },
   {
     "id": "price_orl_7_50_44",
@@ -6030,30 +5812,6 @@
     "promptPl": "💵 Оплата залізничного квитка PKP:"
   },
   {
-    "id": "price_clo_8_90_54",
-    "spokenPl": "Osiem złotych dziewięćdziesiąt groszy",
-    "correct": "8,90 zł",
-    "wrong": [
-      "18,90 zł",
-      "8,20 zł"
-    ],
-    "explainUk": "«Osiem złotych dziewięćdziesiąt groszy» = 8,90 zł.",
-    "explainRu": "«Osiem złotych dziewięćdziesiąt groszy» = 8,90 zł.",
-    "promptPl": "💵 Покупка одягу в магазині:"
-  },
-  {
-    "id": "price_caf_8_99_55",
-    "spokenPl": "Osiem złotych dziewięćdziesiąt dziewięć groszy",
-    "correct": "8,99 zł",
-    "wrong": [
-      "18,99 zł",
-      "8,29 zł"
-    ],
-    "explainUk": "«Osiem złotych dziewięćdziesiąt dziewięć groszy» = 8,99 zł.",
-    "explainRu": "«Osiem złotych dziewięćdziesiąt dziewięć groszy» = 8,99 zł.",
-    "promptPl": "💵 Оплата кави та випічки в кав'ярні:"
-  },
-  {
     "id": "price_bie_9_20_56",
     "spokenPl": "Dziewięć złotych dwadzieścia groszy",
     "correct": "9,20 zł",
@@ -6078,18 +5836,6 @@
     "promptPl": "💵 Чек у магазині Żabka:"
   },
   {
-    "id": "price_apt_9_50_58",
-    "spokenPl": "Dziewięć złotych pięćdziesiąt groszy",
-    "correct": "9,50 zł",
-    "wrong": [
-      "19,50 zł",
-      "9,80 zł"
-    ],
-    "explainUk": "«Dziewięć złotych pięćdziesiąt groszy» = 9,50 zł.",
-    "explainRu": "«Dziewięć złotych pięćdziesiąt groszy» = 9,50 zł.",
-    "promptPl": "💵 Оплата за ліки в аптеці:"
-  },
-  {
     "id": "price_res_9_75_59",
     "spokenPl": "Dziewięć złotych siedemdziesiąt pięć groszy",
     "correct": "9,75 zł",
@@ -6102,18 +5848,6 @@
     "promptPl": "💵 Рахунок за вечерю в ресторані:"
   },
   {
-    "id": "price_orl_9_80_60",
-    "spokenPl": "Dziewięć złotych osiemdziesiąt groszy",
-    "correct": "9,80 zł",
-    "wrong": [
-      "19,80 zł",
-      "9,10 zł"
-    ],
-    "explainUk": "«Dziewięć złotych osiemdziesiąt groszy» = 9,80 zł.",
-    "explainRu": "«Dziewięć złotych osiemdziesiąt groszy» = 9,80 zł.",
-    "promptPl": "💵 Чек за пальне на АЗС Orlen:"
-  },
-  {
     "id": "price_pkp_9_90_61",
     "spokenPl": "Dziewięć złotych dziewięćdziesiąt groszy",
     "correct": "9,90 zł",
@@ -6124,18 +5858,6 @@
     "explainUk": "«Dziewięć złotych dziewięćdziesiąt groszy» = 9,90 zł.",
     "explainRu": "«Dziewięć złotych dziewięćdziesiąt groszy» = 9,90 zł.",
     "promptPl": "💵 Оплата залізничного квитка PKP:"
-  },
-  {
-    "id": "price_clo_9_99_62",
-    "spokenPl": "Dziewięć złotych dziewięćdziesiąt dziewięć groszy",
-    "correct": "9,99 zł",
-    "wrong": [
-      "19,99 zł",
-      "9,29 zł"
-    ],
-    "explainUk": "«Dziewięć złotych dziewięćdziesiąt dziewięć groszy» = 9,99 zł.",
-    "explainRu": "«Dziewięć złotych dziewięćdziesiąt dziewięć groszy» = 9,99 zł.",
-    "promptPl": "💵 Покупка одягу в магазині:"
   },
   {
     "id": "price_caf_10_20_63",
@@ -6210,18 +5932,6 @@
     "promptPl": "💵 Чек за пальне на АЗС Orlen:"
   },
   {
-    "id": "price_pkp_10_99_69",
-    "spokenPl": "Dziesięć złotych dziewięćdziesiąt dziewięć groszy",
-    "correct": "10,99 zł",
-    "wrong": [
-      "20,99 zł",
-      "10,29 zł"
-    ],
-    "explainUk": "«Dziesięć złotych dziewięćdziesiąt dziewięć groszy» = 10,99 zł.",
-    "explainRu": "«Dziesięć złotych dziewięćdziesiąt dziewięć groszy» = 10,99 zł.",
-    "promptPl": "💵 Оплата залізничного квитка PKP:"
-  },
-  {
     "id": "price_clo_11_20_70",
     "spokenPl": "Jedenaście złotych dwadzieścia groszy",
     "correct": "11,20 zł",
@@ -6294,30 +6004,6 @@
     "promptPl": "💵 Рахунок за вечерю в ресторані:"
   },
   {
-    "id": "price_orl_11_99_76",
-    "spokenPl": "Jedenaście złotych dziewięćdziesiąt dziewięć groszy",
-    "correct": "11,99 zł",
-    "wrong": [
-      "21,99 zł",
-      "11,29 zł"
-    ],
-    "explainUk": "«Jedenaście złotych dziewięćdziesiąt dziewięć groszy» = 11,99 zł.",
-    "explainRu": "«Jedenaście złotych dziewięćdziesiąt dziewięć groszy» = 11,99 zł.",
-    "promptPl": "💵 Чек за пальне на АЗС Orlen:"
-  },
-  {
-    "id": "price_pkp_12_20_77",
-    "spokenPl": "Dwanaście złotych dwadzieścia groszy",
-    "correct": "12,20 zł",
-    "wrong": [
-      "22,20 zł",
-      "12,50 zł"
-    ],
-    "explainUk": "«Dwanaście złotych dwadzieścia groszy» = 12,20 zł.",
-    "explainRu": "«Dwanaście złotych dwadzieścia groszy» = 12,20 zł.",
-    "promptPl": "💵 Оплата залізничного квитка PKP:"
-  },
-  {
     "id": "price_clo_12_49_78",
     "spokenPl": "Dwanaście złotych czterdzieści dziewięć groszy",
     "correct": "12,49 zł",
@@ -6328,18 +6014,6 @@
     "explainUk": "«Dwanaście złotych czterdzieści dziewięć groszy» = 12,49 zł.",
     "explainRu": "«Dwanaście złotych czterdzieści dziewięć groszy» = 12,49 zł.",
     "promptPl": "💵 Покупка одягу в магазині:"
-  },
-  {
-    "id": "price_caf_12_50_79",
-    "spokenPl": "Dwanaście złotych pięćdziesiąt groszy",
-    "correct": "12,50 zł",
-    "wrong": [
-      "22,50 zł",
-      "12,80 zł"
-    ],
-    "explainUk": "«Dwanaście złotych pięćdziesiąt groszy» = 12,50 zł.",
-    "explainRu": "«Dwanaście złotych pięćdziesiąt groszy» = 12,50 zł.",
-    "promptPl": "💵 Оплата кави та випічки в кав'ярні:"
   },
   {
     "id": "price_bie_12_75_80",
@@ -6402,18 +6076,6 @@
     "promptPl": "💵 Чек за пальне на АЗС Orlen:"
   },
   {
-    "id": "price_pkp_13_49_85",
-    "spokenPl": "Trzynaście złotych czterdzieści dziewięć groszy",
-    "correct": "13,49 zł",
-    "wrong": [
-      "23,49 zł",
-      "13,79 zł"
-    ],
-    "explainUk": "«Trzynaście złotych czterdzieści dziewięć groszy» = 13,49 zł.",
-    "explainRu": "«Trzynaście złotych czterdzieści dziewięć groszy» = 13,49 zł.",
-    "promptPl": "💵 Оплата залізничного квитка PKP:"
-  },
-  {
     "id": "price_clo_13_50_86",
     "spokenPl": "Trzynaście złotych pięćdziesiąt groszy",
     "correct": "13,50 zł",
@@ -6438,18 +6100,6 @@
     "promptPl": "💵 Оплата кави та випічки в кав'ярні:"
   },
   {
-    "id": "price_bie_13_80_88",
-    "spokenPl": "Trzynaście złotych osiemdziesiąt groszy",
-    "correct": "13,80 zł",
-    "wrong": [
-      "23,80 zł",
-      "13,10 zł"
-    ],
-    "explainUk": "«Trzynaście złotych osiemdziesiąt groszy» = 13,80 zł.",
-    "explainRu": "«Trzynaście złotych osiemdziesiąt groszy» = 13,80 zł.",
-    "promptPl": "💵 Рахунок у супермаркеті Biedronka:"
-  },
-  {
     "id": "price_zab_13_90_89",
     "spokenPl": "Trzynaście złotych dziewięćdziesiąt groszy",
     "correct": "13,90 zł",
@@ -6472,18 +6122,6 @@
     "explainUk": "«Trzynaście złotych dziewięćdziesiąt dziewięć groszy» = 13,99 zł.",
     "explainRu": "«Trzynaście złotych dziewięćdziesiąt dziewięć groszy» = 13,99 zł.",
     "promptPl": "💵 Оплата за ліки в аптеці:"
-  },
-  {
-    "id": "price_res_14_20_91",
-    "spokenPl": "Czternaście złotych dwadzieścia groszy",
-    "correct": "14,20 zł",
-    "wrong": [
-      "24,20 zł",
-      "14,50 zł"
-    ],
-    "explainUk": "«Czternaście złotych dwadzieścia groszy» = 14,20 zł.",
-    "explainRu": "«Czternaście złotych dwadzieścia groszy» = 14,20 zł.",
-    "promptPl": "💵 Рахунок за вечерю в ресторані:"
   },
   {
     "id": "price_orl_14_49_92",
@@ -6522,18 +6160,6 @@
     "promptPl": "💵 Покупка одягу в магазині:"
   },
   {
-    "id": "price_caf_14_80_95",
-    "spokenPl": "Czternaście złotych osiemdziesiąt groszy",
-    "correct": "14,80 zł",
-    "wrong": [
-      "24,80 zł",
-      "14,10 zł"
-    ],
-    "explainUk": "«Czternaście złotych osiemdziesiąt groszy» = 14,80 zł.",
-    "explainRu": "«Czternaście złotych osiemdziesiąt groszy» = 14,80 zł.",
-    "promptPl": "💵 Оплата кави та випічки в кав'ярні:"
-  },
-  {
     "id": "price_bie_14_90_96",
     "spokenPl": "Czternaście złotych dziewięćdziesiąt groszy",
     "correct": "14,90 zł",
@@ -6544,18 +6170,6 @@
     "explainUk": "«Czternaście złotych dziewięćdziesiąt groszy» = 14,90 zł.",
     "explainRu": "«Czternaście złotych dziewięćdziesiąt groszy» = 14,90 zł.",
     "promptPl": "💵 Рахунок у супермаркеті Biedronka:"
-  },
-  {
-    "id": "price_zab_14_99_97",
-    "spokenPl": "Czternaście złotych dziewięćdziesiąt dziewięć groszy",
-    "correct": "14,99 zł",
-    "wrong": [
-      "24,99 zł",
-      "14,29 zł"
-    ],
-    "explainUk": "«Czternaście złotych dziewięćdziesiąt dziewięć groszy» = 14,99 zł.",
-    "explainRu": "«Czternaście złotych dziewięćdziesiąt dziewięć groszy» = 14,99 zł.",
-    "promptPl": "💵 Чек у магазині Żabka:"
   },
   {
     "id": "price_apt_15_20_98",
@@ -6580,18 +6194,6 @@
     "explainUk": "«Piętnaście złotych czterdzieści dziewięć groszy» = 15,49 zł.",
     "explainRu": "«Piętnaście złotych czterdzieści dziewięć groszy» = 15,49 zł.",
     "promptPl": "💵 Рахунок за вечерю в ресторані:"
-  },
-  {
-    "id": "price_orl_15_50_100",
-    "spokenPl": "Piętnaście złotych pięćdziesiąt groszy",
-    "correct": "15,50 zł",
-    "wrong": [
-      "25,50 zł",
-      "15,80 zł"
-    ],
-    "explainUk": "«Piętnaście złotych pięćdziesiąt groszy» = 15,50 zł.",
-    "explainRu": "«Piętnaście złotych pięćdziesiąt groszy» = 15,50 zł.",
-    "promptPl": "💵 Чек за пальне на АЗС Orlen:"
   },
   {
     "id": "price_pkp_15_75_101",
@@ -6664,18 +6266,6 @@
     "explainUk": "«Szesnaście złotych czterdzieści dziewięć groszy» = 16,49 zł.",
     "explainRu": "«Szesnaście złotych czterdzieści dziewięć groszy» = 16,49 zł.",
     "promptPl": "💵 Оплата за ліки в аптеці:"
-  },
-  {
-    "id": "price_res_16_50_107",
-    "spokenPl": "Szesnaście złotych pięćdziesiąt groszy",
-    "correct": "16,50 zł",
-    "wrong": [
-      "26,50 zł",
-      "16,80 zł"
-    ],
-    "explainUk": "«Szesnaście złotych pięćdziesiąt groszy» = 16,50 zł.",
-    "explainRu": "«Szesnaście złotych pięćdziesiąt groszy» = 16,50 zł.",
-    "promptPl": "💵 Рахунок за вечерю в ресторані:"
   },
   {
     "id": "price_orl_16_75_108",
@@ -6834,18 +6424,6 @@
     "promptPl": "💵 Рахунок у супермаркеті Biedronka:"
   },
   {
-    "id": "price_zab_18_50_121",
-    "spokenPl": "Osiemnaście złotych pięćdziesiąt groszy",
-    "correct": "18,50 zł",
-    "wrong": [
-      "28,50 zł",
-      "18,80 zł"
-    ],
-    "explainUk": "«Osiemnaście złotych pięćdziesiąt groszy» = 18,50 zł.",
-    "explainRu": "«Osiemnaście złotych pięćdziesiąt groszy» = 18,50 zł.",
-    "promptPl": "💵 Чек у магазині Żabka:"
-  },
-  {
     "id": "price_apt_18_75_122",
     "spokenPl": "Osiemnaście złotych siedemdziesiąt pięć groszy",
     "correct": "18,75 zł",
@@ -6856,18 +6434,6 @@
     "explainUk": "«Osiemnaście złotych siedemdziesiąt pięć groszy» = 18,75 zł.",
     "explainRu": "«Osiemnaście złotych siedemdziesiąt pięć groszy» = 18,75 zł.",
     "promptPl": "💵 Оплата за ліки в аптеці:"
-  },
-  {
-    "id": "price_res_18_80_123",
-    "spokenPl": "Osiemnaście złotych osiemdziesiąt groszy",
-    "correct": "18,80 zł",
-    "wrong": [
-      "28,80 zł",
-      "18,10 zł"
-    ],
-    "explainUk": "«Osiemnaście złotych osiemdziesiąt groszy» = 18,80 zł.",
-    "explainRu": "«Osiemnaście złotych osiemdziesiąt groszy» = 18,80 zł.",
-    "promptPl": "💵 Рахунок за вечерю в ресторані:"
   },
   {
     "id": "price_orl_18_90_124",
@@ -6952,18 +6518,6 @@
     "explainUk": "«Dziewiętnaście złotych osiemdziesiąt groszy» = 19,80 zł.",
     "explainRu": "«Dziewiętnaście złotych osiemdziesiąt groszy» = 19,80 zł.",
     "promptPl": "💵 Оплата за ліки в аптеці:"
-  },
-  {
-    "id": "price_res_19_90_131",
-    "spokenPl": "Dziewiętnaście złotych dziewięćdziesiąt groszy",
-    "correct": "19,90 zł",
-    "wrong": [
-      "29,90 zł",
-      "19,20 zł"
-    ],
-    "explainUk": "«Dziewiętnaście złotych dziewięćdziesiąt groszy» = 19,90 zł.",
-    "explainRu": "«Dziewiętnaście złotych dziewięćdziesiąt groszy» = 19,90 zł.",
-    "promptPl": "💵 Рахунок за вечерю в ресторані:"
   },
   {
     "id": "price_orl_19_99_132",
@@ -7206,18 +6760,6 @@
     "promptPl": "💵 Оплата кави та випічки в кав'ярні:"
   },
   {
-    "id": "price_bie_22_90_152",
-    "spokenPl": "Dwadzieścia dwa złote dziewięćdziesiąt groszy",
-    "correct": "22,90 zł",
-    "wrong": [
-      "32,90 zł",
-      "22,20 zł"
-    ],
-    "explainUk": "«Dwadzieścia dwa złote dziewięćdziesiąt groszy» = 22,90 zł.",
-    "explainRu": "«Dwadzieścia dwa złote dziewięćdziesiąt groszy» = 22,90 zł.",
-    "promptPl": "💵 Рахунок у супермаркеті Biedronka:"
-  },
-  {
     "id": "price_zab_22_99_153",
     "spokenPl": "Dwadzieścia dwa złote dziewięćdziesiąt dziewięć groszy",
     "correct": "22,99 zł",
@@ -7384,18 +6926,6 @@
     "explainUk": "«Dwadzieścia cztery złote dziewięćdziesiąt groszy» = 24,90 zł.",
     "explainRu": "«Dwadzieścia cztery złote dziewięćdziesiąt groszy» = 24,90 zł.",
     "promptPl": "💵 Покупка одягу в магазині:"
-  },
-  {
-    "id": "price_caf_24_99_167",
-    "spokenPl": "Dwadzieścia cztery złote dziewięćdziesiąt dziewięć groszy",
-    "correct": "24,99 zł",
-    "wrong": [
-      "34,99 zł",
-      "24,29 zł"
-    ],
-    "explainUk": "«Dwadzieścia cztery złote dziewięćdziesiąt dziewięć groszy» = 24,99 zł.",
-    "explainRu": "«Dwadzieścia cztery złote dziewięćdziesiąt dziewięć groszy» = 24,99 zł.",
-    "promptPl": "💵 Оплата кави та випічки в кав'ярні:"
   },
   {
     "id": "price_bie_25_20_168",
@@ -7614,18 +7144,6 @@
     "promptPl": "💵 Чек у магазині Żabka:"
   },
   {
-    "id": "price_apt_27_80_186",
-    "spokenPl": "Dwadzieścia siedem złotych osiemdziesiąt groszy",
-    "correct": "27,80 zł",
-    "wrong": [
-      "37,80 zł",
-      "27,10 zł"
-    ],
-    "explainUk": "«Dwadzieścia siedem złotych osiemdziesiąt groszy» = 27,80 zł.",
-    "explainRu": "«Dwadzieścia siedem złotych osiemdziesiąt groszy» = 27,80 zł.",
-    "promptPl": "💵 Оплата за ліки в аптеці:"
-  },
-  {
     "id": "price_res_27_90_187",
     "spokenPl": "Dwadzieścia siedem złotych dziewięćdziesiąt groszy",
     "correct": "27,90 zł",
@@ -7806,18 +7324,6 @@
     "promptPl": "💵 Чек у магазині Żabka:"
   },
   {
-    "id": "price_apt_29_99_202",
-    "spokenPl": "Dwadzieścia dziewięć złotych dziewięćdziesiąt dziewięć groszy",
-    "correct": "29,99 zł",
-    "wrong": [
-      "39,99 zł",
-      "29,29 zł"
-    ],
-    "explainUk": "«Dwadzieścia dziewięć złotych dziewięćdziesiąt dziewięć groszy» = 29,99 zł.",
-    "explainRu": "«Dwadzieścia dziewięć złotych dziewięćdziesiąt dziewięć groszy» = 29,99 zł.",
-    "promptPl": "💵 Оплата за ліки в аптеці:"
-  },
-  {
     "id": "price_res_30_20_203",
     "spokenPl": "Trzydzieści złotych dwadzieścia groszy",
     "correct": "30,20 zł",
@@ -7926,18 +7432,6 @@
     "promptPl": "💵 Рахунок за вечерю в ресторані:"
   },
   {
-    "id": "price_orl_31_50_212",
-    "spokenPl": "Trzydzieści jeden złotych pięćdziesiąt groszy",
-    "correct": "31,50 zł",
-    "wrong": [
-      "41,50 zł",
-      "31,80 zł"
-    ],
-    "explainUk": "«Trzydzieści jeden złotych pięćdziesiąt groszy» = 31,50 zł.",
-    "explainRu": "«Trzydzieści jeden złotych pięćdziesiąt groszy» = 31,50 zł.",
-    "promptPl": "💵 Чек за пальне на АЗС Orlen:"
-  },
-  {
     "id": "price_pkp_31_75_213",
     "spokenPl": "Trzydzieści jeden złotych siedemdziesiąt pięć groszy",
     "correct": "31,75 zł",
@@ -8044,18 +7538,6 @@
     "explainUk": "«Trzydzieści dwa złote osiemdziesiąt groszy» = 32,80 zł.",
     "explainRu": "«Trzydzieści dwa złote osiemdziesiąt groszy» = 32,80 zł.",
     "promptPl": "💵 Оплата залізничного квитка PKP:"
-  },
-  {
-    "id": "price_clo_32_90_222",
-    "spokenPl": "Trzydzieści dwa złote dziewięćdziesiąt groszy",
-    "correct": "32,90 zł",
-    "wrong": [
-      "42,90 zł",
-      "32,20 zł"
-    ],
-    "explainUk": "«Trzydzieści dwa złote dziewięćdziesiąt groszy» = 32,90 zł.",
-    "explainRu": "«Trzydzieści dwa złote dziewięćdziesiąt groszy» = 32,90 zł.",
-    "promptPl": "💵 Покупка одягу в магазині:"
   },
   {
     "id": "price_caf_32_99_223",
@@ -8262,18 +7744,6 @@
     "promptPl": "💵 Оплата кави та випічки в кав'ярні:"
   },
   {
-    "id": "price_bie_35_50_240",
-    "spokenPl": "Trzydzieści pięć złotych pięćdziesiąt groszy",
-    "correct": "35,50 zł",
-    "wrong": [
-      "45,50 zł",
-      "35,80 zł"
-    ],
-    "explainUk": "«Trzydzieści pięć złotych pięćdziesiąt groszy» = 35,50 zł.",
-    "explainRu": "«Trzydzieści pięć złotych pięćdziesiąt groszy» = 35,50 zł.",
-    "promptPl": "💵 Рахунок у супермаркеті Biedronka:"
-  },
-  {
     "id": "price_zab_35_75_241",
     "spokenPl": "Trzydzieści pięć złotych siedemdziesiąt pięć groszy",
     "correct": "35,75 zł",
@@ -8368,18 +7838,6 @@
     "explainUk": "«Trzydzieści sześć złotych siedemdziesiąt pięć groszy» = 36,75 zł.",
     "explainRu": "«Trzydzieści sześć złotych siedemdziesiąt pięć groszy» = 36,75 zł.",
     "promptPl": "💵 Рахунок у супермаркеті Biedronka:"
-  },
-  {
-    "id": "price_zab_36_80_249",
-    "spokenPl": "Trzydzieści sześć złotych osiemdziesiąt groszy",
-    "correct": "36,80 zł",
-    "wrong": [
-      "46,80 zł",
-      "36,10 zł"
-    ],
-    "explainUk": "«Trzydzieści sześć złotych osiemdziesiąt groszy» = 36,80 zł.",
-    "explainRu": "«Trzydzieści sześć złotych osiemdziesiąt groszy» = 36,80 zł.",
-    "promptPl": "💵 Чек у магазині Żabka:"
   },
   {
     "id": "price_apt_36_90_250",
@@ -8634,18 +8092,6 @@
     "promptPl": "💵 Покупка одягу в магазині:"
   },
   {
-    "id": "price_caf_39_90_271",
-    "spokenPl": "Trzydzieści dziewięć złotych dziewięćdziesiąt groszy",
-    "correct": "39,90 zł",
-    "wrong": [
-      "49,90 zł",
-      "39,20 zł"
-    ],
-    "explainUk": "«Trzydzieści dziewięć złotych dziewięćdziesiąt groszy» = 39,90 zł.",
-    "explainRu": "«Trzydzieści dziewięć złotych dziewięćdziesiąt groszy» = 39,90 zł.",
-    "promptPl": "💵 Оплата кави та випічки в кав'ярні:"
-  },
-  {
     "id": "price_bie_39_99_272",
     "spokenPl": "Trzydzieści dziewięć złotych dziewięćdziesiąt dziewięć groszy",
     "correct": "39,99 zł",
@@ -8848,18 +8294,6 @@
     "explainUk": "«Czterdzieści dwa złote czterdzieści dziewięć groszy» = 42,49 zł.",
     "explainRu": "«Czterdzieści dwa złote czterdzieści dziewięć groszy» = 42,49 zł.",
     "promptPl": "💵 Рахунок у супермаркеті Biedronka:"
-  },
-  {
-    "id": "price_zab_42_50_289",
-    "spokenPl": "Czterdzieści dwa złote pięćdziesiąt groszy",
-    "correct": "42,50 zł",
-    "wrong": [
-      "52,50 zł",
-      "42,80 zł"
-    ],
-    "explainUk": "«Czterdzieści dwa złote pięćdziesiąt groszy» = 42,50 zł.",
-    "explainRu": "«Czterdzieści dwa złote pięćdziesiąt groszy» = 42,50 zł.",
-    "promptPl": "💵 Чек у магазині Żabka:"
   },
   {
     "id": "price_apt_42_75_290",
@@ -9354,18 +8788,6 @@
     "promptPl": "💵 Оплата за ліки в аптеці:"
   },
   {
-    "id": "price_res_48_50_331",
-    "spokenPl": "Czterdzieści osiem złotych pięćdziesiąt groszy",
-    "correct": "48,50 zł",
-    "wrong": [
-      "58,50 zł",
-      "48,80 zł"
-    ],
-    "explainUk": "«Czterdzieści osiem złotych pięćdziesiąt groszy» = 48,50 zł.",
-    "explainRu": "«Czterdzieści osiem złotych pięćdziesiąt groszy» = 48,50 zł.",
-    "promptPl": "💵 Рахунок за вечерю в ресторані:"
-  },
-  {
     "id": "price_orl_48_75_332",
     "spokenPl": "Czterdzieści osiem złotych siedemdziesiąt pięć groszy",
     "correct": "48,75 zł",
@@ -9484,18 +8906,6 @@
     "explainUk": "«Czterdzieści dziewięć złotych dziewięćdziesiąt groszy» = 49,90 zł.",
     "explainRu": "«Czterdzieści dziewięć złotych dziewięćdziesiąt groszy» = 49,90 zł.",
     "promptPl": "💵 Оплата залізничного квитка PKP:"
-  },
-  {
-    "id": "price_clo_49_99_342",
-    "spokenPl": "Czterdzieści dziewięć złotych dziewięćdziesiąt dziewięć groszy",
-    "correct": "49,99 zł",
-    "wrong": [
-      "59,99 zł",
-      "49,29 zł"
-    ],
-    "explainUk": "«Czterdzieści dziewięć złotych dziewięćdziesiąt dziewięć groszy» = 49,99 zł.",
-    "explainRu": "«Czterdzieści dziewięć złotych dziewięćdziesiąt dziewięć groszy» = 49,99 zł.",
-    "promptPl": "💵 Покупка одягу в магазині:"
   },
   {
     "id": "price_caf_50_20_343",
@@ -12787,235 +12197,7 @@
   },
   {
     "id": "time_sched_0_0",
-    "spokenPl": "Kwadrans po siódmej (odjazd pociągu #1)",
-    "correct": "7:15",
-    "wrong": [
-      "7:45",
-      "8:15"
-    ],
-    "explainUk": "«Kwadrans po siódmej» — 15 хвилин після сьомої (7:15).",
-    "explainRu": "«Kwadrans po siódmej» — 7:15.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_0_1",
-    "spokenPl": "Kwadrans po siódmej (odjazd pociągu #2)",
-    "correct": "7:15",
-    "wrong": [
-      "7:45",
-      "8:15"
-    ],
-    "explainUk": "«Kwadrans po siódmej» — 15 хвилин після сьомої (7:15).",
-    "explainRu": "«Kwadrans po siódmej» — 7:15.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_0_2",
-    "spokenPl": "Kwadrans po siódmej (odjazd pociągu #3)",
-    "correct": "7:15",
-    "wrong": [
-      "7:45",
-      "8:15"
-    ],
-    "explainUk": "«Kwadrans po siódmej» — 15 хвилин після сьомої (7:15).",
-    "explainRu": "«Kwadrans po siódmej» — 7:15.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_0_3",
-    "spokenPl": "Kwadrans po siódmej (odjazd pociągu #4)",
-    "correct": "7:15",
-    "wrong": [
-      "7:45",
-      "8:15"
-    ],
-    "explainUk": "«Kwadrans po siódmej» — 15 хвилин після сьомої (7:15).",
-    "explainRu": "«Kwadrans po siódmej» — 7:15.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_0_4",
-    "spokenPl": "Kwadrans po siódmej (odjazd pociągu #5)",
-    "correct": "7:15",
-    "wrong": [
-      "7:45",
-      "8:15"
-    ],
-    "explainUk": "«Kwadrans po siódmej» — 15 хвилин після сьомої (7:15).",
-    "explainRu": "«Kwadrans po siódmej» — 7:15.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_0_5",
-    "spokenPl": "Kwadrans po siódmej (odjazd pociągu #6)",
-    "correct": "7:15",
-    "wrong": [
-      "7:45",
-      "8:15"
-    ],
-    "explainUk": "«Kwadrans po siódmej» — 15 хвилин після сьомої (7:15).",
-    "explainRu": "«Kwadrans po siódmej» — 7:15.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_0_6",
-    "spokenPl": "Kwadrans po siódmej (odjazd pociągu #7)",
-    "correct": "7:15",
-    "wrong": [
-      "7:45",
-      "8:15"
-    ],
-    "explainUk": "«Kwadrans po siódmej» — 15 хвилин після сьомої (7:15).",
-    "explainRu": "«Kwadrans po siódmej» — 7:15.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_0_7",
-    "spokenPl": "Kwadrans po siódmej (odjazd pociągu #8)",
-    "correct": "7:15",
-    "wrong": [
-      "7:45",
-      "8:15"
-    ],
-    "explainUk": "«Kwadrans po siódmej» — 15 хвилин після сьомої (7:15).",
-    "explainRu": "«Kwadrans po siódmej» — 7:15.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_0_8",
-    "spokenPl": "Kwadrans po siódmej (odjazd pociągu #9)",
-    "correct": "7:15",
-    "wrong": [
-      "7:45",
-      "8:15"
-    ],
-    "explainUk": "«Kwadrans po siódmej» — 15 хвилин після сьомої (7:15).",
-    "explainRu": "«Kwadrans po siódmej» — 7:15.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_0_9",
-    "spokenPl": "Kwadrans po siódmej (odjazd pociągu #10)",
-    "correct": "7:15",
-    "wrong": [
-      "7:45",
-      "8:15"
-    ],
-    "explainUk": "«Kwadrans po siódmej» — 15 хвилин після сьомої (7:15).",
-    "explainRu": "«Kwadrans po siódmej» — 7:15.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_0_10",
-    "spokenPl": "Kwadrans po siódmej (odjazd pociągu #11)",
-    "correct": "7:15",
-    "wrong": [
-      "7:45",
-      "8:15"
-    ],
-    "explainUk": "«Kwadrans po siódmej» — 15 хвилин після сьомої (7:15).",
-    "explainRu": "«Kwadrans po siódmej» — 7:15.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_0_11",
-    "spokenPl": "Kwadrans po siódmej (odjazd pociągu #12)",
-    "correct": "7:15",
-    "wrong": [
-      "7:45",
-      "8:15"
-    ],
-    "explainUk": "«Kwadrans po siódmej» — 15 хвилин після сьомої (7:15).",
-    "explainRu": "«Kwadrans po siódmej» — 7:15.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_0_12",
-    "spokenPl": "Kwadrans po siódmej (odjazd pociągu #13)",
-    "correct": "7:15",
-    "wrong": [
-      "7:45",
-      "8:15"
-    ],
-    "explainUk": "«Kwadrans po siódmej» — 15 хвилин після сьомої (7:15).",
-    "explainRu": "«Kwadrans po siódmej» — 7:15.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_0_13",
-    "spokenPl": "Kwadrans po siódmej (odjazd pociągu #14)",
-    "correct": "7:15",
-    "wrong": [
-      "7:45",
-      "8:15"
-    ],
-    "explainUk": "«Kwadrans po siódmej» — 15 хвилин після сьомої (7:15).",
-    "explainRu": "«Kwadrans po siódmej» — 7:15.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_0_14",
-    "spokenPl": "Kwadrans po siódmej (odjazd pociągu #15)",
-    "correct": "7:15",
-    "wrong": [
-      "7:45",
-      "8:15"
-    ],
-    "explainUk": "«Kwadrans po siódmej» — 15 хвилин після сьомої (7:15).",
-    "explainRu": "«Kwadrans po siódmej» — 7:15.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_0_15",
-    "spokenPl": "Kwadrans po siódmej (odjazd pociągu #16)",
-    "correct": "7:15",
-    "wrong": [
-      "7:45",
-      "8:15"
-    ],
-    "explainUk": "«Kwadrans po siódmej» — 15 хвилин після сьомої (7:15).",
-    "explainRu": "«Kwadrans po siódmej» — 7:15.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_0_16",
-    "spokenPl": "Kwadrans po siódmej (odjazd pociągu #17)",
-    "correct": "7:15",
-    "wrong": [
-      "7:45",
-      "8:15"
-    ],
-    "explainUk": "«Kwadrans po siódmej» — 15 хвилин після сьомої (7:15).",
-    "explainRu": "«Kwadrans po siódmej» — 7:15.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_0_17",
-    "spokenPl": "Kwadrans po siódmej (odjazd pociągu #18)",
-    "correct": "7:15",
-    "wrong": [
-      "7:45",
-      "8:15"
-    ],
-    "explainUk": "«Kwadrans po siódmej» — 15 хвилин після сьомої (7:15).",
-    "explainRu": "«Kwadrans po siódmej» — 7:15.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_0_18",
-    "spokenPl": "Kwadrans po siódmej (odjazd pociągu #19)",
-    "correct": "7:15",
-    "wrong": [
-      "7:45",
-      "8:15"
-    ],
-    "explainUk": "«Kwadrans po siódmej» — 15 хвилин після сьомої (7:15).",
-    "explainRu": "«Kwadrans po siódmej» — 7:15.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_0_19",
-    "spokenPl": "Kwadrans po siódmej (odjazd pociągu #20)",
+    "spokenPl": "Kwadrans po siódmej",
     "correct": "7:15",
     "wrong": [
       "7:45",
@@ -13027,235 +12209,7 @@
   },
   {
     "id": "time_sched_1_0",
-    "spokenPl": "Za kwadrans ósma (odjazd pociągu #1)",
-    "correct": "7:45",
-    "wrong": [
-      "7:15",
-      "8:45"
-    ],
-    "explainUk": "«Za kwadrans ósma» — за 15 хвилин восьма (7:45).",
-    "explainRu": "«Za kwadrans ósma» — 7:45.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_1_1",
-    "spokenPl": "Za kwadrans ósma (odjazd pociągu #2)",
-    "correct": "7:45",
-    "wrong": [
-      "7:15",
-      "8:45"
-    ],
-    "explainUk": "«Za kwadrans ósma» — за 15 хвилин восьма (7:45).",
-    "explainRu": "«Za kwadrans ósma» — 7:45.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_1_2",
-    "spokenPl": "Za kwadrans ósma (odjazd pociągu #3)",
-    "correct": "7:45",
-    "wrong": [
-      "7:15",
-      "8:45"
-    ],
-    "explainUk": "«Za kwadrans ósma» — за 15 хвилин восьма (7:45).",
-    "explainRu": "«Za kwadrans ósma» — 7:45.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_1_3",
-    "spokenPl": "Za kwadrans ósma (odjazd pociągu #4)",
-    "correct": "7:45",
-    "wrong": [
-      "7:15",
-      "8:45"
-    ],
-    "explainUk": "«Za kwadrans ósma» — за 15 хвилин восьма (7:45).",
-    "explainRu": "«Za kwadrans ósma» — 7:45.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_1_4",
-    "spokenPl": "Za kwadrans ósma (odjazd pociągu #5)",
-    "correct": "7:45",
-    "wrong": [
-      "7:15",
-      "8:45"
-    ],
-    "explainUk": "«Za kwadrans ósma» — за 15 хвилин восьма (7:45).",
-    "explainRu": "«Za kwadrans ósma» — 7:45.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_1_5",
-    "spokenPl": "Za kwadrans ósma (odjazd pociągu #6)",
-    "correct": "7:45",
-    "wrong": [
-      "7:15",
-      "8:45"
-    ],
-    "explainUk": "«Za kwadrans ósma» — за 15 хвилин восьма (7:45).",
-    "explainRu": "«Za kwadrans ósma» — 7:45.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_1_6",
-    "spokenPl": "Za kwadrans ósma (odjazd pociągu #7)",
-    "correct": "7:45",
-    "wrong": [
-      "7:15",
-      "8:45"
-    ],
-    "explainUk": "«Za kwadrans ósma» — за 15 хвилин восьма (7:45).",
-    "explainRu": "«Za kwadrans ósma» — 7:45.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_1_7",
-    "spokenPl": "Za kwadrans ósma (odjazd pociągu #8)",
-    "correct": "7:45",
-    "wrong": [
-      "7:15",
-      "8:45"
-    ],
-    "explainUk": "«Za kwadrans ósma» — за 15 хвилин восьма (7:45).",
-    "explainRu": "«Za kwadrans ósma» — 7:45.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_1_8",
-    "spokenPl": "Za kwadrans ósma (odjazd pociągu #9)",
-    "correct": "7:45",
-    "wrong": [
-      "7:15",
-      "8:45"
-    ],
-    "explainUk": "«Za kwadrans ósma» — за 15 хвилин восьма (7:45).",
-    "explainRu": "«Za kwadrans ósma» — 7:45.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_1_9",
-    "spokenPl": "Za kwadrans ósma (odjazd pociągu #10)",
-    "correct": "7:45",
-    "wrong": [
-      "7:15",
-      "8:45"
-    ],
-    "explainUk": "«Za kwadrans ósma» — за 15 хвилин восьма (7:45).",
-    "explainRu": "«Za kwadrans ósma» — 7:45.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_1_10",
-    "spokenPl": "Za kwadrans ósma (odjazd pociągu #11)",
-    "correct": "7:45",
-    "wrong": [
-      "7:15",
-      "8:45"
-    ],
-    "explainUk": "«Za kwadrans ósma» — за 15 хвилин восьма (7:45).",
-    "explainRu": "«Za kwadrans ósma» — 7:45.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_1_11",
-    "spokenPl": "Za kwadrans ósma (odjazd pociągu #12)",
-    "correct": "7:45",
-    "wrong": [
-      "7:15",
-      "8:45"
-    ],
-    "explainUk": "«Za kwadrans ósma» — за 15 хвилин восьма (7:45).",
-    "explainRu": "«Za kwadrans ósma» — 7:45.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_1_12",
-    "spokenPl": "Za kwadrans ósma (odjazd pociągu #13)",
-    "correct": "7:45",
-    "wrong": [
-      "7:15",
-      "8:45"
-    ],
-    "explainUk": "«Za kwadrans ósma» — за 15 хвилин восьма (7:45).",
-    "explainRu": "«Za kwadrans ósma» — 7:45.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_1_13",
-    "spokenPl": "Za kwadrans ósma (odjazd pociągu #14)",
-    "correct": "7:45",
-    "wrong": [
-      "7:15",
-      "8:45"
-    ],
-    "explainUk": "«Za kwadrans ósma» — за 15 хвилин восьма (7:45).",
-    "explainRu": "«Za kwadrans ósma» — 7:45.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_1_14",
-    "spokenPl": "Za kwadrans ósma (odjazd pociągu #15)",
-    "correct": "7:45",
-    "wrong": [
-      "7:15",
-      "8:45"
-    ],
-    "explainUk": "«Za kwadrans ósma» — за 15 хвилин восьма (7:45).",
-    "explainRu": "«Za kwadrans ósma» — 7:45.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_1_15",
-    "spokenPl": "Za kwadrans ósma (odjazd pociągu #16)",
-    "correct": "7:45",
-    "wrong": [
-      "7:15",
-      "8:45"
-    ],
-    "explainUk": "«Za kwadrans ósma» — за 15 хвилин восьма (7:45).",
-    "explainRu": "«Za kwadrans ósma» — 7:45.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_1_16",
-    "spokenPl": "Za kwadrans ósma (odjazd pociągu #17)",
-    "correct": "7:45",
-    "wrong": [
-      "7:15",
-      "8:45"
-    ],
-    "explainUk": "«Za kwadrans ósma» — за 15 хвилин восьма (7:45).",
-    "explainRu": "«Za kwadrans ósma» — 7:45.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_1_17",
-    "spokenPl": "Za kwadrans ósma (odjazd pociągu #18)",
-    "correct": "7:45",
-    "wrong": [
-      "7:15",
-      "8:45"
-    ],
-    "explainUk": "«Za kwadrans ósma» — за 15 хвилин восьма (7:45).",
-    "explainRu": "«Za kwadrans ósma» — 7:45.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_1_18",
-    "spokenPl": "Za kwadrans ósma (odjazd pociągu #19)",
-    "correct": "7:45",
-    "wrong": [
-      "7:15",
-      "8:45"
-    ],
-    "explainUk": "«Za kwadrans ósma» — за 15 хвилин восьма (7:45).",
-    "explainRu": "«Za kwadrans ósma» — 7:45.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_1_19",
-    "spokenPl": "Za kwadrans ósma (odjazd pociągu #20)",
+    "spokenPl": "Za kwadrans ósma",
     "correct": "7:45",
     "wrong": [
       "7:15",
@@ -13267,235 +12221,7 @@
   },
   {
     "id": "time_sched_2_0",
-    "spokenPl": "Wpół do dziewiątej (odjazd pociągu #1)",
-    "correct": "8:30",
-    "wrong": [
-      "9:30",
-      "8:15"
-    ],
-    "explainUk": "«Wpół do dziewiątej» — пів на дев'яту (8:30).",
-    "explainRu": "«Wpół do dziewiątej» — половина девятого (8:30).",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_2_1",
-    "spokenPl": "Wpół do dziewiątej (odjazd pociągu #2)",
-    "correct": "8:30",
-    "wrong": [
-      "9:30",
-      "8:15"
-    ],
-    "explainUk": "«Wpół do dziewiątej» — пів на дев'яту (8:30).",
-    "explainRu": "«Wpół do dziewiątej» — половина девятого (8:30).",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_2_2",
-    "spokenPl": "Wpół do dziewiątej (odjazd pociągu #3)",
-    "correct": "8:30",
-    "wrong": [
-      "9:30",
-      "8:15"
-    ],
-    "explainUk": "«Wpół do dziewiątej» — пів на дев'яту (8:30).",
-    "explainRu": "«Wpół do dziewiątej» — половина девятого (8:30).",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_2_3",
-    "spokenPl": "Wpół do dziewiątej (odjazd pociągu #4)",
-    "correct": "8:30",
-    "wrong": [
-      "9:30",
-      "8:15"
-    ],
-    "explainUk": "«Wpół do dziewiątej» — пів на дев'яту (8:30).",
-    "explainRu": "«Wpół do dziewiątej» — половина девятого (8:30).",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_2_4",
-    "spokenPl": "Wpół do dziewiątej (odjazd pociągu #5)",
-    "correct": "8:30",
-    "wrong": [
-      "9:30",
-      "8:15"
-    ],
-    "explainUk": "«Wpół do dziewiątej» — пів на дев'яту (8:30).",
-    "explainRu": "«Wpół do dziewiątej» — половина девятого (8:30).",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_2_5",
-    "spokenPl": "Wpół do dziewiątej (odjazd pociągu #6)",
-    "correct": "8:30",
-    "wrong": [
-      "9:30",
-      "8:15"
-    ],
-    "explainUk": "«Wpół do dziewiątej» — пів на дев'яту (8:30).",
-    "explainRu": "«Wpół do dziewiątej» — половина девятого (8:30).",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_2_6",
-    "spokenPl": "Wpół do dziewiątej (odjazd pociągu #7)",
-    "correct": "8:30",
-    "wrong": [
-      "9:30",
-      "8:15"
-    ],
-    "explainUk": "«Wpół do dziewiątej» — пів на дев'яту (8:30).",
-    "explainRu": "«Wpół do dziewiątej» — половина девятого (8:30).",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_2_7",
-    "spokenPl": "Wpół do dziewiątej (odjazd pociągu #8)",
-    "correct": "8:30",
-    "wrong": [
-      "9:30",
-      "8:15"
-    ],
-    "explainUk": "«Wpół do dziewiątej» — пів на дев'яту (8:30).",
-    "explainRu": "«Wpół do dziewiątej» — половина девятого (8:30).",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_2_8",
-    "spokenPl": "Wpół do dziewiątej (odjazd pociągu #9)",
-    "correct": "8:30",
-    "wrong": [
-      "9:30",
-      "8:15"
-    ],
-    "explainUk": "«Wpół do dziewiątej» — пів на дев'яту (8:30).",
-    "explainRu": "«Wpół do dziewiątej» — половина девятого (8:30).",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_2_9",
-    "spokenPl": "Wpół do dziewiątej (odjazd pociągu #10)",
-    "correct": "8:30",
-    "wrong": [
-      "9:30",
-      "8:15"
-    ],
-    "explainUk": "«Wpół do dziewiątej» — пів на дев'яту (8:30).",
-    "explainRu": "«Wpół do dziewiątej» — половина девятого (8:30).",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_2_10",
-    "spokenPl": "Wpół do dziewiątej (odjazd pociągu #11)",
-    "correct": "8:30",
-    "wrong": [
-      "9:30",
-      "8:15"
-    ],
-    "explainUk": "«Wpół do dziewiątej» — пів на дев'яту (8:30).",
-    "explainRu": "«Wpół do dziewiątej» — половина девятого (8:30).",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_2_11",
-    "spokenPl": "Wpół do dziewiątej (odjazd pociągu #12)",
-    "correct": "8:30",
-    "wrong": [
-      "9:30",
-      "8:15"
-    ],
-    "explainUk": "«Wpół do dziewiątej» — пів на дев'яту (8:30).",
-    "explainRu": "«Wpół do dziewiątej» — половина девятого (8:30).",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_2_12",
-    "spokenPl": "Wpół do dziewiątej (odjazd pociągu #13)",
-    "correct": "8:30",
-    "wrong": [
-      "9:30",
-      "8:15"
-    ],
-    "explainUk": "«Wpół do dziewiątej» — пів на дев'яту (8:30).",
-    "explainRu": "«Wpół do dziewiątej» — половина девятого (8:30).",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_2_13",
-    "spokenPl": "Wpół do dziewiątej (odjazd pociągu #14)",
-    "correct": "8:30",
-    "wrong": [
-      "9:30",
-      "8:15"
-    ],
-    "explainUk": "«Wpół do dziewiątej» — пів на дев'яту (8:30).",
-    "explainRu": "«Wpół do dziewiątej» — половина девятого (8:30).",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_2_14",
-    "spokenPl": "Wpół do dziewiątej (odjazd pociągu #15)",
-    "correct": "8:30",
-    "wrong": [
-      "9:30",
-      "8:15"
-    ],
-    "explainUk": "«Wpół do dziewiątej» — пів на дев'яту (8:30).",
-    "explainRu": "«Wpół do dziewiątej» — половина девятого (8:30).",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_2_15",
-    "spokenPl": "Wpół do dziewiątej (odjazd pociągu #16)",
-    "correct": "8:30",
-    "wrong": [
-      "9:30",
-      "8:15"
-    ],
-    "explainUk": "«Wpół do dziewiątej» — пів на дев'яту (8:30).",
-    "explainRu": "«Wpół do dziewiątej» — половина девятого (8:30).",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_2_16",
-    "spokenPl": "Wpół do dziewiątej (odjazd pociągu #17)",
-    "correct": "8:30",
-    "wrong": [
-      "9:30",
-      "8:15"
-    ],
-    "explainUk": "«Wpół do dziewiątej» — пів на дев'яту (8:30).",
-    "explainRu": "«Wpół do dziewiątej» — половина девятого (8:30).",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_2_17",
-    "spokenPl": "Wpół do dziewiątej (odjazd pociągu #18)",
-    "correct": "8:30",
-    "wrong": [
-      "9:30",
-      "8:15"
-    ],
-    "explainUk": "«Wpół do dziewiątej» — пів на дев'яту (8:30).",
-    "explainRu": "«Wpół do dziewiątej» — половина девятого (8:30).",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_2_18",
-    "spokenPl": "Wpół do dziewiątej (odjazd pociągu #19)",
-    "correct": "8:30",
-    "wrong": [
-      "9:30",
-      "8:15"
-    ],
-    "explainUk": "«Wpół do dziewiątej» — пів на дев'яту (8:30).",
-    "explainRu": "«Wpół do dziewiątej» — половина девятого (8:30).",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_2_19",
-    "spokenPl": "Wpół do dziewiątej (odjazd pociągu #20)",
+    "spokenPl": "Wpół do dziewiątej",
     "correct": "8:30",
     "wrong": [
       "9:30",
@@ -13507,235 +12233,7 @@
   },
   {
     "id": "time_sched_3_0",
-    "spokenPl": "Godzina dwunasta w południe (odjazd pociągu #1)",
-    "correct": "12:00",
-    "wrong": [
-      "13:00",
-      "11:00"
-    ],
-    "explainUk": "«Dwunasta w południe» — 12:00.",
-    "explainRu": "«Dwunasta w południe» — ровно 12:00 дня.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_3_1",
-    "spokenPl": "Godzina dwunasta w południe (odjazd pociągu #2)",
-    "correct": "12:00",
-    "wrong": [
-      "13:00",
-      "11:00"
-    ],
-    "explainUk": "«Dwunasta w południe» — 12:00.",
-    "explainRu": "«Dwunasta w południe» — ровно 12:00 дня.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_3_2",
-    "spokenPl": "Godzina dwunasta w południe (odjazd pociągu #3)",
-    "correct": "12:00",
-    "wrong": [
-      "13:00",
-      "11:00"
-    ],
-    "explainUk": "«Dwunasta w południe» — 12:00.",
-    "explainRu": "«Dwunasta w południe» — ровно 12:00 дня.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_3_3",
-    "spokenPl": "Godzina dwunasta w południe (odjazd pociągu #4)",
-    "correct": "12:00",
-    "wrong": [
-      "13:00",
-      "11:00"
-    ],
-    "explainUk": "«Dwunasta w południe» — 12:00.",
-    "explainRu": "«Dwunasta w południe» — ровно 12:00 дня.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_3_4",
-    "spokenPl": "Godzina dwunasta w południe (odjazd pociągu #5)",
-    "correct": "12:00",
-    "wrong": [
-      "13:00",
-      "11:00"
-    ],
-    "explainUk": "«Dwunasta w południe» — 12:00.",
-    "explainRu": "«Dwunasta w południe» — ровно 12:00 дня.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_3_5",
-    "spokenPl": "Godzina dwunasta w południe (odjazd pociągu #6)",
-    "correct": "12:00",
-    "wrong": [
-      "13:00",
-      "11:00"
-    ],
-    "explainUk": "«Dwunasta w południe» — 12:00.",
-    "explainRu": "«Dwunasta w południe» — ровно 12:00 дня.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_3_6",
-    "spokenPl": "Godzina dwunasta w południe (odjazd pociągu #7)",
-    "correct": "12:00",
-    "wrong": [
-      "13:00",
-      "11:00"
-    ],
-    "explainUk": "«Dwunasta w południe» — 12:00.",
-    "explainRu": "«Dwunasta w południe» — ровно 12:00 дня.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_3_7",
-    "spokenPl": "Godzina dwunasta w południe (odjazd pociągu #8)",
-    "correct": "12:00",
-    "wrong": [
-      "13:00",
-      "11:00"
-    ],
-    "explainUk": "«Dwunasta w południe» — 12:00.",
-    "explainRu": "«Dwunasta w południe» — ровно 12:00 дня.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_3_8",
-    "spokenPl": "Godzina dwunasta w południe (odjazd pociągu #9)",
-    "correct": "12:00",
-    "wrong": [
-      "13:00",
-      "11:00"
-    ],
-    "explainUk": "«Dwunasta w południe» — 12:00.",
-    "explainRu": "«Dwunasta w południe» — ровно 12:00 дня.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_3_9",
-    "spokenPl": "Godzina dwunasta w południe (odjazd pociągu #10)",
-    "correct": "12:00",
-    "wrong": [
-      "13:00",
-      "11:00"
-    ],
-    "explainUk": "«Dwunasta w południe» — 12:00.",
-    "explainRu": "«Dwunasta w południe» — ровно 12:00 дня.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_3_10",
-    "spokenPl": "Godzina dwunasta w południe (odjazd pociągu #11)",
-    "correct": "12:00",
-    "wrong": [
-      "13:00",
-      "11:00"
-    ],
-    "explainUk": "«Dwunasta w południe» — 12:00.",
-    "explainRu": "«Dwunasta w południe» — ровно 12:00 дня.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_3_11",
-    "spokenPl": "Godzina dwunasta w południe (odjazd pociągu #12)",
-    "correct": "12:00",
-    "wrong": [
-      "13:00",
-      "11:00"
-    ],
-    "explainUk": "«Dwunasta w południe» — 12:00.",
-    "explainRu": "«Dwunasta w południe» — ровно 12:00 дня.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_3_12",
-    "spokenPl": "Godzina dwunasta w południe (odjazd pociągu #13)",
-    "correct": "12:00",
-    "wrong": [
-      "13:00",
-      "11:00"
-    ],
-    "explainUk": "«Dwunasta w południe» — 12:00.",
-    "explainRu": "«Dwunasta w południe» — ровно 12:00 дня.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_3_13",
-    "spokenPl": "Godzina dwunasta w południe (odjazd pociągu #14)",
-    "correct": "12:00",
-    "wrong": [
-      "13:00",
-      "11:00"
-    ],
-    "explainUk": "«Dwunasta w południe» — 12:00.",
-    "explainRu": "«Dwunasta w południe» — ровно 12:00 дня.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_3_14",
-    "spokenPl": "Godzina dwunasta w południe (odjazd pociągu #15)",
-    "correct": "12:00",
-    "wrong": [
-      "13:00",
-      "11:00"
-    ],
-    "explainUk": "«Dwunasta w południe» — 12:00.",
-    "explainRu": "«Dwunasta w południe» — ровно 12:00 дня.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_3_15",
-    "spokenPl": "Godzina dwunasta w południe (odjazd pociągu #16)",
-    "correct": "12:00",
-    "wrong": [
-      "13:00",
-      "11:00"
-    ],
-    "explainUk": "«Dwunasta w południe» — 12:00.",
-    "explainRu": "«Dwunasta w południe» — ровно 12:00 дня.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_3_16",
-    "spokenPl": "Godzina dwunasta w południe (odjazd pociągu #17)",
-    "correct": "12:00",
-    "wrong": [
-      "13:00",
-      "11:00"
-    ],
-    "explainUk": "«Dwunasta w południe» — 12:00.",
-    "explainRu": "«Dwunasta w południe» — ровно 12:00 дня.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_3_17",
-    "spokenPl": "Godzina dwunasta w południe (odjazd pociągu #18)",
-    "correct": "12:00",
-    "wrong": [
-      "13:00",
-      "11:00"
-    ],
-    "explainUk": "«Dwunasta w południe» — 12:00.",
-    "explainRu": "«Dwunasta w południe» — ровно 12:00 дня.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_3_18",
-    "spokenPl": "Godzina dwunasta w południe (odjazd pociągu #19)",
-    "correct": "12:00",
-    "wrong": [
-      "13:00",
-      "11:00"
-    ],
-    "explainUk": "«Dwunasta w południe» — 12:00.",
-    "explainRu": "«Dwunasta w południe» — ровно 12:00 дня.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_3_19",
-    "spokenPl": "Godzina dwunasta w południe (odjazd pociągu #20)",
+    "spokenPl": "Godzina dwunasta w południe",
     "correct": "12:00",
     "wrong": [
       "13:00",
@@ -13747,235 +12245,7 @@
   },
   {
     "id": "time_sched_4_0",
-    "spokenPl": "Czternasta trzydzieści pięć (odjazd pociągu #1)",
-    "correct": "14:35",
-    "wrong": [
-      "15:35",
-      "14:25"
-    ],
-    "explainUk": "«Czternasta trzydzieści pięć» — 14:35.",
-    "explainRu": "«Czternasta trzydzieści pięć» — 14:35.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_4_1",
-    "spokenPl": "Czternasta trzydzieści pięć (odjazd pociągu #2)",
-    "correct": "14:35",
-    "wrong": [
-      "15:35",
-      "14:25"
-    ],
-    "explainUk": "«Czternasta trzydzieści pięć» — 14:35.",
-    "explainRu": "«Czternasta trzydzieści pięć» — 14:35.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_4_2",
-    "spokenPl": "Czternasta trzydzieści pięć (odjazd pociągu #3)",
-    "correct": "14:35",
-    "wrong": [
-      "15:35",
-      "14:25"
-    ],
-    "explainUk": "«Czternasta trzydzieści pięć» — 14:35.",
-    "explainRu": "«Czternasta trzydzieści pięć» — 14:35.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_4_3",
-    "spokenPl": "Czternasta trzydzieści pięć (odjazd pociągu #4)",
-    "correct": "14:35",
-    "wrong": [
-      "15:35",
-      "14:25"
-    ],
-    "explainUk": "«Czternasta trzydzieści pięć» — 14:35.",
-    "explainRu": "«Czternasta trzydzieści pięć» — 14:35.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_4_4",
-    "spokenPl": "Czternasta trzydzieści pięć (odjazd pociągu #5)",
-    "correct": "14:35",
-    "wrong": [
-      "15:35",
-      "14:25"
-    ],
-    "explainUk": "«Czternasta trzydzieści pięć» — 14:35.",
-    "explainRu": "«Czternasta trzydzieści pięć» — 14:35.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_4_5",
-    "spokenPl": "Czternasta trzydzieści pięć (odjazd pociągu #6)",
-    "correct": "14:35",
-    "wrong": [
-      "15:35",
-      "14:25"
-    ],
-    "explainUk": "«Czternasta trzydzieści pięć» — 14:35.",
-    "explainRu": "«Czternasta trzydzieści pięć» — 14:35.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_4_6",
-    "spokenPl": "Czternasta trzydzieści pięć (odjazd pociągu #7)",
-    "correct": "14:35",
-    "wrong": [
-      "15:35",
-      "14:25"
-    ],
-    "explainUk": "«Czternasta trzydzieści pięć» — 14:35.",
-    "explainRu": "«Czternasta trzydzieści pięć» — 14:35.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_4_7",
-    "spokenPl": "Czternasta trzydzieści pięć (odjazd pociągu #8)",
-    "correct": "14:35",
-    "wrong": [
-      "15:35",
-      "14:25"
-    ],
-    "explainUk": "«Czternasta trzydzieści pięć» — 14:35.",
-    "explainRu": "«Czternasta trzydzieści pięć» — 14:35.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_4_8",
-    "spokenPl": "Czternasta trzydzieści pięć (odjazd pociągu #9)",
-    "correct": "14:35",
-    "wrong": [
-      "15:35",
-      "14:25"
-    ],
-    "explainUk": "«Czternasta trzydzieści pięć» — 14:35.",
-    "explainRu": "«Czternasta trzydzieści pięć» — 14:35.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_4_9",
-    "spokenPl": "Czternasta trzydzieści pięć (odjazd pociągu #10)",
-    "correct": "14:35",
-    "wrong": [
-      "15:35",
-      "14:25"
-    ],
-    "explainUk": "«Czternasta trzydzieści pięć» — 14:35.",
-    "explainRu": "«Czternasta trzydzieści pięć» — 14:35.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_4_10",
-    "spokenPl": "Czternasta trzydzieści pięć (odjazd pociągu #11)",
-    "correct": "14:35",
-    "wrong": [
-      "15:35",
-      "14:25"
-    ],
-    "explainUk": "«Czternasta trzydzieści pięć» — 14:35.",
-    "explainRu": "«Czternasta trzydzieści pięć» — 14:35.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_4_11",
-    "spokenPl": "Czternasta trzydzieści pięć (odjazd pociągu #12)",
-    "correct": "14:35",
-    "wrong": [
-      "15:35",
-      "14:25"
-    ],
-    "explainUk": "«Czternasta trzydzieści pięć» — 14:35.",
-    "explainRu": "«Czternasta trzydzieści pięć» — 14:35.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_4_12",
-    "spokenPl": "Czternasta trzydzieści pięć (odjazd pociągu #13)",
-    "correct": "14:35",
-    "wrong": [
-      "15:35",
-      "14:25"
-    ],
-    "explainUk": "«Czternasta trzydzieści pięć» — 14:35.",
-    "explainRu": "«Czternasta trzydzieści pięć» — 14:35.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_4_13",
-    "spokenPl": "Czternasta trzydzieści pięć (odjazd pociągu #14)",
-    "correct": "14:35",
-    "wrong": [
-      "15:35",
-      "14:25"
-    ],
-    "explainUk": "«Czternasta trzydzieści pięć» — 14:35.",
-    "explainRu": "«Czternasta trzydzieści pięć» — 14:35.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_4_14",
-    "spokenPl": "Czternasta trzydzieści pięć (odjazd pociągu #15)",
-    "correct": "14:35",
-    "wrong": [
-      "15:35",
-      "14:25"
-    ],
-    "explainUk": "«Czternasta trzydzieści pięć» — 14:35.",
-    "explainRu": "«Czternasta trzydzieści pięć» — 14:35.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_4_15",
-    "spokenPl": "Czternasta trzydzieści pięć (odjazd pociągu #16)",
-    "correct": "14:35",
-    "wrong": [
-      "15:35",
-      "14:25"
-    ],
-    "explainUk": "«Czternasta trzydzieści pięć» — 14:35.",
-    "explainRu": "«Czternasta trzydzieści pięć» — 14:35.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_4_16",
-    "spokenPl": "Czternasta trzydzieści pięć (odjazd pociągu #17)",
-    "correct": "14:35",
-    "wrong": [
-      "15:35",
-      "14:25"
-    ],
-    "explainUk": "«Czternasta trzydzieści pięć» — 14:35.",
-    "explainRu": "«Czternasta trzydzieści pięć» — 14:35.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_4_17",
-    "spokenPl": "Czternasta trzydzieści pięć (odjazd pociągu #18)",
-    "correct": "14:35",
-    "wrong": [
-      "15:35",
-      "14:25"
-    ],
-    "explainUk": "«Czternasta trzydzieści pięć» — 14:35.",
-    "explainRu": "«Czternasta trzydzieści pięć» — 14:35.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_4_18",
-    "spokenPl": "Czternasta trzydzieści pięć (odjazd pociągu #19)",
-    "correct": "14:35",
-    "wrong": [
-      "15:35",
-      "14:25"
-    ],
-    "explainUk": "«Czternasta trzydzieści pięć» — 14:35.",
-    "explainRu": "«Czternasta trzydzieści pięć» — 14:35.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_4_19",
-    "spokenPl": "Czternasta trzydzieści pięć (odjazd pociągu #20)",
+    "spokenPl": "Czternasta trzydzieści pięć",
     "correct": "14:35",
     "wrong": [
       "15:35",
@@ -13987,235 +12257,7 @@
   },
   {
     "id": "time_sched_5_0",
-    "spokenPl": "Szesnasta dwadzieścia (odjazd pociągu #1)",
-    "correct": "16:20",
-    "wrong": [
-      "16:40",
-      "17:20"
-    ],
-    "explainUk": "«Szesnasta dwadzieścia» — 16:20.",
-    "explainRu": "«Szesnasta dwadzieścia» — 16:20.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_5_1",
-    "spokenPl": "Szesnasta dwadzieścia (odjazd pociągu #2)",
-    "correct": "16:20",
-    "wrong": [
-      "16:40",
-      "17:20"
-    ],
-    "explainUk": "«Szesnasta dwadzieścia» — 16:20.",
-    "explainRu": "«Szesnasta dwadzieścia» — 16:20.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_5_2",
-    "spokenPl": "Szesnasta dwadzieścia (odjazd pociągu #3)",
-    "correct": "16:20",
-    "wrong": [
-      "16:40",
-      "17:20"
-    ],
-    "explainUk": "«Szesnasta dwadzieścia» — 16:20.",
-    "explainRu": "«Szesnasta dwadzieścia» — 16:20.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_5_3",
-    "spokenPl": "Szesnasta dwadzieścia (odjazd pociągu #4)",
-    "correct": "16:20",
-    "wrong": [
-      "16:40",
-      "17:20"
-    ],
-    "explainUk": "«Szesnasta dwadzieścia» — 16:20.",
-    "explainRu": "«Szesnasta dwadzieścia» — 16:20.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_5_4",
-    "spokenPl": "Szesnasta dwadzieścia (odjazd pociągu #5)",
-    "correct": "16:20",
-    "wrong": [
-      "16:40",
-      "17:20"
-    ],
-    "explainUk": "«Szesnasta dwadzieścia» — 16:20.",
-    "explainRu": "«Szesnasta dwadzieścia» — 16:20.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_5_5",
-    "spokenPl": "Szesnasta dwadzieścia (odjazd pociągu #6)",
-    "correct": "16:20",
-    "wrong": [
-      "16:40",
-      "17:20"
-    ],
-    "explainUk": "«Szesnasta dwadzieścia» — 16:20.",
-    "explainRu": "«Szesnasta dwadzieścia» — 16:20.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_5_6",
-    "spokenPl": "Szesnasta dwadzieścia (odjazd pociągu #7)",
-    "correct": "16:20",
-    "wrong": [
-      "16:40",
-      "17:20"
-    ],
-    "explainUk": "«Szesnasta dwadzieścia» — 16:20.",
-    "explainRu": "«Szesnasta dwadzieścia» — 16:20.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_5_7",
-    "spokenPl": "Szesnasta dwadzieścia (odjazd pociągu #8)",
-    "correct": "16:20",
-    "wrong": [
-      "16:40",
-      "17:20"
-    ],
-    "explainUk": "«Szesnasta dwadzieścia» — 16:20.",
-    "explainRu": "«Szesnasta dwadzieścia» — 16:20.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_5_8",
-    "spokenPl": "Szesnasta dwadzieścia (odjazd pociągu #9)",
-    "correct": "16:20",
-    "wrong": [
-      "16:40",
-      "17:20"
-    ],
-    "explainUk": "«Szesnasta dwadzieścia» — 16:20.",
-    "explainRu": "«Szesnasta dwadzieścia» — 16:20.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_5_9",
-    "spokenPl": "Szesnasta dwadzieścia (odjazd pociągu #10)",
-    "correct": "16:20",
-    "wrong": [
-      "16:40",
-      "17:20"
-    ],
-    "explainUk": "«Szesnasta dwadzieścia» — 16:20.",
-    "explainRu": "«Szesnasta dwadzieścia» — 16:20.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_5_10",
-    "spokenPl": "Szesnasta dwadzieścia (odjazd pociągu #11)",
-    "correct": "16:20",
-    "wrong": [
-      "16:40",
-      "17:20"
-    ],
-    "explainUk": "«Szesnasta dwadzieścia» — 16:20.",
-    "explainRu": "«Szesnasta dwadzieścia» — 16:20.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_5_11",
-    "spokenPl": "Szesnasta dwadzieścia (odjazd pociągu #12)",
-    "correct": "16:20",
-    "wrong": [
-      "16:40",
-      "17:20"
-    ],
-    "explainUk": "«Szesnasta dwadzieścia» — 16:20.",
-    "explainRu": "«Szesnasta dwadzieścia» — 16:20.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_5_12",
-    "spokenPl": "Szesnasta dwadzieścia (odjazd pociągu #13)",
-    "correct": "16:20",
-    "wrong": [
-      "16:40",
-      "17:20"
-    ],
-    "explainUk": "«Szesnasta dwadzieścia» — 16:20.",
-    "explainRu": "«Szesnasta dwadzieścia» — 16:20.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_5_13",
-    "spokenPl": "Szesnasta dwadzieścia (odjazd pociągu #14)",
-    "correct": "16:20",
-    "wrong": [
-      "16:40",
-      "17:20"
-    ],
-    "explainUk": "«Szesnasta dwadzieścia» — 16:20.",
-    "explainRu": "«Szesnasta dwadzieścia» — 16:20.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_5_14",
-    "spokenPl": "Szesnasta dwadzieścia (odjazd pociągu #15)",
-    "correct": "16:20",
-    "wrong": [
-      "16:40",
-      "17:20"
-    ],
-    "explainUk": "«Szesnasta dwadzieścia» — 16:20.",
-    "explainRu": "«Szesnasta dwadzieścia» — 16:20.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_5_15",
-    "spokenPl": "Szesnasta dwadzieścia (odjazd pociągu #16)",
-    "correct": "16:20",
-    "wrong": [
-      "16:40",
-      "17:20"
-    ],
-    "explainUk": "«Szesnasta dwadzieścia» — 16:20.",
-    "explainRu": "«Szesnasta dwadzieścia» — 16:20.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_5_16",
-    "spokenPl": "Szesnasta dwadzieścia (odjazd pociągu #17)",
-    "correct": "16:20",
-    "wrong": [
-      "16:40",
-      "17:20"
-    ],
-    "explainUk": "«Szesnasta dwadzieścia» — 16:20.",
-    "explainRu": "«Szesnasta dwadzieścia» — 16:20.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_5_17",
-    "spokenPl": "Szesnasta dwadzieścia (odjazd pociągu #18)",
-    "correct": "16:20",
-    "wrong": [
-      "16:40",
-      "17:20"
-    ],
-    "explainUk": "«Szesnasta dwadzieścia» — 16:20.",
-    "explainRu": "«Szesnasta dwadzieścia» — 16:20.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_5_18",
-    "spokenPl": "Szesnasta dwadzieścia (odjazd pociągu #19)",
-    "correct": "16:20",
-    "wrong": [
-      "16:40",
-      "17:20"
-    ],
-    "explainUk": "«Szesnasta dwadzieścia» — 16:20.",
-    "explainRu": "«Szesnasta dwadzieścia» — 16:20.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_5_19",
-    "spokenPl": "Szesnasta dwadzieścia (odjazd pociągu #20)",
+    "spokenPl": "Szesnasta dwadzieścia",
     "correct": "16:20",
     "wrong": [
       "16:40",
@@ -14227,235 +12269,7 @@
   },
   {
     "id": "time_sched_6_0",
-    "spokenPl": "Osiemnasta czterdzieści pięć (odjazd pociągu #1)",
-    "correct": "18:45",
-    "wrong": [
-      "19:45",
-      "18:15"
-    ],
-    "explainUk": "«Osiemnasta czterdzieści pięć» — 18:45.",
-    "explainRu": "«Osiemnasta czterdzieści pięć» — 18:45.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_6_1",
-    "spokenPl": "Osiemnasta czterdzieści pięć (odjazd pociągu #2)",
-    "correct": "18:45",
-    "wrong": [
-      "19:45",
-      "18:15"
-    ],
-    "explainUk": "«Osiemnasta czterdzieści pięć» — 18:45.",
-    "explainRu": "«Osiemnasta czterdzieści pięć» — 18:45.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_6_2",
-    "spokenPl": "Osiemnasta czterdzieści pięć (odjazd pociągu #3)",
-    "correct": "18:45",
-    "wrong": [
-      "19:45",
-      "18:15"
-    ],
-    "explainUk": "«Osiemnasta czterdzieści pięć» — 18:45.",
-    "explainRu": "«Osiemnasta czterdzieści pięć» — 18:45.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_6_3",
-    "spokenPl": "Osiemnasta czterdzieści pięć (odjazd pociągu #4)",
-    "correct": "18:45",
-    "wrong": [
-      "19:45",
-      "18:15"
-    ],
-    "explainUk": "«Osiemnasta czterdzieści pięć» — 18:45.",
-    "explainRu": "«Osiemnasta czterdzieści pięć» — 18:45.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_6_4",
-    "spokenPl": "Osiemnasta czterdzieści pięć (odjazd pociągu #5)",
-    "correct": "18:45",
-    "wrong": [
-      "19:45",
-      "18:15"
-    ],
-    "explainUk": "«Osiemnasta czterdzieści pięć» — 18:45.",
-    "explainRu": "«Osiemnasta czterdzieści pięć» — 18:45.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_6_5",
-    "spokenPl": "Osiemnasta czterdzieści pięć (odjazd pociągu #6)",
-    "correct": "18:45",
-    "wrong": [
-      "19:45",
-      "18:15"
-    ],
-    "explainUk": "«Osiemnasta czterdzieści pięć» — 18:45.",
-    "explainRu": "«Osiemnasta czterdzieści pięć» — 18:45.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_6_6",
-    "spokenPl": "Osiemnasta czterdzieści pięć (odjazd pociągu #7)",
-    "correct": "18:45",
-    "wrong": [
-      "19:45",
-      "18:15"
-    ],
-    "explainUk": "«Osiemnasta czterdzieści pięć» — 18:45.",
-    "explainRu": "«Osiemnasta czterdzieści pięć» — 18:45.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_6_7",
-    "spokenPl": "Osiemnasta czterdzieści pięć (odjazd pociągu #8)",
-    "correct": "18:45",
-    "wrong": [
-      "19:45",
-      "18:15"
-    ],
-    "explainUk": "«Osiemnasta czterdzieści pięć» — 18:45.",
-    "explainRu": "«Osiemnasta czterdzieści pięć» — 18:45.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_6_8",
-    "spokenPl": "Osiemnasta czterdzieści pięć (odjazd pociągu #9)",
-    "correct": "18:45",
-    "wrong": [
-      "19:45",
-      "18:15"
-    ],
-    "explainUk": "«Osiemnasta czterdzieści pięć» — 18:45.",
-    "explainRu": "«Osiemnasta czterdzieści pięć» — 18:45.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_6_9",
-    "spokenPl": "Osiemnasta czterdzieści pięć (odjazd pociągu #10)",
-    "correct": "18:45",
-    "wrong": [
-      "19:45",
-      "18:15"
-    ],
-    "explainUk": "«Osiemnasta czterdzieści pięć» — 18:45.",
-    "explainRu": "«Osiemnasta czterdzieści pięć» — 18:45.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_6_10",
-    "spokenPl": "Osiemnasta czterdzieści pięć (odjazd pociągu #11)",
-    "correct": "18:45",
-    "wrong": [
-      "19:45",
-      "18:15"
-    ],
-    "explainUk": "«Osiemnasta czterdzieści pięć» — 18:45.",
-    "explainRu": "«Osiemnasta czterdzieści pięć» — 18:45.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_6_11",
-    "spokenPl": "Osiemnasta czterdzieści pięć (odjazd pociągu #12)",
-    "correct": "18:45",
-    "wrong": [
-      "19:45",
-      "18:15"
-    ],
-    "explainUk": "«Osiemnasta czterdzieści pięć» — 18:45.",
-    "explainRu": "«Osiemnasta czterdzieści pięć» — 18:45.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_6_12",
-    "spokenPl": "Osiemnasta czterdzieści pięć (odjazd pociągu #13)",
-    "correct": "18:45",
-    "wrong": [
-      "19:45",
-      "18:15"
-    ],
-    "explainUk": "«Osiemnasta czterdzieści pięć» — 18:45.",
-    "explainRu": "«Osiemnasta czterdzieści pięć» — 18:45.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_6_13",
-    "spokenPl": "Osiemnasta czterdzieści pięć (odjazd pociągu #14)",
-    "correct": "18:45",
-    "wrong": [
-      "19:45",
-      "18:15"
-    ],
-    "explainUk": "«Osiemnasta czterdzieści pięć» — 18:45.",
-    "explainRu": "«Osiemnasta czterdzieści pięć» — 18:45.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_6_14",
-    "spokenPl": "Osiemnasta czterdzieści pięć (odjazd pociągu #15)",
-    "correct": "18:45",
-    "wrong": [
-      "19:45",
-      "18:15"
-    ],
-    "explainUk": "«Osiemnasta czterdzieści pięć» — 18:45.",
-    "explainRu": "«Osiemnasta czterdzieści pięć» — 18:45.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_6_15",
-    "spokenPl": "Osiemnasta czterdzieści pięć (odjazd pociągu #16)",
-    "correct": "18:45",
-    "wrong": [
-      "19:45",
-      "18:15"
-    ],
-    "explainUk": "«Osiemnasta czterdzieści pięć» — 18:45.",
-    "explainRu": "«Osiemnasta czterdzieści pięć» — 18:45.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_6_16",
-    "spokenPl": "Osiemnasta czterdzieści pięć (odjazd pociągu #17)",
-    "correct": "18:45",
-    "wrong": [
-      "19:45",
-      "18:15"
-    ],
-    "explainUk": "«Osiemnasta czterdzieści pięć» — 18:45.",
-    "explainRu": "«Osiemnasta czterdzieści pięć» — 18:45.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_6_17",
-    "spokenPl": "Osiemnasta czterdzieści pięć (odjazd pociągu #18)",
-    "correct": "18:45",
-    "wrong": [
-      "19:45",
-      "18:15"
-    ],
-    "explainUk": "«Osiemnasta czterdzieści pięć» — 18:45.",
-    "explainRu": "«Osiemnasta czterdzieści pięć» — 18:45.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_6_18",
-    "spokenPl": "Osiemnasta czterdzieści pięć (odjazd pociągu #19)",
-    "correct": "18:45",
-    "wrong": [
-      "19:45",
-      "18:15"
-    ],
-    "explainUk": "«Osiemnasta czterdzieści pięć» — 18:45.",
-    "explainRu": "«Osiemnasta czterdzieści pięć» — 18:45.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_6_19",
-    "spokenPl": "Osiemnasta czterdzieści pięć (odjazd pociągu #20)",
+    "spokenPl": "Osiemnasta czterdzieści pięć",
     "correct": "18:45",
     "wrong": [
       "19:45",
@@ -14467,235 +12281,7 @@
   },
   {
     "id": "time_sched_7_0",
-    "spokenPl": "Za dziesięć dziewiąta wieczorem (odjazd pociągu #1)",
-    "correct": "20:50",
-    "wrong": [
-      "21:10",
-      "20:10"
-    ],
-    "explainUk": "«Za dziesięć dziewiąta» — за 10 хвилин дев'ята (20:50).",
-    "explainRu": "«Za dziesięć dziewiąta» — 20:50.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_7_1",
-    "spokenPl": "Za dziesięć dziewiąta wieczorem (odjazd pociągu #2)",
-    "correct": "20:50",
-    "wrong": [
-      "21:10",
-      "20:10"
-    ],
-    "explainUk": "«Za dziesięć dziewiąta» — за 10 хвилин дев'ята (20:50).",
-    "explainRu": "«Za dziesięć dziewiąta» — 20:50.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_7_2",
-    "spokenPl": "Za dziesięć dziewiąta wieczorem (odjazd pociągu #3)",
-    "correct": "20:50",
-    "wrong": [
-      "21:10",
-      "20:10"
-    ],
-    "explainUk": "«Za dziesięć dziewiąta» — за 10 хвилин дев'ята (20:50).",
-    "explainRu": "«Za dziesięć dziewiąta» — 20:50.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_7_3",
-    "spokenPl": "Za dziesięć dziewiąta wieczorem (odjazd pociągu #4)",
-    "correct": "20:50",
-    "wrong": [
-      "21:10",
-      "20:10"
-    ],
-    "explainUk": "«Za dziesięć dziewiąta» — за 10 хвилин дев'ята (20:50).",
-    "explainRu": "«Za dziesięć dziewiąta» — 20:50.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_7_4",
-    "spokenPl": "Za dziesięć dziewiąta wieczorem (odjazd pociągu #5)",
-    "correct": "20:50",
-    "wrong": [
-      "21:10",
-      "20:10"
-    ],
-    "explainUk": "«Za dziesięć dziewiąta» — за 10 хвилин дев'ята (20:50).",
-    "explainRu": "«Za dziesięć dziewiąta» — 20:50.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_7_5",
-    "spokenPl": "Za dziesięć dziewiąta wieczorem (odjazd pociągu #6)",
-    "correct": "20:50",
-    "wrong": [
-      "21:10",
-      "20:10"
-    ],
-    "explainUk": "«Za dziesięć dziewiąta» — за 10 хвилин дев'ята (20:50).",
-    "explainRu": "«Za dziesięć dziewiąta» — 20:50.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_7_6",
-    "spokenPl": "Za dziesięć dziewiąta wieczorem (odjazd pociągu #7)",
-    "correct": "20:50",
-    "wrong": [
-      "21:10",
-      "20:10"
-    ],
-    "explainUk": "«Za dziesięć dziewiąta» — за 10 хвилин дев'ята (20:50).",
-    "explainRu": "«Za dziesięć dziewiąta» — 20:50.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_7_7",
-    "spokenPl": "Za dziesięć dziewiąta wieczorem (odjazd pociągu #8)",
-    "correct": "20:50",
-    "wrong": [
-      "21:10",
-      "20:10"
-    ],
-    "explainUk": "«Za dziesięć dziewiąta» — за 10 хвилин дев'ята (20:50).",
-    "explainRu": "«Za dziesięć dziewiąta» — 20:50.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_7_8",
-    "spokenPl": "Za dziesięć dziewiąta wieczorem (odjazd pociągu #9)",
-    "correct": "20:50",
-    "wrong": [
-      "21:10",
-      "20:10"
-    ],
-    "explainUk": "«Za dziesięć dziewiąta» — за 10 хвилин дев'ята (20:50).",
-    "explainRu": "«Za dziesięć dziewiąta» — 20:50.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_7_9",
-    "spokenPl": "Za dziesięć dziewiąta wieczorem (odjazd pociągu #10)",
-    "correct": "20:50",
-    "wrong": [
-      "21:10",
-      "20:10"
-    ],
-    "explainUk": "«Za dziesięć dziewiąta» — за 10 хвилин дев'ята (20:50).",
-    "explainRu": "«Za dziesięć dziewiąta» — 20:50.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_7_10",
-    "spokenPl": "Za dziesięć dziewiąta wieczorem (odjazd pociągu #11)",
-    "correct": "20:50",
-    "wrong": [
-      "21:10",
-      "20:10"
-    ],
-    "explainUk": "«Za dziesięć dziewiąta» — за 10 хвилин дев'ята (20:50).",
-    "explainRu": "«Za dziesięć dziewiąta» — 20:50.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_7_11",
-    "spokenPl": "Za dziesięć dziewiąta wieczorem (odjazd pociągu #12)",
-    "correct": "20:50",
-    "wrong": [
-      "21:10",
-      "20:10"
-    ],
-    "explainUk": "«Za dziesięć dziewiąta» — за 10 хвилин дев'ята (20:50).",
-    "explainRu": "«Za dziesięć dziewiąta» — 20:50.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_7_12",
-    "spokenPl": "Za dziesięć dziewiąta wieczorem (odjazd pociągu #13)",
-    "correct": "20:50",
-    "wrong": [
-      "21:10",
-      "20:10"
-    ],
-    "explainUk": "«Za dziesięć dziewiąta» — за 10 хвилин дев'ята (20:50).",
-    "explainRu": "«Za dziesięć dziewiąta» — 20:50.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_7_13",
-    "spokenPl": "Za dziesięć dziewiąta wieczorem (odjazd pociągu #14)",
-    "correct": "20:50",
-    "wrong": [
-      "21:10",
-      "20:10"
-    ],
-    "explainUk": "«Za dziesięć dziewiąta» — за 10 хвилин дев'ята (20:50).",
-    "explainRu": "«Za dziesięć dziewiąta» — 20:50.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_7_14",
-    "spokenPl": "Za dziesięć dziewiąta wieczorem (odjazd pociągu #15)",
-    "correct": "20:50",
-    "wrong": [
-      "21:10",
-      "20:10"
-    ],
-    "explainUk": "«Za dziesięć dziewiąta» — за 10 хвилин дев'ята (20:50).",
-    "explainRu": "«Za dziesięć dziewiąta» — 20:50.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_7_15",
-    "spokenPl": "Za dziesięć dziewiąta wieczorem (odjazd pociągu #16)",
-    "correct": "20:50",
-    "wrong": [
-      "21:10",
-      "20:10"
-    ],
-    "explainUk": "«Za dziesięć dziewiąta» — за 10 хвилин дев'ята (20:50).",
-    "explainRu": "«Za dziesięć dziewiąta» — 20:50.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_7_16",
-    "spokenPl": "Za dziesięć dziewiąta wieczorem (odjazd pociągu #17)",
-    "correct": "20:50",
-    "wrong": [
-      "21:10",
-      "20:10"
-    ],
-    "explainUk": "«Za dziesięć dziewiąta» — за 10 хвилин дев'ята (20:50).",
-    "explainRu": "«Za dziesięć dziewiąta» — 20:50.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_7_17",
-    "spokenPl": "Za dziesięć dziewiąta wieczorem (odjazd pociągu #18)",
-    "correct": "20:50",
-    "wrong": [
-      "21:10",
-      "20:10"
-    ],
-    "explainUk": "«Za dziesięć dziewiąta» — за 10 хвилин дев'ята (20:50).",
-    "explainRu": "«Za dziesięć dziewiąta» — 20:50.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_7_18",
-    "spokenPl": "Za dziesięć dziewiąta wieczorem (odjazd pociągu #19)",
-    "correct": "20:50",
-    "wrong": [
-      "21:10",
-      "20:10"
-    ],
-    "explainUk": "«Za dziesięć dziewiąta» — за 10 хвилин дев'ята (20:50).",
-    "explainRu": "«Za dziesięć dziewiąta» — 20:50.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_7_19",
-    "spokenPl": "Za dziesięć dziewiąta wieczorem (odjazd pociągu #20)",
+    "spokenPl": "Za dziesięć dziewiąta wieczorem",
     "correct": "20:50",
     "wrong": [
       "21:10",
@@ -14707,235 +12293,7 @@
   },
   {
     "id": "time_sched_8_0",
-    "spokenPl": "Wpół do dziesiątej wieczorem (odjazd pociągu #1)",
-    "correct": "21:30",
-    "wrong": [
-      "22:30",
-      "20:30"
-    ],
-    "explainUk": "«Wpół do dziesiątej» — пів на десяту вечора (21:30).",
-    "explainRu": "«Wpół do dziesiątej» — 21:30.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_8_1",
-    "spokenPl": "Wpół do dziesiątej wieczorem (odjazd pociągu #2)",
-    "correct": "21:30",
-    "wrong": [
-      "22:30",
-      "20:30"
-    ],
-    "explainUk": "«Wpół do dziesiątej» — пів на десяту вечора (21:30).",
-    "explainRu": "«Wpół do dziesiątej» — 21:30.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_8_2",
-    "spokenPl": "Wpół do dziesiątej wieczorem (odjazd pociągu #3)",
-    "correct": "21:30",
-    "wrong": [
-      "22:30",
-      "20:30"
-    ],
-    "explainUk": "«Wpół do dziesiątej» — пів на десяту вечора (21:30).",
-    "explainRu": "«Wpół do dziesiątej» — 21:30.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_8_3",
-    "spokenPl": "Wpół do dziesiątej wieczorem (odjazd pociągu #4)",
-    "correct": "21:30",
-    "wrong": [
-      "22:30",
-      "20:30"
-    ],
-    "explainUk": "«Wpół do dziesiątej» — пів на десяту вечора (21:30).",
-    "explainRu": "«Wpół do dziesiątej» — 21:30.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_8_4",
-    "spokenPl": "Wpół do dziesiątej wieczorem (odjazd pociągu #5)",
-    "correct": "21:30",
-    "wrong": [
-      "22:30",
-      "20:30"
-    ],
-    "explainUk": "«Wpół do dziesiątej» — пів на десяту вечора (21:30).",
-    "explainRu": "«Wpół do dziesiątej» — 21:30.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_8_5",
-    "spokenPl": "Wpół do dziesiątej wieczorem (odjazd pociągu #6)",
-    "correct": "21:30",
-    "wrong": [
-      "22:30",
-      "20:30"
-    ],
-    "explainUk": "«Wpół do dziesiątej» — пів на десяту вечора (21:30).",
-    "explainRu": "«Wpół do dziesiątej» — 21:30.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_8_6",
-    "spokenPl": "Wpół do dziesiątej wieczorem (odjazd pociągu #7)",
-    "correct": "21:30",
-    "wrong": [
-      "22:30",
-      "20:30"
-    ],
-    "explainUk": "«Wpół do dziesiątej» — пів на десяту вечора (21:30).",
-    "explainRu": "«Wpół do dziesiątej» — 21:30.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_8_7",
-    "spokenPl": "Wpół do dziesiątej wieczorem (odjazd pociągu #8)",
-    "correct": "21:30",
-    "wrong": [
-      "22:30",
-      "20:30"
-    ],
-    "explainUk": "«Wpół do dziesiątej» — пів на десяту вечора (21:30).",
-    "explainRu": "«Wpół do dziesiątej» — 21:30.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_8_8",
-    "spokenPl": "Wpół do dziesiątej wieczorem (odjazd pociągu #9)",
-    "correct": "21:30",
-    "wrong": [
-      "22:30",
-      "20:30"
-    ],
-    "explainUk": "«Wpół do dziesiątej» — пів на десяту вечора (21:30).",
-    "explainRu": "«Wpół do dziesiątej» — 21:30.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_8_9",
-    "spokenPl": "Wpół do dziesiątej wieczorem (odjazd pociągu #10)",
-    "correct": "21:30",
-    "wrong": [
-      "22:30",
-      "20:30"
-    ],
-    "explainUk": "«Wpół do dziesiątej» — пів на десяту вечора (21:30).",
-    "explainRu": "«Wpół do dziesiątej» — 21:30.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_8_10",
-    "spokenPl": "Wpół do dziesiątej wieczorem (odjazd pociągu #11)",
-    "correct": "21:30",
-    "wrong": [
-      "22:30",
-      "20:30"
-    ],
-    "explainUk": "«Wpół do dziesiątej» — пів на десяту вечора (21:30).",
-    "explainRu": "«Wpół do dziesiątej» — 21:30.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_8_11",
-    "spokenPl": "Wpół do dziesiątej wieczorem (odjazd pociągu #12)",
-    "correct": "21:30",
-    "wrong": [
-      "22:30",
-      "20:30"
-    ],
-    "explainUk": "«Wpół do dziesiątej» — пів на десяту вечора (21:30).",
-    "explainRu": "«Wpół do dziesiątej» — 21:30.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_8_12",
-    "spokenPl": "Wpół do dziesiątej wieczorem (odjazd pociągu #13)",
-    "correct": "21:30",
-    "wrong": [
-      "22:30",
-      "20:30"
-    ],
-    "explainUk": "«Wpół do dziesiątej» — пів на десяту вечора (21:30).",
-    "explainRu": "«Wpół do dziesiątej» — 21:30.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_8_13",
-    "spokenPl": "Wpół do dziesiątej wieczorem (odjazd pociągu #14)",
-    "correct": "21:30",
-    "wrong": [
-      "22:30",
-      "20:30"
-    ],
-    "explainUk": "«Wpół do dziesiątej» — пів на десяту вечора (21:30).",
-    "explainRu": "«Wpół do dziesiątej» — 21:30.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_8_14",
-    "spokenPl": "Wpół do dziesiątej wieczorem (odjazd pociągu #15)",
-    "correct": "21:30",
-    "wrong": [
-      "22:30",
-      "20:30"
-    ],
-    "explainUk": "«Wpół do dziesiątej» — пів на десяту вечора (21:30).",
-    "explainRu": "«Wpół do dziesiątej» — 21:30.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_8_15",
-    "spokenPl": "Wpół do dziesiątej wieczorem (odjazd pociągu #16)",
-    "correct": "21:30",
-    "wrong": [
-      "22:30",
-      "20:30"
-    ],
-    "explainUk": "«Wpół do dziesiątej» — пів на десяту вечора (21:30).",
-    "explainRu": "«Wpół do dziesiątej» — 21:30.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_8_16",
-    "spokenPl": "Wpół do dziesiątej wieczorem (odjazd pociągu #17)",
-    "correct": "21:30",
-    "wrong": [
-      "22:30",
-      "20:30"
-    ],
-    "explainUk": "«Wpół do dziesiątej» — пів на десяту вечора (21:30).",
-    "explainRu": "«Wpół do dziesiątej» — 21:30.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_8_17",
-    "spokenPl": "Wpół do dziesiątej wieczorem (odjazd pociągu #18)",
-    "correct": "21:30",
-    "wrong": [
-      "22:30",
-      "20:30"
-    ],
-    "explainUk": "«Wpół do dziesiątej» — пів на десяту вечора (21:30).",
-    "explainRu": "«Wpół do dziesiątej» — 21:30.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_8_18",
-    "spokenPl": "Wpół do dziesiątej wieczorem (odjazd pociągu #19)",
-    "correct": "21:30",
-    "wrong": [
-      "22:30",
-      "20:30"
-    ],
-    "explainUk": "«Wpół do dziesiątej» — пів на десяту вечора (21:30).",
-    "explainRu": "«Wpół do dziesiątej» — 21:30.",
-    "promptPl": "🕒 Час відправлення потяга / прийому лікаря:"
-  },
-  {
-    "id": "time_sched_8_19",
-    "spokenPl": "Wpół do dziesiątej wieczorem (odjazd pociągu #20)",
+    "spokenPl": "Wpół do dziesiątej wieczorem",
     "correct": "21:30",
     "wrong": [
       "22:30",
@@ -14947,7 +12305,7 @@
   },
   {
     "id": "time_sched_9_0",
-    "spokenPl": "Kwadrans po dziesiątej w nocy (odjazd pociągu #1)",
+    "spokenPl": "Kwadrans po dziesiątej w nocy",
     "correct": "22:15",
     "wrong": [
       "22:45",

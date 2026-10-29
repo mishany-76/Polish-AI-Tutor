@@ -81,7 +81,13 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
 
     final rawText = _q.speakText ??
         _q.prompt.replaceAll('___', _q.options[_q.correctIndex]);
-    final cleanText = rawText.replaceAll(RegExp(r'^[🎧🔊\s]+'), '').trim();
+    final cleanText = rawText
+        .replaceAll(RegExp(r'^[🎧🔊\s]+'), '')
+        .replaceAll(RegExp(r'\s*#\s*\d+'), '')
+        .replaceAll(RegExp(r'\s*№\s*\d+'), '')
+        .replaceAll(RegExp(r'\s*\(употребление\s*#?\d*\)', caseSensitive: false), '')
+        .replaceAll(RegExp(r'\s*\(вживання\s*#?\d*\)', caseSensitive: false), '')
+        .trim();
 
     if (_cachedTranslation != null) {
       setState(() => _showTranslation = true);
@@ -116,7 +122,14 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
         [ChatMessage('user', prompt)],
         timeout: const Duration(seconds: 15),
       );
-      final cleanTr = response.trim().replaceAll(RegExp(r'^["«]+|["»]+$'), '');
+      final cleanTr = response
+          .trim()
+          .replaceAll(RegExp(r'^["«]+|["»]+$'), '')
+          .replaceAll(RegExp(r'\s*#\s*\d+'), '')
+          .replaceAll(RegExp(r'\s*№\s*\d+'), '')
+          .replaceAll(RegExp(r'\s*\(употребление\s*#?\d*\)', caseSensitive: false), '')
+          .replaceAll(RegExp(r'\s*\(вживання\s*#?\d*\)', caseSensitive: false), '')
+          .trim();
       _aiTranslationCache[cacheKey] = cleanTr;
 
       if (mounted) {

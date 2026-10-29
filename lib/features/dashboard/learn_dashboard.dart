@@ -85,6 +85,8 @@ class LearnDashboard extends ConsumerWidget {
                       : (strings.isUk
                           ? 'Привіт, ${profile.displayName}!'
                           : 'Привет, ${profile.displayName}!'),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 15,
@@ -93,6 +95,8 @@ class LearnDashboard extends ConsumerWidget {
                 const SizedBox(height: 2),
                 Text(
                   '🎯 $goalStr · $levelStr',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: 12,
                     color: theme.colorScheme.onSurfaceVariant,

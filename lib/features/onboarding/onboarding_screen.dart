@@ -101,27 +101,55 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
+        centerTitle: false,
+        titleSpacing: widget.isRestart ? 0 : 16,
         title: Row(
-          mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('🇵🇱', style: TextStyle(fontSize: 22)),
+            const Text('🇵🇱', style: TextStyle(fontSize: 20)),
             const SizedBox(width: 8),
-            Text(
-              strings.isPl
-                  ? 'Poznaj Kasię'
-                  : (strings.isUk ? 'Знайомство з Kasią' : 'Знакомство с Kasią'),
-              style: const TextStyle(fontWeight: FontWeight.bold),
+            Expanded(
+              child: Text(
+                strings.isPl
+                    ? 'Poznaj Kasię'
+                    : (strings.isUk ? 'Знайомство з Kasią' : 'Знакомство с Kasią'),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 17,
+                ),
+              ),
             ),
           ],
         ),
         actions: [
-          TextButton(
-            onPressed: _finishOnboarding,
-            child: Text(
-              strings.onboardingSkip,
-              style: TextStyle(
+          Padding(
+            padding: const EdgeInsets.only(right: 12),
+            child: OutlinedButton.icon(
+              style: OutlinedButton.styleFrom(
+                visualDensity: VisualDensity.compact,
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                minimumSize: const Size(0, 32),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                side: BorderSide(
+                  color: theme.colorScheme.outlineVariant.withValues(alpha: 0.7),
+                ),
+              ),
+              onPressed: _finishOnboarding,
+              icon: Icon(
+                Icons.skip_next_rounded,
+                size: 16,
                 color: theme.colorScheme.onSurfaceVariant,
-                fontWeight: FontWeight.w600,
+              ),
+              label: Text(
+                strings.onboardingSkip,
+                style: TextStyle(
+                  color: theme.colorScheme.onSurfaceVariant,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 12,
+                ),
               ),
             ),
           ),

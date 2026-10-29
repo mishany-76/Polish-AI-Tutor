@@ -511,6 +511,33 @@ void main() {
       expect(registry.npcRole, contains('rejestratorka'));
       expect(registry.npcFirstStarterPl, contains('zarejestrować'));
     });
+
+    test('Динамические вариации и уровни сложности (Вариант 1 + Вариант 2)', () {
+      for (final s in scenarios) {
+        for (final sub in s.subScenarios) {
+          expect(sub.calmVariations.isNotEmpty, true, reason: '${sub.id} calmVariations');
+          expect(sub.lifeVariations.isNotEmpty, true, reason: '${sub.id} lifeVariations');
+          expect(sub.challengeVariations.isNotEmpty, true, reason: '${sub.id} challengeVariations');
+          expect(sub.npcPersonalities.isNotEmpty, true, reason: '${sub.id} npcPersonalities');
+
+          final calmSeed = sub.resolveDynamicSeed(RoleplayDifficulty.calm);
+          expect(calmSeed.effectiveDifficulty, RoleplayDifficulty.calm);
+          expect(calmSeed.twist.isNotEmpty, true);
+          expect(calmSeed.npcPersonality.isNotEmpty, true);
+
+          final challengeSeed = sub.resolveDynamicSeed(RoleplayDifficulty.challenge);
+          expect(challengeSeed.effectiveDifficulty, RoleplayDifficulty.challenge);
+          expect(challengeSeed.twist.isNotEmpty, true);
+
+          final randomSeed = sub.resolveDynamicSeed(RoleplayDifficulty.random);
+          expect(
+            [RoleplayDifficulty.calm, RoleplayDifficulty.life, RoleplayDifficulty.challenge]
+                .contains(randomSeed.effectiveDifficulty),
+            true,
+          );
+        }
+      }
+    });
   });
 }
 

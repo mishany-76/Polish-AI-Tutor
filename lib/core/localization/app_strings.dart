@@ -120,6 +120,33 @@ class AppStrings {
   String get initiatorNpcFirst => isPl
       ? '👂 Rozmówca'
       : (isUk ? '👂 Співрозмовник' : '👂 Собеседник');
+  String get dialogueDifficulty => isPl
+      ? 'Poziom trudności i styl:'
+      : (isUk ? 'Рівень складності та стиль:' : 'Сложность и стиль диалога:');
+  String get difficultyCalm => isPl
+      ? '🟢 Spokojny'
+      : (isUk ? '🟢 Спокійний' : '🟢 Спокойный');
+  String get difficultyCalmSub => isPl
+      ? 'A1–A2 · Prosty i łagodny'
+      : (isUk ? 'A1–A2 · Простий і терплячий' : 'A1–A2 · Простой и терпеливый');
+  String get difficultyLife => isPl
+      ? '🟡 Życiowy'
+      : (isUk ? '🟡 Життєвий' : '🟡 Жизненный');
+  String get difficultyLifeSub => isPl
+      ? 'A2–B1 · Codzienne zgrzyty'
+      : (isUk ? 'A2–B1 · Живі нюанси' : 'A2–B1 · Живые нюансы');
+  String get difficultyChallenge => isPl
+      ? '🔴 Wyzwanie'
+      : (isUk ? '🔴 Виклик' : '🔴 Вызов (Стресс)');
+  String get difficultyChallengeSub => isPl
+      ? 'B1–B2 · Presja i spór'
+      : (isUk ? 'B1–B2 · Суперечка і тиск' : 'B1–B2 · Претензия и спор');
+  String get difficultyRandom => isPl
+      ? '🎲 Losowy'
+      : (isUk ? '🎲 Випадковий' : '🎲 Случайный');
+  String get difficultyRandomSub => isPl
+      ? 'Niespodzianka'
+      : (isUk ? 'Сюрприз щоразу' : 'Сюрприз каждый раз');
   String get startDialogBtn => isPl
       ? 'Rozpocznij dialog 🚀'
       : (isUk ? 'Розпочати діалог 🚀' : 'Начать диалог 🚀');

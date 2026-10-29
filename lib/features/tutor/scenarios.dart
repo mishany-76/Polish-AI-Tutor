@@ -1,8 +1,29 @@
+import 'dart:math';
+
 import '../scanner/translation_service.dart' show UiLang;
 
 enum DialogInitiator {
   userFirst,
   npcFirst,
+}
+
+enum RoleplayDifficulty {
+  calm,
+  life,
+  challenge,
+  random,
+}
+
+class RoleplayDynamicSeed {
+  final RoleplayDifficulty effectiveDifficulty;
+  final String twist;
+  final String npcPersonality;
+
+  const RoleplayDynamicSeed({
+    required this.effectiveDifficulty,
+    required this.twist,
+    required this.npcPersonality,
+  });
 }
 
 class SubScenario {
@@ -25,6 +46,10 @@ class SubScenario {
     this.npcFirstStarterUk,
     this.npcFirstStarterRu,
     this.npcFirstInstruction,
+    this.calmVariations = const [],
+    this.lifeVariations = const [],
+    this.challengeVariations = const [],
+    this.npcPersonalities = const [],
   });
 
   final String id;
@@ -45,6 +70,50 @@ class SubScenario {
   final String? npcFirstStarterUk;
   final String? npcFirstStarterRu;
   final String? npcFirstInstruction;
+  final List<String> calmVariations;
+  final List<String> lifeVariations;
+  final List<String> challengeVariations;
+  final List<String> npcPersonalities;
+
+  RoleplayDynamicSeed resolveDynamicSeed(RoleplayDifficulty chosenDifficulty) {
+    final random = Random();
+    RoleplayDifficulty effective = chosenDifficulty;
+    if (chosenDifficulty == RoleplayDifficulty.random) {
+      final pool = [RoleplayDifficulty.calm, RoleplayDifficulty.life, RoleplayDifficulty.challenge];
+      effective = pool[random.nextInt(pool.length)];
+    }
+
+    List<String> twists;
+    switch (effective) {
+      case RoleplayDifficulty.calm:
+        twists = calmVariations.isNotEmpty ? calmVariations : [plotTwist];
+        break;
+      case RoleplayDifficulty.challenge:
+        twists = challengeVariations.isNotEmpty ? challengeVariations : [plotTwist];
+        break;
+      case RoleplayDifficulty.life:
+      case RoleplayDifficulty.random:
+        twists = lifeVariations.isNotEmpty ? lifeVariations : [plotTwist];
+        break;
+    }
+
+    final chosenTwist = twists[random.nextInt(twists.length)];
+
+    final personalities = npcPersonalities.isNotEmpty
+        ? npcPersonalities
+        : [
+            'Uprzejmy i pomocny rozmówca, mówiący naturalnym, żywym językiem.',
+            'Zajęty i pośpieszny pracownik, mówiący zwięźle i bezpośrednio.',
+            'Bardzo dokładny i przestrzegający procedur pracownik.'
+          ];
+    final chosenPersonality = personalities[random.nextInt(personalities.length)];
+
+    return RoleplayDynamicSeed(
+      effectiveDifficulty: effective,
+      twist: chosenTwist,
+      npcPersonality: chosenPersonality,
+    );
+  }
 
   String title(UiLang lang) {
     switch (lang) {
@@ -180,6 +249,25 @@ const scenarios = <Scenario>[
         npcFirstStarterRu: 'Добрый день! Есть ли у вас приложение Żappka и добавлять ли пакет к покупкам?',
         npcFirstInstruction:
             'Zacznij scenę jako kasjer przy kasie w Żabce. Zeskanowałeś zakupy klienta. Przywitaj się uprzejmie i zapytaj, czy klient ma aplikację Żappka oraz czy doliczyć reklamówkę.',
+        calmVariations: [
+          'Standardowe, spokojne skanowanie zakupów, kasjer pyta o Żappkę, torbę i proponuje paragon.',
+          'Klient kupuje kawę i drożdżówkę, kasjer z uśmiechem proponuje promocyjny zestaw śniadaniowy.',
+        ],
+        lifeVariations: [
+          'Terminal zbliżeniowy chwilowo odrzucił kartę, kasjer uprzejmie prosi o kod BLIK lub gotówkę.',
+          'Aplikacja Żappka nie chce się załadować przez brak zasięgu, kasjer proponuje podanie numeru telefonu.',
+          'W drukarce fiskalnej skończył się papier na paragon, kasjer szybko wymienia rolkę i przeprasza za chwilkę zwłoki.',
+        ],
+        challengeVariations: [
+          'Za klientem rośnie długa kolejka zniecierpliwionych osób, kasjer spieszy się i prosi o szybką decyzję o płatności.',
+          'Na kasie nabiła się wyższa cena niż na półce, klient to zauważa i kasjer musi wezwać kierownika do anulowania pozycji.',
+          'Klient płaci banknotem 200 zł za zakupy za 8 zł, kasjer nie ma wydać reszty i nalega na BLIK lub kartę.',
+        ],
+        npcPersonalities: [
+          'Uprzejmy, uśmiechnięty kasjer, który chętnie poleca promocje i żartuje.',
+          'Młody, szybki pracownik w biegu, mówiący zwięźle, bo kolejka rośnie.',
+          'Starsza, bardzo dokładna kasjerka, która skrupulatnie przelicza każdy grosz.',
+        ],
       ),
       SubScenario(
         id: 'zabka_finding',
@@ -203,6 +291,25 @@ const scenarios = <Scenario>[
         npcFirstStarterRu: 'Добрый день! Ищете конкретный товар на полках? Чем могу помочь?',
         npcFirstInstruction:
             'Zacznij scenę jako pracownik na sali sprzedaży sklepu. Widzisz, że klient rozgląda się niepewnie po regałach. Przywitaj się uprzejmie i zapytaj, jakiego produktu szuka.',
+        calmVariations: [
+          'Pracownik od razu prowadzi klienta do lodówki z mlekiem bez laktozy i pokazuje świeżą dostawę.',
+          'Klient szuka ciepłych bułek, pracownik z dumą wskazuje piec i mówi, że wyjęto je 5 minut temu.',
+        ],
+        lifeVariations: [
+          'Zwykłe mleko się skończyło, jest tylko roślinne owsiane albo dostawa przyjedzie za pół godziny.',
+          'Cena z gazetki nie została zmieniona na półce, pracownik sprawdza kod na skanerze mobilnym.',
+          'Wybrany produkt ma termin ważności do dzisiaj, pracownik pomaga znaleźć opakowanie z dłuższą datą.',
+        ],
+        challengeVariations: [
+          'Szukany produkt został całkowicie wycofany ze sprzedaży w tej sieci, pracownik proponuje zamiennik i tłumaczy różnicę.',
+          'Alejka jest zablokowana paletami z dostawą, pracownik prosi o ostrożność i sam idzie szukać towaru na zapleczu.',
+          'W sklepie jest awaria chłodziarek, pracownik ostrzega, że niektóre nabiały zostały tymczasowo zabezpieczone.',
+        ],
+        npcPersonalities: [
+          'Pomocny, energiczny pracownik, który chętnie oprowadza klienta po alejkach.',
+          'Lekko zmęczony pracownik rozładowujący palety, mówiący krótko, ale konkretnie.',
+          'Bardzo sumienny doradca, dbający o świeżość i zadowolenie klienta.',
+        ],
       ),
       SubScenario(
         id: 'zabka_refund',
@@ -226,6 +333,25 @@ const scenarios = <Scenario>[
         npcFirstStarterRu: 'Добрый день! Вижу, вы подходите с товаром и чеком. Чем могу помочь, речь идет о рекламации или возврате товара?',
         npcFirstInstruction:
             'Zacznij scenę jako kasjer/kierownik w Żabce. Klient podszedł do kasy z towarem i paragonem w ręku. Przywitaj się uprzejmie i zapytaj, w jakiej sprawie podchodzi: czy chodzi o reklamację złej ceny czy zwrot wadliwego towaru.',
+        calmVariations: [
+          'Kasjer natychmiast sprawdza paragon, potwierdza błąd rabatu wielosztuki i bez słowa zwraca różnicę w gotówce.',
+          'Klient zwraca nienaruszony produkt kupiony przed chwilą, kasjer wymienia go na inny bez żadnych przeszkód.',
+        ],
+        lifeVariations: [
+          'Kasjer prosi o pokazanie paragonu, sprawdza godzinę i wyjaśnia, że promocja wymagała zeskanowania Żappki, ale koryguje kwotę.',
+          'Opakowanie jogurtu okazało się pęknięte pod folią, kasjer przeprasza, wymienia produkt i oferuje kupon rabatowy.',
+          'Paragon jest lekko zamazany, kasjer musi ręcznie wbić 14-cyfrowy kod wydruku do systemu.',
+        ],
+        challengeVariations: [
+          'Klient nie ma papierowego paragonu, a jedynie potwierdzenie transakcji BLIK w aplikacji; kasjer wzywa kierownika do autoryzacji.',
+          'Towar został kupiony w innej Żabce na drugim końcu miasta; kasjer tłumaczy zasady franczyzy, ale szuka kompromisu.',
+          'Produkt spożywczy został już w domu otwarty i klient poczuł zepsuty zapach; kasjer początkowo powołuje się na brak zwrotu otwartych artykułów, ale sporządza protokół reklamacji jakościowej.',
+        ],
+        npcPersonalities: [
+          'Kierownik zmiany nastawiony na ugodę i szybkie zadowolenie klienta.',
+          'Służbista trzymający się ściśle regulaminu i sprawdzający każdą rubrykę.',
+          'Dociekliwy sprzedawca, dokładnie oglądający opakowanie i dopytujący o szczegóły zakupu.',
+        ],
       ),
     ],
   ),
@@ -272,6 +398,25 @@ const scenarios = <Scenario>[
         npcFirstStarterRu: 'Добрый день, приглашаю к столу. Чем могу помочь, хотели бы открыть личный расчетный счет?',
         npcFirstInstruction:
             'Zacznij scenę jako doradca w oddziale banku PKO BP. Zaproś klienta do biurka, przywitaj się i zapytaj, czy przyszedł otworzyć nowe konto osobiste.',
+        calmVariations: [
+          'Standardowa procedura: weryfikacja paszportu i PESEL, wybór darmowego konta za zero i konfiguracja IKO.',
+          'Klient potrzebuje konta walutowego EUR do pensji, doradca włącza darmowe subkonto i kantor walutowy.',
+        ],
+        lifeVariations: [
+          'Doradca pyta o meldunek oraz prosi o podanie polskiego numeru telefonu do autoryzacji kodów SMS.',
+          'Klient nie posiada jeszcze numeru PESEL, doradca zakłada konto na identyfikator tymczasowy TIN na podstawie paszportu.',
+          'Fizyczna karta przyjdzie pocztą za 5 dni, ale doradca od razu generuje kartę wirtualną do telefonu.',
+        ],
+        challengeVariations: [
+          'Adres zamieszkania w oświadczeniu podatkowym FATCA nie pokrywa się z umową najmu, doradca prosi o dodatkowy dokument.',
+          'System bankowy chwilowo ma problem z weryfikacją paszportu w bazie centralnej, doradca musi dzwonić do centrali weryfikacyjnej.',
+          'Klient pyta o możliwość uzyskania debetu lub karty kredytowej, doradca zadaje szczegółowe pytania o typ umowy o pracę i dochody.',
+        ],
+        npcPersonalities: [
+          'Życzliwy doradca, cierpliwie tłumaczący krok po kroku każdą opcję w aplikacji.',
+          'Rzeczowy bankowiec operujący profesjonalnym językiem finansowym.',
+          'Skrupulatna urzędniczka bankowa dbająca o zgodność każdego podpisu z procedurą KYC.',
+        ],
       ),
       SubScenario(
         id: 'bank_atm_blocked',
@@ -295,6 +440,25 @@ const scenarios = <Scenario>[
         npcFirstStarterRu: 'Добрый день! Вижу, вы заходите обеспокоенный со стороны банкомата. Что случилось с картой?',
         npcFirstInstruction:
             'Zacznij scenę jako doradca bankowy. Klient podszedł pospiesznie od bankomatu. Przywitaj się i zapytaj, co stało się z kartą lub bankomatem.',
+        calmVariations: [
+          'Doradca od ręki unieważnia starą kartę, włącza kartę wirtualną w IKO i wypłaca potrzebną gotówkę w kasie z paszportu.',
+          'Karta została zablokowana przez 3 błędne kody PIN, doradca pomaga zresetować PIN w aplikacji.',
+        ],
+        lifeVariations: [
+          'Karta została wciągnięta z powodu przekroczenia limitu czasu (30 sekund), doradca zamawia darmowy duplikat pocztą.',
+          'Bankomat należy do innej sieci (Euronet), doradca przyjmuje zgłoszenie awarii i instruuje jak wypłacać BLIKiem bez opłat.',
+          'Klient potrzebuje pilnie zrobić zakupy, doradca uczy go generowania 6-cyfrowego kodu BLIK bez użycia plastiku.',
+        ],
+        challengeVariations: [
+          'Karta została zatrzymana przez system bezpieczeństwa po podejrzanej próbie wypłaty za granicą; doradca weryfikuje historię transakcji pytaniami kontrolnymi.',
+          'Klient zapomniał paszportu i ma tylko zdjęcie w telefonie; doradca tłumaczy rygorystyczne przepisy prawa bankowego i proponuje autoryzację przez aplikację IKO.',
+          'Bankomat nie wydał 1000 zł, ale konto zostało obciążone; doradca sporządza oficjalną reklamację bankomatową.',
+        ],
+        npcPersonalities: [
+          'Empatyczny doradca, który potrafi uspokoić klienta i szybko znajduje alternatywne rozwiązanie.',
+          'Ściśle procedurowy pracownik działu bezpieczeństwa bankowego.',
+          'Spokojny specjalista bankowości mobilnej uczący nowoczesnych funkcji IKO.',
+        ],
       ),
       SubScenario(
         id: 'bank_statement_urzad',
@@ -317,7 +481,26 @@ const scenarios = <Scenario>[
         npcFirstStarterUk: 'Добрий день! Чим можу сьогодні допомогти? Потрібна довідка з печаткою чи виписка з рахунку?',
         npcFirstStarterRu: 'Добрый день! Чем могу сегодня помочь? Вам нужна справка с печатью или выписка со счета?',
         npcFirstInstruction:
-            'Zacznij scenę jako doradca bankowy. Przywitaj klienta serdecznie i zapytaj, jakiego zaświadczenia urzędowego lub wyciągu z pieczęcią banku potrzebuje.',
+            'Zacznij scenę jako doradca w banku. Przywitaj klienta serdecznie i zapytaj, jakiego zaświadczenia urzędowego lub wyciągu z pieczęcią banku potrzebuje.',
+        calmVariations: [
+          'Doradca od ręki generuje zaświadczenie o saldzie za ostatnie 3 miesiące z pieczęcią i podpisem.',
+          'Klient potrzebuje wyciągu dwujęzycznego (polsko-angielskiego), doradca drukuje odpowiedni wzór.',
+        ],
+        lifeVariations: [
+          'Urzędnik informuje, że zaświadczenie papierowe z pieczęcią wiąże się z opłatą manipulacyjną (np. 15 zł).',
+          'Urząd wymaga wyciągu za 6 miesięcy z wyodrębnionymi wpływami od pracodawcy; doradca filtruje historię.',
+          'Klient ma środki w PLN i EUR, doradca wystawia zaświadczenie zbiorcze z przeliczeniem po kursie NBP.',
+        ],
+        challengeVariations: [
+          'Na wyciągu widnieje debet lub blokada skarbowa, doradca wyjaśnia konsekwencje formalne przed urzędem wojewódzkim.',
+          'Urząd wymaga pieczęci okrągłej centrali, doradca tłumaczy procedurę zamówienia dokumentu centralnego.',
+          'Opłata za zaświadczenie w trybie pilnym wynosi 35 zł i musi być pobrana bezpośrednio z konta.',
+        ],
+        npcPersonalities: [
+          'Doświadczony doradca doskonale zorientowany w wymogach urzędów wojewódzkich.',
+          'Formalny urzędnik bankowy dbający o precyzyjną poprawność pieczęci.',
+          'Cierpliwy doradca szukający najtańszej i najwygodniejszej ścieżki dla klienta.',
+        ],
       ),
     ],
   ),
@@ -357,6 +540,25 @@ const scenarios = <Scenario>[
         npcFirstStarterRu: 'Добрый день! Приглашаю, что могу для вас приготовить попить или на десерт?',
         npcFirstInstruction:
             'Zacznij scenę jako kelner/barista w kawiarni. Przywitaj serdecznie gościa i zapytaj, co przygotować do picia lub na deser.',
+        calmVariations: [
+          'Gość zamawia klasyczne cappuccino i ciepłą szarlotkę z lodami; zamówienie przebiega gładko.',
+          'Klient bierze flat white na wynos i croissant pistacjowy, barista sprawnie podaje kubek.',
+        ],
+        lifeVariations: [
+          'Szarlotka właśnie się skończyła, kelner poleca wyśmienity sernik krakowski z malinami.',
+          'Mleko owsiane się skończyło, kelner proponuje migdałowe, sojowe lub bezlaktozowe.',
+          'Brak wolnych stolików na dole, kelner proponuje stolik na antresoli lub na wynos.',
+        ],
+        challengeVariations: [
+          'Ekspres do kawy przechodzi 15-minutowy cykl czyszczenia; barista proponuje kawę przelewową drip lub herbatę rozgrzewającą.',
+          'W kasie brakuje bilonu do wydania reszty z banknotu 100 zł; kelner prosi o płatność zbliżeniową lub BLIK.',
+          'W kawiarni jest duży ruch, czas oczekiwania wynosi 20 minut; kelner uprzedza i podaje darmową wodę.',
+        ],
+        npcPersonalities: [
+          'Uśmiechnięty barista z pasją do parzenia kawy specialty.',
+          'Elegancki, dyskretny kelner dbający o spokój gości.',
+          'Młoda, bardzo serdeczna kelnerka, która dopiero poznaje menu.',
+        ],
       ),
       SubScenario(
         id: 'cafe_allergies',
@@ -368,7 +570,7 @@ const scenarios = <Scenario>[
         descPl: 'Skład dań: bez glutenu, bez orzechów lub dania wegańskie i bez laktozy.',
         starterHintPl: 'Przepraszam, mam silną alergię na orzechy i gluten. Czy te desery są dla mnie bezpieczne?',
         starterHintUk: 'Перепрошую, у мене сильна алергія на горіхи та глютен. Чи ці десерти безпечні для мене?',
-        starterHintRu: 'Извините, у меня сильная аллергия на орехи и глютен. Эти десерты безопасны для меня?',
+        starterHintRu: 'Извините, у меня сильная аллергия на орехи и gluten. Эти десерты безопасны для меня?',
         plotTwist: 'Kelner sprawdza tabelę alergenów w kuchni i informuje, że ciasto ma śladowe ilości glutenu, ale proponuje bezpieczny deser chia.',
         vocab: ['karta alergenów', 'bezglutenowe', 'orzechy', 'laktoza', 'bezpieczne danie'],
         npcRole: 'kelner w kawiarni znający szczegółowo kartę alergenów',
@@ -380,6 +582,25 @@ const scenarios = <Scenario>[
         npcFirstStarterRu: 'Добрый день! Вы уже выбрали или у вас есть вопросы по аллергенам или составу блюд?',
         npcFirstInstruction:
             'Zacznij scenę jako kelner w kawiarni. Klient uważnie studiuje kartę deserów. Przywitaj się i zapytaj, czy ma pytania dotyczące alergenów lub składników dań.',
+        calmVariations: [
+          'Kelner przynosi kartę alergenów i wskazuje ciasta w 100% bezpieczne i certyfikowane bezglutenowe.',
+          'Klient szuka deseru bez cukru i laktozy, kelner poleca mus kokosowy z chia i owocami leśnymi.',
+        ],
+        lifeVariations: [
+          'Kelner sprawdza w kuchni i uprzedza, że ciasto ma śladowe ilości glutenu, ale deser chia jest w pełni bezpieczny.',
+          'Ciasto bezglutenowe pieczone jest w tym samym piecu co zwykłe; kelner uczciwie informuje o ryzyku zanieczyszczenia.',
+          'Syrop smakowy zawiera ekstrakt z orzechów; kelner proponuje bezpieczną przyprawę cynamonową.',
+        ],
+        challengeVariations: [
+          'Klient ma silną alergię anafilaktyczną na orzeszki ziemne; kelner wzywa szefa kuchni dla pełnej pewności składników.',
+          'Przez pomyłkę baristy kawa została przygotowana na mleku krowim zamiast owsianego; kelner natychmiast ją wymienia z przeprosinami.',
+          'Większość deserów zawiera żelatynę wieprzową lub laktozę; wegański gość szuka alternatywy, a kelner analizuje całą kartę.',
+        ],
+        npcPersonalities: [
+          'Uważny kelner traktujący alergie gości z najwyższą odpowiedzialnością.',
+          'Konkretny pracownik kuchni mówiący szczerze o składzie i procesie przygotowania.',
+          'Profesjonalny kelner z certyfikatem baristy i wiedzą o dietetyce.',
+        ],
       ),
       SubScenario(
         id: 'cafe_split_bill',
@@ -403,6 +624,25 @@ const scenarios = <Scenario>[
         npcFirstStarterRu: 'Добрый день! Пожалуйста, вот ваш счет. Платите вместе или раздельно?',
         npcFirstInstruction:
             'Zacznij scenę jako kelner podchodzący z rachunkiem do stolika. Przywitaj się i zapytaj, czy goście płacą razem czy osobno.',
+        calmVariations: [
+          'Kelner dzieli rachunek równo na pół, podaje kwoty słowami i bez problemu przyjmuje kartę i gotówkę.',
+          'Jedna osoba płaci za napoje, druga za desery; kelner drukuje dwa osobne paragony.',
+        ],
+        lifeVariations: [
+          'Terminal wymaga osobnego wbicia każdej kwoty, kelner pyta czy doliczyć napiwek za miłą obsługę.',
+          'Kod BLIK wygasł po 2 minutach, klient musi wygenerować nowy kod w aplikacji bankowej.',
+          'Rachunek wynosi 87 zł, goście chcą zapłacić po 43,50 zł; kelner precyzyjnie rozlicza transakcję.',
+        ],
+        challengeVariations: [
+          'Stolik liczy 6 osób i obowiązuje 10% serwisu grupowego; goście dopytują o pozycję, a kelner uprzejmie wyjaśnia zasady lokalu.',
+          'Karta jednej z osób została odrzucona przez terminal; kelner dyskretnie proponuje BLIK lub gotówkę.',
+          'Klienci chcą zapłacić część w euro w gotówce, a część kartą; kelner wyjaśnia przelicznik kursowy lokalu.',
+        ],
+        npcPersonalities: [
+          'Wesoły kelner sprawnie i żartobliwie pomagający rozdzielić płatności.',
+          'Precyzyjny kelner wyliczający każdą pozycję co do grosza.',
+          'Dyskretny i taktowny kelner świetnie radzący sobie w delikatnych kwestiach rachunków.',
+        ],
       ),
     ],
   ),
@@ -441,6 +681,25 @@ const scenarios = <Scenario>[
         npcFirstStarterRu: 'Добрый день! К какому врачу вы хотели бы записаться и срочный ли случай на сегодня?',
         npcFirstInstruction:
             'Zacznij scenę jako rejestratorka medyczna w okienku rejestracji przychodni POZ. Pacjent podszedł do okienka. Przywitaj się i zapytaj, do jakiego lekarza chce się zarejestrować i na jaki termin.',
+        calmVariations: [
+          'Rejestratorka znajduje wolny termin na ten sam dzień o 14:30 i sprawnie wpisuje pacjenta na listę.',
+          'Pacjent rejestruje się na szczepienie lub rutynowy bilans zdrowia na kolejny tydzień.',
+        ],
+        lifeVariations: [
+          'Na dziś brak wolnych terminów do lekarza rodzinnego, rejestratorka proponuje dyżur ostry popołudniu.',
+          'W systemie e-WUŚ status świeci na czerwono; rejestratorka prosi o podpisanie oświadczenia o prawie do świadczeń.',
+          'Lekarz pierwszego kontaktu przyjmuje tylko do 13:00, pacjent zostaje zapisany do lekarza dyżurnego.',
+        ],
+        challengeVariations: [
+          'Pacjent nie złożył jeszcze deklaracji wyboru lekarza POZ w tej placówce; rejestratorka prosi najpierw o wypełnienie deklaracji.',
+          'Pacjent ma wysoką gorączkę i duszności; rejestratorka ocenia stan jako nagły i od razu kieruje do gabinetu zabiegowego.',
+          'Duża kolejka do okienka i ciągle dzwoniący telefon; rejestratorka rozmawia krótko i prosi o szybkie podanie numeru PESEL.',
+        ],
+        npcPersonalities: [
+          'Ciepła i opiekuńcza pani z rejestracji, starająca się pomóc każdemu choremu.',
+          'Zaganiana urzędniczka medyczna pracująca pod presją kolejki.',
+          'Dokładna rejestratorka ściśle przestrzegająca przepisów NFZ i weryfikacji tożsamości.',
+        ],
       ),
       SubScenario(
         id: 'doctor_consultation',
@@ -464,6 +723,25 @@ const scenarios = <Scenario>[
         npcFirstStarterRu: 'Добрый день, проходите и садитесь. Что вас беспокоит, с какими симптомами ко мне пришли?',
         npcFirstInstruction:
             'Zacznij scenę jako lekarz rodzinny w gabinecie lekarskim. Pacjent wszedł do gabinetu. Przywitaj się uprzejmie, wskaż krzesło i zapytaj, co pacjentowi dolega i jakie ma objawy.',
+        calmVariations: [
+          'Lekarz stwierdza lekką infekcję wirusową gardła, przepisuje syrop i witaminy oraz daje L4 na 4 dni.',
+          'Wizyta kontrolna: lekarz osłuchuje płuca, widzi wyraźną poprawę i zamyka zwolnienie lekarskie.',
+        ],
+        lifeVariations: [
+          'Lekarz osłuchuje płuca, stwierdza ostre zapalenie oskrzeli, wystawia zwolnienie L4 na 7 dni i prosi o NIP pracodawcy.',
+          'Pacjent zgłasza silny ból zatok; lekarz ordynuje steryd donosowy i zaleca inhalacje.',
+          'Pacjent wykonuje pracę fizyczną; lekarz decyduje się przedłużyć L4 na cały tydzień dla uniknięcia powikłań.',
+        ],
+        challengeVariations: [
+          'Lekarz podejrzewa anginę bakteryjną i chce wdrożyć antybiotyk, ale pacjent zgłasza alergię na penicylinę; lekarz szuka bezpiecznej alternatywy.',
+          'Objawy trwają ponad 10 dni; lekarz wystawia pilne skierowanie na RTG klatki piersiowej i badanie krwi z CRP.',
+          'Pacjent prosi o wsteczne L4 za ubiegły tydzień; lekarz tłumaczy przepisy ZUS zezwalające na maks. 3 dni wstecz od badania.',
+        ],
+        npcPersonalities: [
+          'Empatyczny lekarz rodzinny, który uważnie słucha pacjenta i szczegółowo omawia leczenie.',
+          'Rzeczowy, konkretny internista stawiający szybką diagnozę opartą na badaniu.',
+          'Dociekliwy diagnosta pytający o tryb życia, leki i historię chorób w rodzinie.',
+        ],
       ),
       SubScenario(
         id: 'doctor_pharmacy',
@@ -487,6 +765,25 @@ const scenarios = <Scenario>[
         npcFirstStarterRu: 'Добрый день! Пожалуйста, четырехзначный код е-рецепта и ваш номер PESEL.',
         npcFirstInstruction:
             'Zacznij scenę jako farmaceuta za ladą w aptece. Klient podszedł do okienka. Przywitaj się uprzejmie i poproś o 4-cyfrowy kod e-recepty oraz numer PESEL pacjenta.',
+        calmVariations: [
+          'Farmaceuta od ręki wydaje przepisane leki, opisuje dawkowanie markerem na opakowaniach i przyjmuje płatność.',
+          'Klient kupuje maść i krople, farmaceuta dokładnie tłumaczy sposób aplikacji leków.',
+        ],
+        lifeVariations: [
+          'Przepisany antybiotyk jest niedostępny w tej dawce, farmaceuta proponuje tańszy polski zamiennik o identycznym składzie.',
+          'Recepta jest roczna, farmaceuta pyta czy klient chce wykupić zapas na miesiąc czy od razu na 3 miesiące.',
+          'Do antybiotyku farmaceuta doradza probiotyk i tłumaczy, aby przyjmować go 2 godziny po leku głównym.',
+        ],
+        challengeVariations: [
+          'Ważność e-recepty na antybiotyk minęła (7 dni od wystawienia); farmaceuta musi odmówić wydania leku i skierować do lekarza.',
+          'Lek jest na liście leków deficytowych; farmaceuta sprawdza inne apteki w mieście i proponuje sprowadzenie z hurtowni na rano.',
+          'Lekarz zaznaczył 100% odpłatności zamiast zniżki; farmaceuta informuje o wysokiej cenie i pyta czy klient kupuje lek pełnopłatnie.',
+        ],
+        npcPersonalities: [
+          'Uprzejma pani magister farmacji z troską opisująca dawkowanie leków.',
+          'Szybki i rzeczowy aptekarz sprawnie obsługujący kolejkę.',
+          'Doświadczony farmaceuta doradzający tańsze polskie odpowiedniki leków.',
+        ],
       ),
     ],
   ),
@@ -525,6 +822,25 @@ const scenarios = <Scenario>[
         npcFirstStarterRu: 'Добрый день, дайте пожалуйста талон из терминала. По какому вопросу обращаетесь, регистрация или получение номера PESEL?',
         npcFirstInstruction:
             'Zacznij scenę jako urzędnik wydziału spraw obywatelskich. Petent podszedł do biurka po wywołaniu numerka. Przywitaj się, poproś o bilet i zapytaj o cel wizyty: meldunek czy nadanie numeru PESEL.',
+        calmVariations: [
+          'Komplet dokumentów i umowa najmu są wzorowe; urzędnik od ręki melduje na rok i drukuje poświadczenie z PESEL.',
+          'Cudzoziemiec przedłuża meldunek na kolejny okres na podstawie aneksu do umowy najmu.',
+        ],
+        lifeVariations: [
+          'W umowie najmu brakuje numeru księgi wieczystej lokalu; urzędnik pomaga znaleźć wpis w internetowym rejestrze KW po adresie.',
+          'Umowa została podpisana podpisem zaufanym ePUAP; urzędnik weryfikuje certyfikat w systemie.',
+          'Urzędnik prosi o doprecyzowanie podstawy prawnej do nadania PESEL i wskazuje odpowiednie pole formularza.',
+        ],
+        challengeVariations: [
+          'Umowa najmu jest zawarta z podnajemcą; urzędnik żąda pisemnej zgody głównego właściciela mieszkania na podnajem.',
+          'Ważność paszportu kończy się za 2 miesiące; urzędnik tłumaczy, że meldunek może być nadany tylko do daty ważności paszportu.',
+          'W danych brakuje poświadczonego tłumaczenia imion rodziców; urzędnik wzywa do uzupełnienia braków formalnych.',
+        ],
+        npcPersonalities: [
+          'Przyjazny urzędnik spraw obywatelskich cierpliwie pomagający wypełnić formularze.',
+          'Skrupulatna urzędniczka weryfikująca każdą datę i podpis w umowie.',
+          'Doświadczony kierownik referatu mówiący precyzyjnym językiem urzędowym.',
+        ],
       ),
       SubScenario(
         id: 'urzad_karta_pobytu',
@@ -534,7 +850,7 @@ const scenarios = <Scenario>[
         descRu: 'Подача пакета документов на ВНЖ в воеводстве, сдача отпечатков пальцев, приложение №1.',
         descUk: 'Подача пакету документів на ВНЖ, зняття відбитків пальців, додаток Załącznik nr 1 від роботодавця.',
         descPl: 'Składanie wniosku o pobyt czasowy w urzędzie wojewódzkim, odciski palców i załącznik nr 1.',
-        starterHintPl: 'Dzień dobry, mam wezwanie na złożenie odcisków palców i wniosku o pobyt czasowy.',
+        starterHintPl: 'Dzień dobry, mam wezwanie na pobranie odcisków palców i złożenie wniosku o pobyt czasowy.',
         starterHintUk: 'Добрий день, маю виклик на зняття відбитків пальців та подачу документів на тимчасовий побит.',
         starterHintRu: 'Добрый день, у меня вызов на сдачу отпечатков пальцев и подачу заявления на временный побыт.',
         plotTwist: 'Jedno ze zdjęć ma zły format biometryczny lub brakuje potwierdzenia opłaty skarbowej (440 zł) — urzędnik kieruje do kasy na dole.',
@@ -549,6 +865,25 @@ const scenarios = <Scenario>[
         npcFirstStarterRu: 'Добрый день, приглашаю к рабочему месту. Пожалуйста, талон, загранпаспорт и заявление на временный побыт.',
         npcFirstInstruction:
             'Zacznij scenę jako inspektor ds. cudzoziemców w urzędzie wojewódzkim. Petent podszedł do stanowiska. Przywitaj się i poproś o bilet z numerkiem, paszport oraz wniosek o pobyt czasowy.',
+        calmVariations: [
+          'Dokumenty, załącznik nr 1 i dowód wpłaty 440 zł są kompletne; inspektor skanuje odciski palców i wbija pieczęć do paszportu.',
+          'Wniosek studencki o pobyt czasowy; inspektor weryfikuje zaświadczenie z uczelni i przyjmuje wniosek.',
+        ],
+        lifeVariations: [
+          'Jedno ze zdjęć nie spełnia wymogów biometrycznych (lekki uśmiech); inspektor kieruje do fotografa na parterze i czeka.',
+          'Brakuje potwierdzenia opłaty skarbowej 440 zł; inspektor daje druczek do wpłaty w kasie urzędu.',
+          'W załączniku nr 1 brakuje podpisu członka zarządu według KRS; inspektor wystawia wezwanie na 7 dni.',
+        ],
+        challengeVariations: [
+          'Wynagrodzenie z załącznika nr 1 jest poniżej ustawowego kryterium dochodowego; inspektor ostrzega przed odmową i żąda aneksu do umowy.',
+          'Brak wolnych stron w paszporcie na czerwoną pieczęć; inspektor wydaje papierowe zaświadczenie z pouczeniem o wymianie paszportu.',
+          'Czytnik linii papilarnych nie rejestruje startych opuszków palców; inspektor kilkukrotnie ponawia kalibrację skanera.',
+        ],
+        npcPersonalities: [
+          'Rzeczowy inspektor ds. cudzoziemców, profesjonalny i bezstronny.',
+          'Rygorystyczna urzędniczka sprawdzająca każdą rubrykę pod kątem braków formalnych.',
+          'Życzliwy inspektor doradzający jak najskuteczniej udokumentować źródło utrzymania.',
+        ],
       ),
       SubScenario(
         id: 'urzad_pickup',
@@ -572,6 +907,25 @@ const scenarios = <Scenario>[
         npcFirstStarterRu: 'Добрый день! Пожалуйста, действующий паспорт и покажите SMS с номером дела для выдачи карты.',
         npcFirstInstruction:
             'Zacznij scenę jako urzędnik wydający dokumenty w urzędzie. Petent podszedł do lady odbioru. Przywitaj się uprzejmie i poproś o paszport oraz SMS powiadamiający o gotowej karcie pobytu.',
+        calmVariations: [
+          'Urzędnik weryfikuje paszport, wydaje plastikową kartę pobytu, prosi o sprawdzenie danych i podpis na czytniku cyfrowym.',
+          'Cudzoziemiec odbiera jednocześnie decyzję wojewody i plastikową kartę w miłej atmosferze.',
+        ],
+        lifeVariations: [
+          'Przed wydaniem nowej karty trzeba zdać poprzednią kartę do unieważnienia; urzędnik przecina stary plastik.',
+          'W powiadomieniu SMS podano stary numer pokoju; urzędnik wyjaśnia zmianę stanowisk i zaprasza do siebie.',
+          'Petent zmienił adres zamieszkania; urzędnik wyjaśnia procedurę aktualizacji danych w rejestrze cudzoziemców.',
+        ],
+        challengeVariations: [
+          'Na wydrukowanej karcie pobytu wkradła się literówka w nazwisku; urzędnik sporządza protokół reklamacyjny do PWPW.',
+          'Klient nie ma oryginału paszportu (zgłosił kradzież), a jedynie zaświadczenie z policji; urzędnik konsultuje wydanie karty z naczelnikiem.',
+          'Terminal do podpisu biometrycznego zawiesił się; urzędnik restartuje system i przeprasza za opóźnienie.',
+        ],
+        npcPersonalities: [
+          'Uprzejmy urzędnik wydający dokumenty, gratulujący uzyskania karty pobytu.',
+          'Skupiony pracownik kancelarii sprawdzający każdy detal tożsamości.',
+          'Cierpliwa urzędniczka tłumacząca jak dbać o dokument i terminy meldunkowe.',
+        ],
       ),
     ],
   ),

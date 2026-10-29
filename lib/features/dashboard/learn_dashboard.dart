@@ -447,6 +447,7 @@ class LearnDashboard extends ConsumerWidget {
 
     SubScenario selectedSub = s.subScenarios.first;
     DialogInitiator selectedInitiator = DialogInitiator.npcFirst;
+    RoleplayDifficulty selectedDifficulty = RoleplayDifficulty.life;
 
     showModalBottomSheet<void>(
       context: context,
@@ -628,6 +629,50 @@ class LearnDashboard extends ConsumerWidget {
                         ),
                       ],
                     ),
+                    const SizedBox(height: 16),
+                    Text(
+                      strings.dialogueDifficulty,
+                      style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
+                    GridView.count(
+                      crossAxisCount: 2,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      crossAxisSpacing: 8,
+                      mainAxisSpacing: 8,
+                      childAspectRatio: 2.3,
+                      children: [
+                        _buildDifficultyCard(
+                          title: strings.difficultyCalm,
+                          sub: strings.difficultyCalmSub,
+                          isSelected: selectedDifficulty == RoleplayDifficulty.calm,
+                          theme: theme,
+                          onTap: () => setSheetState(() => selectedDifficulty = RoleplayDifficulty.calm),
+                        ),
+                        _buildDifficultyCard(
+                          title: strings.difficultyLife,
+                          sub: strings.difficultyLifeSub,
+                          isSelected: selectedDifficulty == RoleplayDifficulty.life,
+                          theme: theme,
+                          onTap: () => setSheetState(() => selectedDifficulty = RoleplayDifficulty.life),
+                        ),
+                        _buildDifficultyCard(
+                          title: strings.difficultyChallenge,
+                          sub: strings.difficultyChallengeSub,
+                          isSelected: selectedDifficulty == RoleplayDifficulty.challenge,
+                          theme: theme,
+                          onTap: () => setSheetState(() => selectedDifficulty = RoleplayDifficulty.challenge),
+                        ),
+                        _buildDifficultyCard(
+                          title: strings.difficultyRandom,
+                          sub: strings.difficultyRandomSub,
+                          isSelected: selectedDifficulty == RoleplayDifficulty.random,
+                          theme: theme,
+                          onTap: () => setSheetState(() => selectedDifficulty = RoleplayDifficulty.random),
+                        ),
+                      ],
+                    ),
                     const SizedBox(height: 20),
                     FilledButton.icon(
                       icon: const Icon(Icons.play_arrow),
@@ -646,6 +691,7 @@ class LearnDashboard extends ConsumerWidget {
                             scenario: s,
                             subScenario: selectedSub,
                             initiator: selectedInitiator,
+                            difficulty: selectedDifficulty,
                           ),
                         );
                       },
@@ -657,6 +703,57 @@ class LearnDashboard extends ConsumerWidget {
           },
         );
       },
+    );
+  }
+
+  Widget _buildDifficultyCard({
+    required String title,
+    required String sub,
+    required bool isSelected,
+    required ThemeData theme,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? theme.colorScheme.primaryContainer
+              : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.4),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isSelected ? theme.colorScheme.primary : Colors.transparent,
+            width: 1.5,
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+                color: isSelected ? theme.colorScheme.primary : null,
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              sub,
+              style: TextStyle(
+                fontSize: 10,
+                color: theme.textTheme.bodySmall?.color,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
+      ),
     );
   }
 

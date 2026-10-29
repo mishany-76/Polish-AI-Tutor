@@ -46,11 +46,13 @@ class RoleplayScreen extends ConsumerStatefulWidget {
     required this.scenario,
     this.subScenario,
     this.initiator = DialogInitiator.npcFirst,
+    this.difficulty = RoleplayDifficulty.life,
   });
 
   final Scenario scenario;
   final SubScenario? subScenario;
   final DialogInitiator initiator;
+  final RoleplayDifficulty difficulty;
 
   @override
   ConsumerState<RoleplayScreen> createState() => _RoleplayScreenState();
@@ -63,6 +65,8 @@ class _RoleplayScreenState extends ConsumerState<RoleplayScreen> {
   final _scroll = ScrollController();
   final _stt = SttService();
 
+  late final RoleplayDynamicSeed _seed;
+
   bool _loading = false;
   bool _listening = false;
   bool _speakNpc = true;
@@ -72,6 +76,15 @@ class _RoleplayScreenState extends ConsumerState<RoleplayScreen> {
   @override
   void initState() {
     super.initState();
+    _seed = widget.subScenario?.resolveDynamicSeed(widget.difficulty) ??
+        RoleplayDynamicSeed(
+          effectiveDifficulty: widget.difficulty == RoleplayDifficulty.random
+              ? RoleplayDifficulty.life
+              : widget.difficulty,
+          twist: widget.scenario.setting,
+          npcPersonality: 'Uprzejmy i pomocny rozmówca.',
+        );
+
     if (widget.initiator == DialogInitiator.npcFirst) {
       final sub = widget.subScenario;
       final role = sub?.npcRole ?? widget.scenario.npcRole;
@@ -123,11 +136,23 @@ class _RoleplayScreenState extends ConsumerState<RoleplayScreen> {
     final role = sub?.npcRole ?? s.npcRole;
     final setting = sub?.setting ?? s.setting;
 
+    final diffGuide = switch (_seed.effectiveDifficulty) {
+      RoleplayDifficulty.calm =>
+        '🟢 POZIOM TRUDNOŚCI: SPOKOJNY (A1–A2). Prosty, łagodny i cierpliwy przebieg. Używaj jasnego, przystępnego słownictwa. Uczeń ćwiczy podstawowe zwroty.',
+      RoleplayDifficulty.life =>
+        '🟡 POZIOM TRUDNOŚCI: ŻYCIOWY (A2–B1). Naturalna codzienna polszczyzna z potocznymi zwrotami („w sumie”, „no tak”, „zaraz zobaczę”), autentyczne tempo i drobne codzienne zgrzyty.',
+      RoleplayDifficulty.challenge =>
+        '🔴 POZIOM TRUDNOŚCI: WYZWANIE / STRESSTEST (B1–B2). Wymagająca, trudna sytuacja. Większa presja czasu, formalne procedury, potoczne zwroty lub spór. Uczeń musi argumentować i radzić sobie z problemem.',
+      RoleplayDifficulty.random => '🟡 POZIOM TRUDNOŚCI: ŻYCIOWY (A2–B1).',
+    };
+
     final subInfo = sub != null ? '''
 ПОДСЦЕНАРИЙ: ${sub.title(lang)}.
 ОПИСАНИЕ СИТУАЦИИ: ${sub.description(lang)}.
-СЮЖЕТНЫЙ ПОВОРОТ / ЖИЗНЕННЫЙ НЮАНС: ${sub.plotTwist}.
-ОБЯЗАТЕЛЬНО: В ходе беседы (примерно на 2-4 реплике) органично разыграй этот реалистичный жизненный поворот или заминку, чтобы диалог был не шаблонным, а проверял реальную реакцию ученика в польской среде.
+$diffGuide
+ХАРАКТЕР И ТЕМПЕРАМЕНТ ТВОЕГО ПЕРСОНАЖА: ${_seed.npcPersonality}. Отыгрывай этот характер живо и последовательно!
+ДИНАМИЧЕСКИЙ ЖИЗНЕННЫЙ НЮАНС / СЮЖЕТНЫЙ ПОВОРОТ: ${_seed.twist}.
+ОБЯЗАТЕЛЬНО: В ходе беседы (примерно на 2-4 реплике) органично вплети этот динамический нюанс/заминку, чтобы диалог был не шаблонным, а проверял реальную реакцию ученика в польской среде.
 ''' : '';
 
     final initiatorRule = widget.initiator == DialogInitiator.userFirst
@@ -429,9 +454,44 @@ $initiatorRule
               width: double.infinity,
               color: theme.colorScheme.surfaceContainerHighest,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-              child: Text(
-                '${s.level} · ${(sub?.vocab.isNotEmpty == true ? sub!.vocab : s.vocab).join(' · ')}',
-                style: theme.textTheme.bodySmall,
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                    margin: const EdgeInsets.only(right: 8),
+                    decoration: BoxDecoration(
+                      color: switch (_seed.effectiveDifficulty) {
+                        RoleplayDifficulty.calm => Colors.green.withValues(alpha: 0.15),
+                        RoleplayDifficulty.challenge => Colors.red.withValues(alpha: 0.15),
+                        _ => Colors.orange.withValues(alpha: 0.15),
+                      },
+                      borderRadius: BorderRadius.circular(6),
+                      border: Border.all(
+                        color: switch (_seed.effectiveDifficulty) {
+                          RoleplayDifficulty.calm => Colors.green,
+                          RoleplayDifficulty.challenge => Colors.red,
+                          _ => Colors.orange,
+                        },
+                        width: 1,
+                      ),
+                    ),
+                    child: Text(
+                      switch (_seed.effectiveDifficulty) {
+                        RoleplayDifficulty.calm => '🟢 ${isPl ? 'Spokojny' : (isUk ? 'Спокійний' : 'Спокойный')}',
+                        RoleplayDifficulty.challenge => '🔴 ${isPl ? 'Wyzwanie' : (isUk ? 'Виклик' : 'Вызов')}',
+                        _ => '🟡 ${isPl ? 'Życiowy' : (isUk ? 'Життєвий' : 'Жизненный')}',
+                      },
+                      style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Expanded(
+                    child: Text(
+                      '${s.level} · ${(sub?.vocab.isNotEmpty == true ? sub!.vocab : s.vocab).join(' · ')}',
+                      style: theme.textTheme.bodySmall,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
               ),
             ),
             Expanded(

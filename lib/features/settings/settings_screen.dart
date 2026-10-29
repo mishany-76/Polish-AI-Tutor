@@ -7,6 +7,9 @@ import '../../core/di/providers.dart';
 import '../../core/localization/app_strings.dart';
 import '../../core/settings/app_settings.dart';
 import '../../core/updater/app_updater_service.dart';
+import '../../core/theme/app_theme.dart';
+import '../onboarding/onboarding_screen.dart';
+import '../onboarding/user_profile.dart';
 import '../scanner/translation_service.dart';
 
 /// Настройки: язык подсказок, блок «ИИ-Шлюз» (OmniRoute/CLIProxy), очистка кэша.
@@ -315,6 +318,90 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             title: Text(strings.clearCacheTitle),
             subtitle: Text(strings.clearCacheSub),
             onTap: _clearCache,
+          ),
+          const SizedBox(height: 28),
+          Text(strings.profileSectionTitle, style: theme.textTheme.titleMedium),
+          const SizedBox(height: 8),
+          Consumer(
+            builder: (context, ref, _) {
+              final profile = ref.watch(userProfileProvider);
+              final goalStr = switch (profile.goal) {
+                PolishGoal.daily => strings.onboardingGoalDailyTitle,
+                PolishGoal.documents => strings.onboardingGoalDocsTitle,
+                PolishGoal.work => strings.onboardingGoalWorkTitle,
+                PolishGoal.exam => strings.onboardingGoalExamTitle,
+              };
+              final levelStr = switch (profile.level) {
+                PolishLevel.starter => strings.onboardingLevelStarterTitle,
+                PolishLevel.basic => strings.onboardingLevelBasicTitle,
+                PolishLevel.intermediate => strings.onboardingLevelInterTitle,
+              };
+
+              return Card(
+                elevation: 0,
+                color: theme.colorScheme.surface,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  side: BorderSide(
+                    color: theme.colorScheme.outlineVariant.withValues(alpha: 0.6),
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 20,
+                            backgroundColor:
+                                AppTheme.primaryCarmine.withValues(alpha: 0.12),
+                            child: const Text('🇵🇱', style: TextStyle(fontSize: 20)),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  profile.displayName,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  '${strings.profileLevelLabel} $levelStr · ${strings.profileGoalLabel} $goalStr',
+                                  style: theme.textTheme.bodySmall,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton.icon(
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute<void>(
+                                builder: (_) =>
+                                    const OnboardingScreen(isRestart: true),
+                              ),
+                            );
+                          },
+                          icon: const Icon(Icons.refresh, size: 18),
+                          label: Text(strings.profileRestartOnboarding),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
           ),
           const SizedBox(height: 28),
           Text(strings.aboutAppTitle, style: theme.textTheme.titleMedium),

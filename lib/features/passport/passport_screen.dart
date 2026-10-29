@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/achievements/achievement_service.dart';
 import '../../core/localization/app_strings.dart';
 import '../../core/theme/app_theme.dart';
+import '../onboarding/user_profile.dart';
 
 // Helper: get localized title/desc from Achievement based on lang
 String _achTitle(Achievement a, AppStrings s) {
@@ -90,7 +91,7 @@ class PassportScreen extends ConsumerWidget {
 // Заголовок — паспортная «обложка» с прогресс-баром
 // ---------------------------------------------------------------------------
 
-class _PassportHeader extends StatelessWidget {
+class _PassportHeader extends ConsumerWidget {
   const _PassportHeader({
     required this.obtained,
     required this.total,
@@ -102,9 +103,22 @@ class _PassportHeader extends StatelessWidget {
   final AppStrings strings;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final profile = ref.watch(userProfileProvider);
     final progress = total > 0 ? obtained / total : 0.0;
+
+    final goalStr = switch (profile.goal) {
+      PolishGoal.daily => strings.onboardingGoalDailyTitle,
+      PolishGoal.documents => strings.onboardingGoalDocsTitle,
+      PolishGoal.work => strings.onboardingGoalWorkTitle,
+      PolishGoal.exam => strings.onboardingGoalExamTitle,
+    };
+    final levelStr = switch (profile.level) {
+      PolishLevel.starter => 'A0',
+      PolishLevel.basic => 'A1–A2',
+      PolishLevel.intermediate => 'B1+',
+    };
 
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 12, 16, 4),
@@ -185,6 +199,29 @@ class _PassportHeader extends StatelessWidget {
             strings.passportProgressLabel(obtained, total),
             style:
                 theme.textTheme.bodySmall?.copyWith(color: Colors.white70),
+          ),
+          const SizedBox(height: 10),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.16),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.person_pin, size: 15, color: Colors.white),
+                const SizedBox(width: 6),
+                Text(
+                  '${profile.displayName} · $levelStr · $goalStr',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),

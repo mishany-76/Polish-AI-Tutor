@@ -500,6 +500,71 @@ class AppStrings {
   String get dictationNewRoundBtn => isPl
       ? 'Kolejna runda'
       : (isUk ? 'Наступний раунд' : 'Следующий раунд');
+
+  // Onboarding & Profile
+  String get onboardingSkip => isPl ? 'Pomiń' : (isUk ? 'Пропустити' : 'Пропустить');
+  String get onboardingNext => isPl ? 'Dalej' : (isUk ? 'Далі' : 'Далее');
+  String get onboardingFinish => isPl ? 'Rozpocznij naukę 🚀' : (isUk ? 'Почати навчання 🚀' : 'Начать обучение 🚀');
+  String get onboardingStep1Title => isPl ? 'Poznajmy się' : (isUk ? 'Знайомство' : 'Знакомство');
+  String get onboardingStep1Prompt => isPl
+      ? 'Cześć! Jestem Kasia — Twój osobisty nauczyciel języka polskiego 🇵🇱. Jak masz na imię?'
+      : (isUk
+          ? 'Привіт! Я Kasia — твій особистий тьютор польської мови 🇵🇱. Як тебе звати?'
+          : 'Привет! Я Kasia — твой личный тьютор польского языка 🇵🇱. Как тебя зовут?');
+  String get onboardingStep1Hint => isPl ? 'Wpisz swoje imię…' : (isUk ? 'Введіть ваше ім\'я…' : 'Введите ваше имя…');
+  String get onboardingStep1QuickName => isPl ? 'Przyjaciel' : (isUk ? 'Друг' : 'Друг');
+  String get onboardingStep2Title => isPl ? 'Twój poziom' : (isUk ? 'Твій рівень' : 'Твой уровень');
+  String get onboardingStep2Prompt => isPl
+      ? 'Na jakim poziomie jest teraz Twój polski?'
+      : (isUk ? 'На якому рівні зараз ваша польська?' : 'На каком уровне сейчас ваш польский?');
+  String get onboardingLevelStarterTitle => isPl ? 'Dopiero zaczynam' : (isUk ? 'Тільки починаю' : 'Только начинаю');
+  String get onboardingLevelStarterDesc => isPl
+      ? 'Znam pojedyncze słowa lub zaczynam od zera'
+      : (isUk ? 'Знаю окремі слова або починаю з нуля' : 'Знаю отдельные слова или начинаю с нуля');
+  String get onboardingLevelBasicTitle => isPl ? 'Znam podstawy (A1–A2)' : (isUk ? 'Знаю основи (A1–A2)' : 'Знаю основы (A1–A2)');
+  String get onboardingLevelBasicDesc => isPl
+      ? 'Rozumiem proste zdania, ale chcę pewnie mówić'
+      : (isUk ? 'Розумію прості речення, але хочу впевнено говорити' : 'Понимаю простые фразы, но хочу уверенно говорить');
+  String get onboardingLevelInterTitle => isPl ? 'Średniozaawansowany (B1+)' : (isUk ? 'Середній рівень (B1+)' : 'Средний уровень (B1+)');
+  String get onboardingLevelInterDesc => isPl
+      ? 'Szlifuję gramatykę, przygotowuję się do egzaminu lub pracy'
+      : (isUk ? 'Шліфую граматику, готуюся до іспиту чи роботи' : 'Шлифую грамматику, готовлюсь к экзамену или работе');
+  String get onboardingStep3Title => isPl ? 'Twój cel' : (isUk ? 'Твоя мета' : 'Твоя цель');
+  String get onboardingStep3Prompt => isPl
+      ? 'Jaki jest Twój główny cel nauki w Polsce?'
+      : (isUk ? 'Яка ваша головна мета навчання в Польщі?' : 'Какая ваша главная цель обучения в Польше?');
+  String get onboardingGoalDailyTitle => isPl ? 'Życie i zakupy' : (isUk ? 'Життя та побут' : 'Жизнь и быт');
+  String get onboardingGoalDailyDesc => isPl
+      ? 'Sklepy, kawiarnie, transport, codzienne rozmowy'
+      : (isUk ? 'Магазини, кав\'ярні, транспорт, щоденні розмови' : 'Магазины, кафе, транспорт, повседневные разговоры');
+  String get onboardingGoalDocsTitle => isPl ? 'Urząd i dokumenty' : (isUk ? 'Ужонд і документи' : 'Ужонд и документы');
+  String get onboardingGoalDocsDesc => isPl
+      ? 'PESEL, karta pobytu, bank, umowy, urzędy'
+      : (isUk ? 'PESEL, карта побиту, банк, договори, держустанови' : 'PESEL, карта побыту, банк, договоры, госорганы');
+  String get onboardingGoalWorkTitle => isPl ? 'Praca w Polsce' : (isUk ? 'Робота в Польщі' : 'Работа в Польше');
+  String get onboardingGoalWorkDesc => isPl
+      ? 'Rozmowa rekrutacyjna, kontakt ze współpracownikami'
+      : (isUk ? 'Співбесіди, контакт із колегами та керівництвом' : 'Собеседование, общение с коллегами и начальством');
+  String get onboardingGoalExamTitle => isPl ? 'Egzamin B1 / Obywatelstwo' : (isUk ? 'Іспит B1 / Громадянство' : 'Экзамен B1 / Гражданство');
+  String get onboardingGoalExamDesc => isPl
+      ? 'Certyfikat państwowy, ortografia, pisanie'
+      : (isUk ? 'Державний сертифікат, орфографія, правопис' : 'Госсертификат, орфография, правописание');
+  String get onboardingStep4Title => isPl ? 'Pierwsza fraza' : (isUk ? 'Перша фраза' : 'Первая фраза');
+  String get onboardingStep4Prompt => isPl
+      ? 'Nauczmy się Twojej pierwszej frazy z poprawną wymową:'
+      : (isUk ? 'Вивчимо твою першу польську фразу з правильною вимовою:' : 'Выучим твою первую польскую фразу с правильным произношением:');
+  String get onboardingStep4Action => 'Miło mi Cię poznać! 🤝';
+  String get onboardingStep4Success => isPl
+      ? 'Świetnie! Pierwsza pieczątka w Polskim Paszporcie odblokowana! 🇵🇱'
+      : (isUk
+          ? 'Чудово! Перша печатка у Польському паспорті розблокована! 🇵🇱'
+          : 'Отлично! Первая печать в Польском паспорте разблокирована! 🇵🇱');
+  String get profileSectionTitle => isPl ? 'Mój profil i cel' : (isUk ? 'Мій профіль і мета' : 'Мой профиль и цель');
+  String get profileRestartOnboarding => isPl
+      ? 'Przejdź powitanie z Kasią ponownie'
+      : (isUk ? 'Пройти знайомство з Kasią знову' : 'Пройти знакомство с Kasią заново');
+  String get profileGoalLabel => isPl ? 'Cel:' : (isUk ? 'Мета:' : 'Цель:');
+  String get profileLevelLabel => isPl ? 'Poziom:' : (isUk ? 'Рівень:' : 'Уровень:');
 }
 
 

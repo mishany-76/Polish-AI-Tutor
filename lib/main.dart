@@ -5,14 +5,18 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'app_shell.dart';
 import 'core/settings/app_settings.dart';
 import 'core/theme/app_theme.dart';
+import 'features/onboarding/onboarding_screen.dart';
+import 'features/onboarding/user_profile.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final store = SettingsStore(await SharedPreferences.getInstance());
+  final prefs = await SharedPreferences.getInstance();
+  final store = SettingsStore(prefs);
   final initial = await store.load();
 
   runApp(ProviderScope(
     overrides: [
+      sharedPreferencesProvider.overrideWithValue(prefs),
       settingsStoreProvider.overrideWithValue(store),
       initialSettingsProvider.overrideWithValue(initial),
     ],
@@ -20,16 +24,20 @@ Future<void> main() async {
   ));
 }
 
-class PolishTutorApp extends StatelessWidget {
+class PolishTutorApp extends ConsumerWidget {
   const PolishTutorApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final profile = ref.watch(userProfileProvider);
+
     return MaterialApp(
       title: 'Polish AI Tutor',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      home: const AppShell(),
+      home: profile.onboardingCompleted
+          ? const AppShell()
+          : const OnboardingScreen(),
     );
   }
 }

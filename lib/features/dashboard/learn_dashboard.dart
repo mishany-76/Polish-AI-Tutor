@@ -17,6 +17,8 @@ import '../tutor/roleplay_screen.dart';
 import '../tutor/scenarios.dart';
 import '../wrapped/monthly_wrapped_screen.dart';
 import '../dictation/dictation_screen.dart';
+import '../onboarding/onboarding_screen.dart';
+import '../onboarding/user_profile.dart';
 
 /// Главный экран: тренажёр обучения (повторение, игры, ролевые диалоги).
 class LearnDashboard extends ConsumerWidget {
@@ -33,6 +35,81 @@ class LearnDashboard extends ConsumerWidget {
       SnackBar(
         content: Text(strings.queueDeferredSnack(count)),
         behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
+  Widget _buildUserProfileHeader(
+    BuildContext context,
+    WidgetRef ref,
+    ThemeData theme,
+    AppStrings strings,
+  ) {
+    final profile = ref.watch(userProfileProvider);
+    final goalStr = switch (profile.goal) {
+      PolishGoal.daily => strings.onboardingGoalDailyTitle,
+      PolishGoal.documents => strings.onboardingGoalDocsTitle,
+      PolishGoal.work => strings.onboardingGoalWorkTitle,
+      PolishGoal.exam => strings.onboardingGoalExamTitle,
+    };
+    final levelStr = switch (profile.level) {
+      PolishLevel.starter => 'A0',
+      PolishLevel.basic => 'A1–A2',
+      PolishLevel.intermediate => 'B1+',
+    };
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5),
+        ),
+      ),
+      child: Row(
+        children: [
+          CircleAvatar(
+            radius: 20,
+            backgroundColor: AppTheme.primaryCarmine.withValues(alpha: 0.12),
+            child: const Text('👩‍🏫', style: TextStyle(fontSize: 20)),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  strings.isPl
+                      ? 'Cześć, ${profile.displayName}!'
+                      : (strings.isUk
+                          ? 'Привіт, ${profile.displayName}!'
+                          : 'Привет, ${profile.displayName}!'),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  '🎯 $goalStr · $levelStr',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.edit_outlined, size: 18),
+            tooltip: strings.profileRestartOnboarding,
+            onPressed: () => _push(
+              context,
+              const OnboardingScreen(isRestart: true),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -97,6 +174,9 @@ class LearnDashboard extends ConsumerWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          // --- Приветствие и цель пользователя ---
+          _buildUserProfileHeader(context, ref, theme, strings),
+          const SizedBox(height: 12),
           // --- Повторение ---
           Card(
             color: theme.colorScheme.primaryContainer,

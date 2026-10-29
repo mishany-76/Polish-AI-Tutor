@@ -3,11 +3,13 @@ import 'dart:ui';
 
 import 'package:drift/drift.dart' hide isNull, isNotNull;
 import 'package:drift/native.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:polish_ai_tutor/core/achievements/achievement_service.dart';
 import 'package:polish_ai_tutor/core/ai_client/ai_client.dart';
 import 'package:polish_ai_tutor/core/db/app_database.dart';
 import 'package:polish_ai_tutor/core/srs/sm2.dart';
+import 'package:polish_ai_tutor/features/onboarding/user_profile.dart';
 import 'package:polish_ai_tutor/features/review/quiz_builders.dart';
 import 'package:polish_ai_tutor/features/scanner/doc_analysis_service.dart';
 import 'package:polish_ai_tutor/features/scanner/menu_analysis_service.dart';
@@ -618,6 +620,66 @@ void main() {
       expect(kDefaultRestaurantPhrasesPl.isNotEmpty, isTrue);
       expect(kDefaultRestaurantPhrasesUk.length, equals(kDefaultRestaurantPhrasesRu.length));
       expect(kDefaultRestaurantPhrasesPl.first.phrasePl, 'Poproszę menu / kartę dań.');
+    });
+  });
+
+  group('UserProfile & Onboarding (Мгновенный онбординг)', () {
+    test('Дефолтный профиль: Przyjaciel, уровень starter, цель daily', () {
+      const profile = UserProfile();
+      expect(profile.displayName, 'Przyjaciel');
+      expect(profile.level, PolishLevel.starter);
+      expect(profile.goal, PolishGoal.daily);
+      expect(profile.onboardingCompleted, isFalse);
+    });
+
+    test('copyWith корректно обновляет поля профиля', () {
+      const initial = UserProfile();
+      final updated = initial.copyWith(
+        name: 'Marek',
+        level: PolishLevel.basic,
+        goal: PolishGoal.documents,
+        onboardingCompleted: true,
+      );
+
+      expect(updated.name, 'Marek');
+      expect(updated.displayName, 'Marek');
+      expect(updated.level, PolishLevel.basic);
+      expect(updated.goal, PolishGoal.documents);
+      expect(updated.onboardingCompleted, isTrue);
+    });
+
+    test('completeOnboarding сохраняет данные в SharedPreferences', () async {
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
+
+      final container = ProviderContainer(
+        overrides: [
+          sharedPreferencesProvider.overrideWithValue(prefs),
+        ],
+      );
+
+      final notifier = container.read(userProfileProvider.notifier);
+      await notifier.completeOnboarding(
+        name: 'Anna',
+        level: PolishLevel.intermediate,
+        goal: PolishGoal.work,
+      );
+
+      final state = container.read(userProfileProvider);
+      expect(state.name, 'Anna');
+      expect(state.level, PolishLevel.intermediate);
+      expect(state.goal, PolishGoal.work);
+      expect(state.onboardingCompleted, isTrue);
+
+      expect(prefs.getString('profile_user_name'), 'Anna');
+      expect(prefs.getString('profile_polish_level'), 'intermediate');
+      expect(prefs.getString('profile_polish_goal'), 'work');
+      expect(prefs.getBool('profile_onboarding_completed'), isTrue);
+
+      // Проверяем сброс онбординга
+      await notifier.resetOnboarding();
+      expect(container.read(userProfileProvider).onboardingCompleted, isFalse);
+      expect(prefs.getBool('profile_onboarding_completed'), isFalse);
     });
   });
 }

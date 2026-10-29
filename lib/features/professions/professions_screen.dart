@@ -34,6 +34,7 @@ class _ProfessionsScreenState extends ConsumerState<ProfessionsScreen>
   late TabController _tabController;
   late ProfessionItem _selectedProfession;
   final Set<String> _addedTerms = {};
+  final ScrollController _chipsScrollController = ScrollController();
 
   @override
   void initState() {
@@ -48,6 +49,7 @@ class _ProfessionsScreenState extends ConsumerState<ProfessionsScreen>
   @override
   void dispose() {
     _tabController.dispose();
+    _chipsScrollController.dispose();
     super.dispose();
   }
 
@@ -138,52 +140,98 @@ class _ProfessionsScreenState extends ConsumerState<ProfessionsScreen>
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
+        centerTitle: false,
+        titleSpacing: 0,
         title: Row(
-          mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('💼', style: TextStyle(fontSize: 22)),
+            const Text('💼', style: TextStyle(fontSize: 20)),
             const SizedBox(width: 8),
-            Text(
-              strings.professionsTitle,
-              style: const TextStyle(fontWeight: FontWeight.bold),
+            Expanded(
+              child: Text(
+                strings.professionsTitle,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
             ),
           ],
         ),
       ),
       body: Column(
         children: [
-          // Горизонтальный скролл чипов категорий профессий
+          // Горизонтальный скролл чипов категорий профессий со стрелкой прокрутки
           SizedBox(
             height: 52,
-            child: ListView.separated(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-              scrollDirection: Axis.horizontal,
-              itemCount: kAllProfessions.length,
-              separatorBuilder: (context, index) => const SizedBox(width: 8),
-              itemBuilder: (context, index) {
-                final item = kAllProfessions[index];
-                final isSelected = item.id == _selectedProfession.id;
+            child: Row(
+              children: [
+                Expanded(
+                  child: ListView.separated(
+                    controller: _chipsScrollController,
+                    padding: const EdgeInsets.fromLTRB(16, 6, 8, 6),
+                    scrollDirection: Axis.horizontal,
+                    itemCount: kAllProfessions.length,
+                    separatorBuilder: (context, index) => const SizedBox(width: 8),
+                    itemBuilder: (context, index) {
+                      final item = kAllProfessions[index];
+                      final isSelected = item.id == _selectedProfession.id;
 
-                return FilterChip(
-                  avatar: Text(item.emoji, style: const TextStyle(fontSize: 16)),
-                  label: Text(item.title(lang)),
-                  selected: isSelected,
-                  selectedColor: AppTheme.primaryCarmine.withValues(alpha: 0.15),
-                  checkmarkColor: AppTheme.primaryCarmine,
-                  labelStyle: TextStyle(
-                    color: isSelected
-                        ? AppTheme.primaryCarmine
-                        : theme.colorScheme.onSurface,
-                    fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                    fontSize: 13,
+                      return FilterChip(
+                        avatar: Text(item.emoji, style: const TextStyle(fontSize: 16)),
+                        label: Text(item.title(lang)),
+                        selected: isSelected,
+                        selectedColor: AppTheme.primaryCarmine.withValues(alpha: 0.15),
+                        checkmarkColor: AppTheme.primaryCarmine,
+                        labelStyle: TextStyle(
+                          color: isSelected
+                              ? AppTheme.primaryCarmine
+                              : theme.colorScheme.onSurface,
+                          fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                          fontSize: 13,
+                        ),
+                        onSelected: (val) {
+                          if (val) {
+                            setState(() => _selectedProfession = item);
+                          }
+                        },
+                      );
+                    },
                   ),
-                  onSelected: (val) {
-                    if (val) {
-                      setState(() => _selectedProfession = item);
+                ),
+                InkWell(
+                  onTap: () {
+                    if (_chipsScrollController.hasClients) {
+                      final current = _chipsScrollController.offset;
+                      final max = _chipsScrollController.position.maxScrollExtent;
+                      final target = (current + 150).clamp(0.0, max);
+                      _chipsScrollController.animateTo(
+                        target,
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                      );
                     }
                   },
-                );
-              },
+                  borderRadius: BorderRadius.circular(20),
+                  child: Container(
+                    margin: const EdgeInsets.only(right: 12),
+                    padding: const EdgeInsets.all(7),
+                    decoration: BoxDecoration(
+                      color: AppTheme.primaryCarmine.withValues(alpha: 0.12),
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: AppTheme.primaryCarmine.withValues(alpha: 0.25),
+                      ),
+                    ),
+                    child: const Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      size: 13,
+                      color: AppTheme.primaryCarmine,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           // Карточка выбранной профессии

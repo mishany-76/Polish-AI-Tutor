@@ -10,7 +10,6 @@ import 'package:polish_ai_tutor/core/ai_client/ai_client.dart';
 import 'package:polish_ai_tutor/core/db/app_database.dart';
 import 'package:polish_ai_tutor/core/srs/sm2.dart';
 import 'package:polish_ai_tutor/features/onboarding/user_profile.dart';
-import 'package:polish_ai_tutor/features/professions/profession_model.dart';
 import 'package:polish_ai_tutor/features/professions/professions_data.dart';
 import 'package:polish_ai_tutor/features/review/quiz_builders.dart';
 import 'package:polish_ai_tutor/features/scanner/doc_analysis_service.dart';

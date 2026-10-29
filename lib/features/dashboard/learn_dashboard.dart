@@ -478,7 +478,10 @@ class _LearnDashboardState extends ConsumerState<LearnDashboard> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
+                          Wrap(
+                            spacing: 8,
+                            runSpacing: 4,
+                            crossAxisAlignment: WrapCrossAlignment.center,
                             children: [
                               Text(
                                 strings.professionsTitle,
@@ -487,7 +490,6 @@ class _LearnDashboardState extends ConsumerState<LearnDashboard> {
                                   fontSize: 15,
                                 ),
                               ),
-                              const SizedBox(width: 6),
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                 decoration: BoxDecoration(
@@ -578,28 +580,128 @@ class _LearnDashboardState extends ConsumerState<LearnDashboard> {
               color: settings.hasKey ? theme.textTheme.bodySmall?.color : theme.colorScheme.error,
             ),
           ),
-          const SizedBox(height: 10),
-          Center(
-            child: SegmentedButton<int>(
-              style: SegmentedButton.styleFrom(
-                visualDensity: VisualDensity.compact,
-                selectedForegroundColor: Colors.white,
-                selectedBackgroundColor: AppTheme.primaryCarmine,
+          const SizedBox(height: 12),
+          Container(
+            height: 46,
+            padding: const EdgeInsets.all(4),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(
+                color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5),
               ),
-              segments: [
-                ButtonSegment<int>(
-                  value: 0,
-                  icon: const Icon(Icons.home_outlined, size: 16),
-                  label: Text(strings.professionsCategoryLife, style: const TextStyle(fontSize: 12)),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(10),
+                    onTap: () => setState(() => _dialogCategoryIndex = 0),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: _dialogCategoryIndex == 0
+                            ? AppTheme.primaryCarmine
+                            : Colors.transparent,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: _dialogCategoryIndex == 0
+                            ? [
+                                BoxShadow(
+                                  color: AppTheme.primaryCarmine.withValues(alpha: 0.25),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ]
+                            : null,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.home_outlined,
+                            size: 18,
+                            color: _dialogCategoryIndex == 0
+                                ? Colors.white
+                                : theme.colorScheme.onSurfaceVariant,
+                          ),
+                          const SizedBox(width: 8),
+                          Flexible(
+                            child: Text(
+                              strings.professionsCategoryLife,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: _dialogCategoryIndex == 0
+                                    ? FontWeight.bold
+                                    : FontWeight.w500,
+                                color: _dialogCategoryIndex == 0
+                                    ? Colors.white
+                                    : theme.colorScheme.onSurface,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
-                ButtonSegment<int>(
-                  value: 1,
-                  icon: const Icon(Icons.work_outline, size: 16),
-                  label: Text(strings.professionsCategoryWork, style: const TextStyle(fontSize: 12)),
+                Expanded(
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(10),
+                    onTap: () => setState(() => _dialogCategoryIndex = 1),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: _dialogCategoryIndex == 1
+                            ? AppTheme.primaryCarmine
+                            : Colors.transparent,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: _dialogCategoryIndex == 1
+                            ? [
+                                BoxShadow(
+                                  color: AppTheme.primaryCarmine.withValues(alpha: 0.25),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ]
+                            : null,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.work_outline,
+                            size: 18,
+                            color: _dialogCategoryIndex == 1
+                                ? Colors.white
+                                : theme.colorScheme.onSurfaceVariant,
+                          ),
+                          const SizedBox(width: 8),
+                          Flexible(
+                            child: Text(
+                              strings.professionsCategoryWork,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: _dialogCategoryIndex == 1
+                                    ? FontWeight.bold
+                                    : FontWeight.w500,
+                                color: _dialogCategoryIndex == 1
+                                    ? Colors.white
+                                    : theme.colorScheme.onSurface,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
               ],
-              selected: {_dialogCategoryIndex},
-              onSelectionChanged: (set) => setState(() => _dialogCategoryIndex = set.first),
             ),
           ),
           const SizedBox(height: 12),

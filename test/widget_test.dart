@@ -10,6 +10,7 @@ import 'package:polish_ai_tutor/core/db/app_database.dart';
 import 'package:polish_ai_tutor/core/srs/sm2.dart';
 import 'package:polish_ai_tutor/features/review/quiz_builders.dart';
 import 'package:polish_ai_tutor/features/scanner/doc_analysis_service.dart';
+import 'package:polish_ai_tutor/features/scanner/menu_analysis_service.dart';
 import 'package:polish_ai_tutor/features/scanner/ocr_service.dart';
 import 'package:polish_ai_tutor/features/scanner/translation_service.dart';
 import 'package:polish_ai_tutor/features/scanner/word_analysis.dart';
@@ -537,6 +538,86 @@ void main() {
           );
         }
       }
+    });
+  });
+
+  group('MenuAnalysis & Food Explorer (Меню ресторанов)', () {
+    test('MenuItemDish.fromJson корректно парсит данные блюда', () {
+      final json = {
+        'name_pl': 'Żurek staropolski',
+        'translation': 'Традиционный польский суп на ржаной закваске',
+        'category': 'soups',
+        'description': 'Суп с белой колбасой, копченым мясом и половинкой яйца',
+        'ingredients': ['zakwas żytni', 'biała kiełbasa', 'jajko', 'majeranek'],
+        'allergens': ['gluten', 'jaja'],
+        'estimated_price': '28 zł',
+        'spiciness': 'mild',
+        'is_vegetarian': false,
+        'order_phrase': 'Poproszę żurek staropolski.',
+      };
+
+      final dish = MenuItemDish.fromJson(json);
+      expect(dish.namePl, 'Żurek staropolski');
+      expect(dish.category, 'soups');
+      expect(dish.ingredients.length, 4);
+      expect(dish.allergens.contains('gluten'), isTrue);
+      expect(dish.isVegetarian, isFalse);
+      expect(dish.orderPhrase, 'Poproszę żurek staropolski.');
+    });
+
+    test('MenuAnalysis.fromJson устойчив к неполным данным и строит базовые фразы', () {
+      final json = {
+        'restaurant_name': 'Restauracja Pod Koziołkami',
+        'cuisine_type': 'polska tradycyjna',
+        'summary': 'Классическая польская кухня',
+        'dishes': [
+          {
+            'name_pl': 'Pierogi ruskie',
+            'translation': 'Вареники с творогом и картофелем',
+            'category': 'mains',
+            'order_phrase': 'Dla mnie pierogi ruskie, proszę.',
+          }
+        ],
+      };
+
+      final analysis = MenuAnalysis.fromJson(json, 'Pierogi ruskie 32 zł', UiLang.ru);
+      expect(analysis.restaurantName, 'Restauracja Pod Koziołkami');
+      expect(analysis.dishes.length, 1);
+      expect(analysis.dishes.first.namePl, 'Pierogi ruskie');
+      expect(analysis.orderPhrases.isNotEmpty, isTrue);
+    });
+
+    test('MenuAnalysis.fallbackHeuristic выявляет известные польские блюда офлайн', () {
+      const rawMenu = '''
+        Restauracja Polska
+        Zupy:
+        1. Żurek z jajkiem i kiełbasą - 24 zł
+        2. Barszcz czerwony z uszkami - 20 zł
+        Dania główne:
+        3. Kotlet schabowy z ziemniakami i kapustą - 38 zł
+        4. Pierogi z mięsem lub ruskie - 30 zł
+        Desery:
+        5. Sernik krakowski z sosem malinowym - 18 zł
+      ''';
+
+      final analysis = MenuAnalysis.fallbackHeuristic(rawMenu, UiLang.ru);
+      expect(analysis.dishes.length, greaterThanOrEqualTo(4));
+
+      final names = analysis.dishes.map((d) => d.namePl.toLowerCase()).toList();
+      expect(names.any((n) => n.contains('żurek')), isTrue);
+      expect(names.any((n) => n.contains('barszcz')), isTrue);
+      expect(names.any((n) => n.contains('schabowy')), isTrue);
+      expect(names.any((n) => n.contains('pierogi')), isTrue);
+      expect(names.any((n) => n.contains('sernik')), isTrue);
+      expect(analysis.orderPhrases.isNotEmpty, isTrue);
+    });
+
+    test('Наборы дефолтных фраз локализованы для UK, RU и PL', () {
+      expect(kDefaultRestaurantPhrasesUk.isNotEmpty, isTrue);
+      expect(kDefaultRestaurantPhrasesRu.isNotEmpty, isTrue);
+      expect(kDefaultRestaurantPhrasesPl.isNotEmpty, isTrue);
+      expect(kDefaultRestaurantPhrasesUk.length, equals(kDefaultRestaurantPhrasesRu.length));
+      expect(kDefaultRestaurantPhrasesPl.first.phrasePl, 'Poproszę menu / kartę dań.');
     });
   });
 }

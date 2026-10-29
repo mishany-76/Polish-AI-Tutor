@@ -396,6 +396,31 @@ class AppStrings {
           ? 'Наведіть камеру на договір або лист, щоб перевірити ризики'
           : 'Наведите камеру на договор или письмо, чтобы проверить риски');
 
+  // --- Польское ресторанное меню (Menu Scanner) ---
+  String get menuModeTitle => isPl ? '🍽️ Menu' : (isUk ? '🍽️ Меню' : '🍽️ Меню');
+  String get menuAnalysisBtn => isPl
+      ? '🍽️ Rozpoznaj dania (AI)'
+      : (isUk ? '🍽️ Розібрати меню (ШІ)' : '🍽️ Разобрать меню (ИИ)');
+  String get menuCheatSheetBtn => isPl
+      ? '🗣️ Zwroty z kelnerem'
+      : (isUk ? '🗣️ Фрази для офіціанта' : '🗣️ Фразы для официанта');
+  String get menuAnalyzing => isPl
+      ? 'AI analizuje kartę dań, składniki i alergeny…'
+      : (isUk
+          ? 'ШІ аналізує меню, страви та алергени…'
+          : 'ИИ анализирует меню, блюда и аллергены…');
+  String get menuSelectPrompt => isPl
+      ? 'Zrób zdjęcie karty dań w restauracji lub wybierz zdjęcie z galerii'
+      : (isUk
+          ? 'Сфотографуйте меню в ресторані або оберіть фото з галереї'
+          : 'Сфотографируйте меню в ресторане или выберите фото из галереи');
+  String get menuTakePhotoBtn => isPl
+      ? 'Zrób zdjęcie menu'
+      : (isUk ? 'Сфотографувати меню' : 'Сфотографировать меню');
+  String get menuPickPhotoBtn => isPl
+      ? 'Wybierz zdjęcie z galerii'
+      : (isUk ? 'Обрати фото з галереї' : 'Выбрать фото из галереи');
+
   // --- Мой польский за месяц (Monthly Progress Wrapped) ---
   String get monthlyWrappedTitle => isPl
       ? 'Mój polski w tym miesiącu'

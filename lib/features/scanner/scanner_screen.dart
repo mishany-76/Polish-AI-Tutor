@@ -14,13 +14,15 @@ import '../../core/localization/app_strings.dart';
 import '../../core/settings/app_settings.dart';
 import '../../core/theme/app_theme.dart';
 import 'doc_analysis_sheet.dart';
+import 'menu_analysis_service.dart';
+import 'menu_analysis_sheet.dart';
 import 'ocr_service.dart';
 import 'scanner_providers.dart';
 import 'translation_service.dart';
 import 'word_overlay.dart';
 import 'word_sheet.dart';
 
-enum TranslatorMode { camera, document, text }
+enum TranslatorMode { camera, document, menu, text }
 
 /// Модуль «Переводчик»: Камера, Документ / Галерея (PDF, фото), Ввод текста.
 class ScannerScreen extends ConsumerStatefulWidget {
@@ -558,6 +560,128 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
     }
   }
 
+  Future<void> _analyzeMenu(String text) async {
+    final trimmed = text.trim();
+    if (trimmed.isEmpty) {
+      _toast(ref.read(appStringsProvider).isPl
+          ? 'Brak tekstu menu do analizy.'
+          : (ref.read(appStringsProvider).isUk
+              ? 'Немає тексту меню для аналізу.'
+              : 'Нет текста меню для анализа.'));
+      return;
+    }
+
+    final lang = ref.read(settingsProvider).lang;
+    final strings = ref.read(appStringsProvider);
+
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogCtx) => PopScope(
+        canPop: false,
+        child: AlertDialog(
+          backgroundColor: AppTheme.bgWarmMilk,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          content: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            child: Row(
+              children: [
+                const SizedBox(
+                  width: 28,
+                  height: 28,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 3,
+                    color: AppTheme.primaryCarmine,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Text(
+                    strings.menuAnalyzing,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    try {
+      final analysis = await ref.read(menuAnalysisServiceProvider).analyze(
+            text: trimmed,
+            lang: lang,
+          );
+
+      if (mounted && Navigator.of(context, rootNavigator: true).canPop()) {
+        Navigator.of(context, rootNavigator: true).pop();
+      }
+
+      AchievementService.instance.increment('scans_done');
+
+      if (mounted) {
+        await MenuAnalysisSheet.show(context, analysis);
+      }
+    } on AiException catch (e) {
+      if (mounted && Navigator.of(context, rootNavigator: true).canPop()) {
+        Navigator.of(context, rootNavigator: true).pop();
+      }
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('⚠️ ${e.message}'),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted && Navigator.of(context, rootNavigator: true).canPop()) {
+        Navigator.of(context, rootNavigator: true).pop();
+      }
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('⚠️ Ошибка анализа меню: $e'),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    }
+  }
+
+  void _openRestaurantCheatSheet() {
+    final lang = ref.read(settingsProvider).lang;
+    final phrases = lang == UiLang.uk
+        ? kDefaultRestaurantPhrasesUk
+        : (lang == UiLang.pl
+            ? kDefaultRestaurantPhrasesPl
+            : kDefaultRestaurantPhrasesRu);
+
+    final dummyAnalysis = MenuAnalysis(
+      restaurantName: null,
+      cuisineType: lang == UiLang.pl
+          ? 'Karta dań / Zwroty w lokalu'
+          : (lang == UiLang.uk
+              ? 'Фрази для спілкування в ресторані'
+              : 'Фразы для общения в ресторане'),
+      summary: lang == UiLang.pl
+          ? 'Przydatne zwroty do składania zamówień, pytań o alergeny i płatności w lokalu.'
+          : (lang == UiLang.uk
+              ? 'Корисні фрази для замовлення страв, питань про алергени та оплату.'
+              : 'Полезные фразы для заказа блюд, вопросов об аллергенах и оплаты.'),
+      dishes: const [],
+      orderPhrases: phrases,
+      rawText: '',
+    );
+
+    MenuAnalysisSheet.show(context, dummyAnalysis);
+  }
+
   void _toast(String msg) {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
@@ -633,21 +757,28 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
                     value: TranslatorMode.camera,
                     label: Text(
                       strings.isPl ? '📷 Aparat' : (strings.isUk ? '📷 Камера' : '📷 Камера'),
-                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                      style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
                     ),
                   ),
                   ButtonSegment(
                     value: TranslatorMode.document,
                     label: Text(
-                      strings.isPl ? '📁 Plik/PDF' : (strings.isUk ? '📁 Файл/PDF' : '📁 Файл/PDF'),
-                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                      strings.isPl ? '📁 Plik' : (strings.isUk ? '📁 Файл' : '📁 Файл'),
+                      style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                  ButtonSegment(
+                    value: TranslatorMode.menu,
+                    label: Text(
+                      strings.menuModeTitle,
+                      style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
                     ),
                   ),
                   ButtonSegment(
                     value: TranslatorMode.text,
                     label: Text(
                       strings.isPl ? '✍️ Tekst' : (strings.isUk ? '✍️ Текст' : '✍️ Текст'),
-                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                      style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
                     ),
                   ),
                 ],
@@ -720,6 +851,11 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
                         ),
                       ),
                       FilledButton.tonalIcon(
+                        onPressed: () => _analyzeMenu(_result!.fullText),
+                        icon: const Icon(Icons.restaurant_menu, size: 18),
+                        label: Text(strings.menuAnalysisBtn),
+                      ),
+                      FilledButton.tonalIcon(
                         onPressed: () => _translateParagraph(_result!.fullText),
                         icon: const Icon(Icons.translate, size: 18),
                         label: Text(strings.translateAll),
@@ -774,6 +910,113 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
                             ? 'Обрати файл (PDF / Фото)'
                             : 'Выбрать файл (PDF / Фото)'),
                   ),
+                ),
+              ],
+            ),
+          ),
+        );
+
+      case TranslatorMode.menu:
+        if (_shotPath != null && _result != null) {
+          return Column(
+            children: [
+              Expanded(
+                child: WordOverlay(
+                  imagePath: _shotPath!,
+                  image: FileImage(File(_shotPath!)),
+                  result: _result!,
+                  selected: _selected,
+                  onWordTap: _onWordTap,
+                ),
+              ),
+              SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  child: Wrap(
+                    spacing: 10,
+                    runSpacing: 8,
+                    alignment: WrapAlignment.center,
+                    children: [
+                      FilledButton.icon(
+                        onPressed: () => _analyzeMenu(_result!.fullText),
+                        icon: const Icon(Icons.restaurant_menu, size: 18),
+                        label: Text(strings.menuAnalysisBtn),
+                        style: FilledButton.styleFrom(
+                          backgroundColor: AppTheme.primaryCarmine,
+                          foregroundColor: Colors.white,
+                        ),
+                      ),
+                      FilledButton.tonalIcon(
+                        onPressed: () => _translateParagraph(_result!.fullText),
+                        icon: const Icon(Icons.translate, size: 18),
+                        label: Text(strings.translateAll),
+                      ),
+                      OutlinedButton.icon(
+                        onPressed: _openRestaurantCheatSheet,
+                        icon: const Icon(Icons.record_voice_over, size: 18),
+                        label: Text(strings.menuCheatSheetBtn),
+                      ),
+                      IconButton.outlined(
+                        tooltip: strings.isPl ? 'Inne menu' : 'Другое меню',
+                        onPressed: _pickDocumentOrImage,
+                        icon: const Icon(Icons.folder_open, size: 18),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          );
+        }
+        return Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.restaurant_menu, size: 68, color: theme.colorScheme.primary),
+                const SizedBox(height: 16),
+                Text(
+                  strings.menuSelectPrompt,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: theme.colorScheme.onSurface,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Wrap(
+                  spacing: 12,
+                  runSpacing: 10,
+                  alignment: WrapAlignment.center,
+                  children: [
+                    FilledButton.icon(
+                      onPressed: () {
+                        setState(() {
+                          _mode = TranslatorMode.camera;
+                          _shotPath = null;
+                          _result = null;
+                        });
+                        if (_camera == null) {
+                          _initCamera();
+                        }
+                      },
+                      icon: const Icon(Icons.camera_alt),
+                      label: Text(strings.menuTakePhotoBtn),
+                    ),
+                    FilledButton.tonalIcon(
+                      onPressed: _pickDocumentOrImage,
+                      icon: const Icon(Icons.photo_library),
+                      label: Text(strings.menuPickPhotoBtn),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                OutlinedButton.icon(
+                  onPressed: _openRestaurantCheatSheet,
+                  icon: const Icon(Icons.record_voice_over, size: 18),
+                  label: Text(strings.menuCheatSheetBtn),
                 ),
               ],
             ),
@@ -849,6 +1092,12 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
                       label: Text(strings.isPl
                           ? 'Analiza'
                           : (strings.isUk ? 'Аналіз' : 'Анализ')),
+                    ),
+                    const SizedBox(width: 8),
+                    FilledButton.tonalIcon(
+                      onPressed: () => _analyzeMenu(_textInputController.text),
+                      icon: const Icon(Icons.restaurant_menu, size: 16),
+                      label: Text(strings.isPl ? 'Menu' : 'Меню'),
                     ),
                     const SizedBox(width: 8),
                     IconButton(
@@ -1036,6 +1285,13 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
                         backgroundColor: AppTheme.primaryCarmine,
                         foregroundColor: Colors.white,
                       ),
+                    ),
+                    FilledButton.tonalIcon(
+                      onPressed: _result!.words.isEmpty
+                          ? null
+                          : () => _analyzeMenu(_result!.fullText),
+                      icon: const Icon(Icons.restaurant_menu, size: 18),
+                      label: Text(strings.menuAnalysisBtn),
                     ),
                     FilledButton.tonalIcon(
                       onPressed: _result!.words.isEmpty

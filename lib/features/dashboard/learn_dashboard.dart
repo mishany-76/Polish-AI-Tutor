@@ -19,10 +19,19 @@ import '../wrapped/monthly_wrapped_screen.dart';
 import '../dictation/dictation_screen.dart';
 import '../onboarding/onboarding_screen.dart';
 import '../onboarding/user_profile.dart';
+import '../professions/professions_data.dart';
+import '../professions/professions_screen.dart';
 
 /// Главный экран: тренажёр обучения (повторение, игры, ролевые диалоги).
-class LearnDashboard extends ConsumerWidget {
+class LearnDashboard extends ConsumerStatefulWidget {
   const LearnDashboard({super.key});
+
+  @override
+  ConsumerState<LearnDashboard> createState() => _LearnDashboardState();
+}
+
+class _LearnDashboardState extends ConsumerState<LearnDashboard> {
+  int _dialogCategoryIndex = 0; // 0 = Быт, 1 = Профессии
 
   void _push(BuildContext context, Widget page) =>
       Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => page));
@@ -119,7 +128,7 @@ class LearnDashboard extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final due = ref.watch(dueCountProvider);
     final total = ref.watch(wordsProvider).value?.length ?? 0;
@@ -428,6 +437,93 @@ class LearnDashboard extends ConsumerWidget {
             subtitle: strings.drillDictationSub,
             onTap: () => DictationScreen.show(context),
           ),
+          const SizedBox(height: 20),
+
+          // --- Баннер «Польский для профессий» ---
+          Card(
+            clipBehavior: Clip.antiAlias,
+            elevation: 1,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+              side: BorderSide(
+                color: AppTheme.primaryCarmine.withValues(alpha: 0.20),
+              ),
+            ),
+            child: InkWell(
+              onTap: () => ProfessionsScreen.show(context),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      AppTheme.primaryCarmine.withValues(alpha: 0.08),
+                      Colors.white,
+                    ],
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: AppTheme.primaryCarmine.withValues(alpha: 0.12),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Text('💼', style: TextStyle(fontSize: 22)),
+                    ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                strings.professionsTitle,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                ),
+                              ),
+                              const SizedBox(width: 6),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: AppTheme.primaryCarmine.withValues(alpha: 0.15),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: const Text(
+                                  'B2C / B2B',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppTheme.primaryCarmine,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            strings.professionsBannerSub,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 12.5,
+                              color: theme.colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Icon(Icons.arrow_forward_ios, size: 16, color: AppTheme.primaryCarmine),
+                  ],
+                ),
+              ),
+            ),
+          ),
           const SizedBox(height: 24),
 
           // --- Диалоги ---
@@ -482,7 +578,31 @@ class LearnDashboard extends ConsumerWidget {
               color: settings.hasKey ? theme.textTheme.bodySmall?.color : theme.colorScheme.error,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 10),
+          Center(
+            child: SegmentedButton<int>(
+              style: SegmentedButton.styleFrom(
+                visualDensity: VisualDensity.compact,
+                selectedForegroundColor: Colors.white,
+                selectedBackgroundColor: AppTheme.primaryCarmine,
+              ),
+              segments: [
+                ButtonSegment<int>(
+                  value: 0,
+                  icon: const Icon(Icons.home_outlined, size: 16),
+                  label: Text(strings.professionsCategoryLife, style: const TextStyle(fontSize: 12)),
+                ),
+                ButtonSegment<int>(
+                  value: 1,
+                  icon: const Icon(Icons.work_outline, size: 16),
+                  label: Text(strings.professionsCategoryWork, style: const TextStyle(fontSize: 12)),
+                ),
+              ],
+              selected: {_dialogCategoryIndex},
+              onSelectionChanged: (set) => setState(() => _dialogCategoryIndex = set.first),
+            ),
+          ),
+          const SizedBox(height: 12),
           GridView.count(
             crossAxisCount: 2,
             shrinkWrap: true,
@@ -491,7 +611,9 @@ class LearnDashboard extends ConsumerWidget {
             crossAxisSpacing: 10,
             childAspectRatio: 1.05,
             children: [
-              for (final s in scenarios)
+              for (final s in (_dialogCategoryIndex == 0
+                  ? scenarios
+                  : kAllProfessions.map((p) => p.scenario).toList()))
                 Card(
                   clipBehavior: Clip.antiAlias,
                   child: InkWell(

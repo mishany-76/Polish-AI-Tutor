@@ -10,6 +10,8 @@ import 'package:polish_ai_tutor/core/ai_client/ai_client.dart';
 import 'package:polish_ai_tutor/core/db/app_database.dart';
 import 'package:polish_ai_tutor/core/srs/sm2.dart';
 import 'package:polish_ai_tutor/features/onboarding/user_profile.dart';
+import 'package:polish_ai_tutor/features/professions/profession_model.dart';
+import 'package:polish_ai_tutor/features/professions/professions_data.dart';
 import 'package:polish_ai_tutor/features/review/quiz_builders.dart';
 import 'package:polish_ai_tutor/features/scanner/doc_analysis_service.dart';
 import 'package:polish_ai_tutor/features/scanner/menu_analysis_service.dart';
@@ -680,6 +682,54 @@ void main() {
       await notifier.resetOnboarding();
       expect(container.read(userProfileProvider).onboardingCompleted, isFalse);
       expect(prefs.getBool('profile_onboarding_completed'), isFalse);
+    });
+  });
+
+  group('Professions & Work Scenarios (Польский для профессий)', () {
+    test('kAllProfessions содержит 5 ключевых направлений', () {
+      expect(kAllProfessions.length, 5);
+      final ids = kAllProfessions.map((p) => p.id).toList();
+      expect(ids.contains('logistics'), isTrue);
+      expect(ids.contains('construction'), isTrue);
+      expect(ids.contains('gastronomy'), isTrue);
+      expect(ids.contains('cleaning'), isTrue);
+      expect(ids.contains('it_office'), isTrue);
+    });
+
+    test('Каждая профессия имеет словарный банк и примеры', () {
+      for (final p in kAllProfessions) {
+        expect(p.vocabulary.isNotEmpty, isTrue);
+        expect(p.vocabulary.length, greaterThanOrEqualTo(4));
+        for (final v in p.vocabulary) {
+          expect(v.termPl.isNotEmpty, isTrue);
+          expect(v.translationUk.isNotEmpty, isTrue);
+          expect(v.translationRu.isNotEmpty, isTrue);
+          expect(v.examplePl.isNotEmpty, isTrue);
+          expect(v.translation(UiLang.pl), equals(v.termPl));
+          expect(v.translation(UiLang.uk), equals(v.translationUk));
+          expect(v.translation(UiLang.ru), equals(v.translationRu));
+        }
+      }
+    });
+
+    test('Каждая профессия содержит сценарий с рабочими под-сценариями', () {
+      for (final p in kAllProfessions) {
+        expect(p.scenario.subScenarios.isNotEmpty, isTrue);
+        expect(p.scenario.subScenarios.length, greaterThanOrEqualTo(2));
+        for (final sub in p.scenario.subScenarios) {
+          expect(sub.id.isNotEmpty, isTrue);
+          expect(sub.starterHintPl.isNotEmpty, isTrue);
+          expect(sub.plotTwist.isNotEmpty, isTrue);
+
+          final seed = sub.resolveDynamicSeed(RoleplayDifficulty.life);
+          expect(seed.twist.isNotEmpty, isTrue);
+          expect(
+            [RoleplayDifficulty.calm, RoleplayDifficulty.life, RoleplayDifficulty.challenge]
+                .contains(seed.effectiveDifficulty),
+            isTrue,
+          );
+        }
+      }
     });
   });
 }

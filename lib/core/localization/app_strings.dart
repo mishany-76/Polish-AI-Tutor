@@ -565,6 +565,36 @@ class AppStrings {
       : (isUk ? 'Пройти знайомство з Kasią знову' : 'Пройти знакомство с Kasią заново');
   String get profileGoalLabel => isPl ? 'Cel:' : (isUk ? 'Мета:' : 'Цель:');
   String get profileLevelLabel => isPl ? 'Poziom:' : (isUk ? 'Рівень:' : 'Уровень:');
+
+  // Professions
+  String get professionsTitle => isPl
+      ? 'Polski dla profesji'
+      : (isUk ? 'Польська для професій' : 'Польский для профессий');
+  String get professionsBannerSub => isPl
+      ? 'Logistyka, budowa, gastronomia, sprzątanie, IT i biuro'
+      : (isUk
+          ? 'Логістика, будівництво, кухня, клінінг, IT та офіс'
+          : 'Логистика, стройка, кухня, клининг, IT и офис');
+  String get professionsTabVocab => isPl
+      ? 'Słownik i zwroty'
+      : (isUk ? 'Словник і фрази' : 'Словарь и фразы');
+  String get professionsTabDialogs => isPl
+      ? 'Dialogi z AI'
+      : (isUk ? 'Діалоги з ШІ' : 'Диалоги с ИИ');
+  String get professionsAddAllTooltip => isPl
+      ? 'Dodaj wszystkie słowa z tej kategorii do słownika'
+      : (isUk
+          ? 'Додати всі слова цієї категорії до словника'
+          : 'Добавить все слова этой категории в словарь');
+  String get professionsStartRoleplayBtn => isPl
+      ? 'Rozpocznij dialog sytuacyjny'
+      : (isUk ? 'Почати ситуаційний діалог' : 'Начать ситуационный диалог');
+  String get professionsCategoryLife => isPl
+      ? 'Życie codzienne'
+      : (isUk ? 'Повсякденне життя' : 'Повседневная жизнь');
+  String get professionsCategoryWork => isPl
+      ? 'Praca i zawód'
+      : (isUk ? 'Робота та фах' : 'Работа и профессия');
 }
 
 

@@ -252,3 +252,4 @@ with open('assets/drills/audio_words.json', 'w', encoding='utf-8') as f:
     json.dump(clean_audio, f, ensure_ascii=False, indent=2)
 
 print("Done clean_all_drills.py!")
+

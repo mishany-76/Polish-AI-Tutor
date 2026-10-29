@@ -112,7 +112,22 @@ def main():
             print(f"Failed to create release: {e.code} - {e.read().decode()}")
             return
 
-    # 3. Upload APK asset
+    # 3. Check and delete existing asset if needed
+    for a in release.get("assets", []):
+        if a.get("name") == APK_NAME:
+            print(f"Deleting existing asset {a['id']} ({APK_NAME})...")
+            del_req = urllib.request.Request(
+                f"https://api.github.com/repos/{REPO}/releases/assets/{a['id']}",
+                headers=headers,
+                method="DELETE"
+            )
+            try:
+                with urllib.request.urlopen(del_req, context=ctx) as del_resp:
+                    print("Deleted successfully.")
+            except Exception as e:
+                print(f"Could not delete asset: {e}")
+
+    # 4. Upload APK asset
     upload_url_template = release.get("upload_url", "")
     upload_url = upload_url_template.split("{")[0]
     upload_url_with_param = f"{upload_url}?name={urllib.parse.quote(APK_NAME)}"

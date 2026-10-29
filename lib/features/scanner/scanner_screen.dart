@@ -501,10 +501,10 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
                 Expanded(
                   child: Text(
                     strings.docAnalyzing,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: Colors.black87,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                 ),
@@ -565,26 +565,39 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final strings = ref.watch(appStringsProvider);
     final lang = ref.watch(settingsProvider.select((s) => s.lang));
 
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text('Переводчик'),
-        backgroundColor: Colors.black,
-        foregroundColor: Colors.white,
+        title: Text(
+          strings.tabTranslator,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
         actions: [
           SegmentedButton<UiLang>(
             showSelectedIcon: false,
             style: SegmentedButton.styleFrom(
               visualDensity: VisualDensity.compact,
-              foregroundColor: Colors.white70,
-              selectedForegroundColor: Colors.black,
-              selectedBackgroundColor: Colors.white,
+              foregroundColor: theme.colorScheme.onSurfaceVariant,
+              selectedForegroundColor: theme.colorScheme.onPrimary,
+              selectedBackgroundColor: theme.colorScheme.primary,
             ),
             segments: const [
-              ButtonSegment(value: UiLang.uk, label: Text('🇺🇦 UK')),
-              ButtonSegment(value: UiLang.ru, label: Text('🇷🇺 RU')),
+              ButtonSegment(
+                value: UiLang.uk,
+                label: Text('🇺🇦 UK', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+              ),
+              ButtonSegment(
+                value: UiLang.ru,
+                label: Text('🇷🇺 RU', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+              ),
+              ButtonSegment(
+                value: UiLang.pl,
+                label: Text('🇵🇱 PL', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+              ),
             ],
             selected: {lang},
             onSelectionChanged: (s) =>
@@ -602,7 +615,7 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
         children: [
           // Вкладки режимов
           Container(
-            color: Colors.grey.shade900,
+            color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
             padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
             child: SizedBox(
               width: double.infinity,
@@ -611,22 +624,31 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
                 style: SegmentedButton.styleFrom(
                   visualDensity: VisualDensity.compact,
                   padding: const EdgeInsets.symmetric(horizontal: 4),
-                  selectedForegroundColor: Colors.white,
-                  selectedBackgroundColor: Theme.of(context).colorScheme.primary,
-                  foregroundColor: Colors.white70,
+                  selectedForegroundColor: theme.colorScheme.onPrimary,
+                  selectedBackgroundColor: theme.colorScheme.primary,
+                  foregroundColor: theme.colorScheme.onSurface,
                 ),
-                segments: const [
+                segments: [
                   ButtonSegment(
                     value: TranslatorMode.camera,
-                    label: Text('📷 Камера', style: TextStyle(fontSize: 12)),
+                    label: Text(
+                      strings.isPl ? '📷 Aparat' : (strings.isUk ? '📷 Камера' : '📷 Камера'),
+                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                    ),
                   ),
                   ButtonSegment(
                     value: TranslatorMode.document,
-                    label: Text('📁 Файл/PDF', style: TextStyle(fontSize: 12)),
+                    label: Text(
+                      strings.isPl ? '📁 Plik/PDF' : (strings.isUk ? '📁 Файл/PDF' : '📁 Файл/PDF'),
+                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                    ),
                   ),
                   ButtonSegment(
                     value: TranslatorMode.text,
-                    label: Text('✍️ Текст', style: TextStyle(fontSize: 12)),
+                    label: Text(
+                      strings.isPl ? '✍️ Tekst' : (strings.isUk ? '✍️ Текст' : '✍️ Текст'),
+                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                    ),
                   ),
                 ],
                 selected: {_mode},
@@ -651,6 +673,7 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
   }
 
   Widget _buildBody() {
+    final theme = Theme.of(context);
     final strings = ref.watch(appStringsProvider);
     if (_busy) {
       return const Center(child: CircularProgressIndicator());
@@ -704,7 +727,13 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
                       OutlinedButton.icon(
                         onPressed: _pickDocumentOrImage,
                         icon: const Icon(Icons.folder_open, size: 18),
-                        label: const Text('Выбрать другой файл'),
+                        label: Text(
+                          strings.isPl
+                              ? 'Wybierz inny plik'
+                              : (strings.isUk
+                                  ? 'Обрати інший файл'
+                                  : 'Выбрать другой файл'),
+                        ),
                       ),
                     ],
                   ),
@@ -719,18 +748,32 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.picture_as_pdf, size: 64, color: Colors.white70),
+                Icon(Icons.picture_as_pdf, size: 64, color: theme.colorScheme.primary),
                 const SizedBox(height: 16),
-                const Text(
-                  'Выберите PDF-документ или фото из галереи для OCR-распознавания',
+                Text(
+                  strings.isPl
+                      ? 'Wybierz dokument PDF lub zdjęcie z galerii do rozpoznania OCR'
+                      : (strings.isUk
+                          ? 'Оберіть PDF-документ або фото з галереї для OCR-розпізнавання'
+                          : 'Выберите PDF-документ или фото из галереи для OCR-распознавания'),
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.white, fontSize: 16),
+                  style: TextStyle(
+                    color: theme.colorScheme.onSurface,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
                 const SizedBox(height: 20),
                 FilledButton.icon(
                   onPressed: _pickDocumentOrImage,
                   icon: const Icon(Icons.file_upload),
-                  label: const Text('Выбрать файл (PDF / Фото)'),
+                  label: Text(
+                    strings.isPl
+                        ? 'Wybierz plik (PDF / Zdjęcie)'
+                        : (strings.isUk
+                            ? 'Обрати файл (PDF / Фото)'
+                            : 'Выбрать файл (PDF / Фото)'),
+                  ),
                 ),
               ],
             ),
@@ -747,13 +790,21 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
                 TextField(
                   controller: _textInputController,
                   maxLines: 5,
-                  style: const TextStyle(color: Colors.white),
-                  decoration: const InputDecoration(
-                    hintText: 'Вставьте или введите польский текст для перевода…',
-                    hintStyle: TextStyle(color: Colors.white54),
-                    border: OutlineInputBorder(),
+                  style: TextStyle(color: theme.colorScheme.onSurface),
+                  decoration: InputDecoration(
+                    hintText: strings.isPl
+                        ? 'Wklej lub wpisz tekst po polsku do przetłumaczenia…'
+                        : (strings.isUk
+                            ? 'Вставте або введіть польський текст для перекладу…'
+                            : 'Вставьте или введите польский текст для перевода…'),
+                    hintStyle: TextStyle(
+                      color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                     filled: true,
-                    fillColor: Colors.black45,
+                    fillColor: theme.colorScheme.surface,
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -782,30 +833,47 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
                                 }
                               },
                         icon: const Icon(Icons.translate),
-                        label: Text(_translatingText ? 'Перевожу…' : 'Перевести'),
+                        label: Text(_translatingText
+                            ? (strings.isPl
+                                ? 'Tłumaczę…'
+                                : (strings.isUk ? 'Перекладаю…' : 'Перевожу…'))
+                            : (strings.isPl
+                                ? 'Przetłumacz'
+                                : (strings.isUk ? 'Перекласти' : 'Перевести'))),
                       ),
                     ),
                     const SizedBox(width: 8),
                     FilledButton.tonalIcon(
                       onPressed: () => _analyzeDocument(_textInputController.text),
                       icon: const Icon(Icons.gavel_rounded, size: 16),
-                      label: Text(strings.isPl ? 'Analiza' : (strings.isUk ? 'Аналіз' : 'Анализ')),
+                      label: Text(strings.isPl
+                          ? 'Analiza'
+                          : (strings.isUk ? 'Аналіз' : 'Анализ')),
                     ),
                     const SizedBox(width: 8),
                     IconButton(
-                      tooltip: 'Очистить',
+                      tooltip: strings.isPl
+                          ? 'Wyczyść'
+                          : (strings.isUk ? 'Очистити' : 'Очистить'),
                       onPressed: () {
                         _textInputController.clear();
                         setState(() => _textTranslationResult = null);
                       },
-                      icon: const Icon(Icons.clear, color: Colors.white70),
+                      icon: Icon(Icons.clear, color: theme.colorScheme.onSurfaceVariant),
                     ),
                   ],
                 ),
                 if (_textTranslationResult != null) ...[
                   const SizedBox(height: 16),
                   Card(
-                    color: Colors.grey.shade900,
+                    color: theme.colorScheme.surface,
+                    elevation: 1,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      side: BorderSide(
+                        color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5),
+                      ),
+                    ),
                     child: Padding(
                       padding: const EdgeInsets.all(16),
                       child: Column(
@@ -813,15 +881,27 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
                         children: [
                           Row(
                             children: [
-                              const Icon(Icons.translate, size: 16, color: Colors.white70),
+                              Icon(Icons.translate, size: 16, color: theme.colorScheme.primary),
                               const SizedBox(width: 6),
-                              const Text('Перевод:', style: TextStyle(color: Colors.white70, fontWeight: FontWeight.bold)),
+                              Text(
+                                strings.isPl
+                                    ? 'Tłumaczenie:'
+                                    : (strings.isUk ? 'Переклад:' : 'Перевод:'),
+                                style: TextStyle(
+                                  color: theme.colorScheme.primary,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ],
                           ),
                           const SizedBox(height: 8),
                           SelectableText(
                             _textTranslationResult!,
-                            style: const TextStyle(color: Colors.white, fontSize: 18),
+                            style: TextStyle(
+                              color: theme.colorScheme.onSurface,
+                              fontSize: 18,
+                              height: 1.4,
+                            ),
                           ),
                           const SizedBox(height: 12),
                           SizedBox(
@@ -830,7 +910,13 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
                               onPressed: () =>
                                   _batchAddWords(_textInputController.text),
                               icon: const Icon(Icons.bookmark_add, size: 16),
-                              label: const Text('📥 Добавить ключевые слова в словарь (ИИ)'),
+                              label: Text(
+                                strings.isPl
+                                    ? '📥 Dodaj słowa kluczowe do słownika (AI)'
+                                    : (strings.isUk
+                                        ? '📥 Додати ключові слова до словника (ШІ)'
+                                        : '📥 Добавить ключевые слова в словарь (ИИ)'),
+                              ),
                             ),
                           ),
                         ],
@@ -846,6 +932,8 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
   }
 
   Widget _buildViewport() {
+    final theme = Theme.of(context);
+    final strings = ref.watch(appStringsProvider);
     if (_error != null) {
       return Center(
         child: Padding(
@@ -855,7 +943,7 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
             children: [
               Text(_error!,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.white)),
+                  style: TextStyle(color: theme.colorScheme.error)),
               const SizedBox(height: 16),
               FilledButton(
                 onPressed: () async {
@@ -865,7 +953,9 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
                     _initCamera();
                   }
                 },
-                child: const Text('Повторить'),
+                child: Text(strings.isPl
+                    ? 'Powtórz'
+                    : (strings.isUk ? 'Повторити' : 'Повторить')),
               ),
             ],
           ),
@@ -885,25 +975,29 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
     if (c == null || !c.value.isInitialized) {
       return const Center(child: CircularProgressIndicator());
     }
-    return Center(
-      child: AspectRatio(
-        aspectRatio: 1 / c.value.aspectRatio,
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            CameraPreview(c),
-            if (_busy)
-              const ColoredBox(
-                color: Colors.black38,
-                child: Center(child: CircularProgressIndicator()),
-              ),
-          ],
+    return Container(
+      color: Colors.black,
+      child: Center(
+        child: AspectRatio(
+          aspectRatio: 1 / c.value.aspectRatio,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              CameraPreview(c),
+              if (_busy)
+                const ColoredBox(
+                  color: Colors.black38,
+                  child: Center(child: CircularProgressIndicator()),
+                ),
+            ],
+          ),
         ),
       ),
     );
   }
 
   Widget _buildCameraControls(bool hasShot) {
+    final theme = Theme.of(context);
     final strings = ref.watch(appStringsProvider);
     return SafeArea(
       top: false,
@@ -913,9 +1007,18 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
             ? Column(mainAxisSize: MainAxisSize.min, children: [
                 Text(
                   _result!.words.isEmpty
-                      ? 'Слов не найдено'
-                      : 'Слов: ${_result!.words.length} · коснитесь слова',
-                  style: const TextStyle(color: Colors.white70),
+                      ? (strings.isPl
+                          ? 'Nie znaleziono słów'
+                          : (strings.isUk ? 'Слів не знайдено' : 'Слов не найдено'))
+                      : (strings.isPl
+                          ? 'Słów: ${_result!.words.length} · dotknij słowa'
+                          : (strings.isUk
+                              ? 'Слів: ${_result!.words.length} · торкніться слова'
+                              : 'Слов: ${_result!.words.length} · коснитесь слова')),
+                  style: TextStyle(
+                    color: theme.colorScheme.onSurface,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
                 const SizedBox(height: 10),
                 Wrap(
@@ -944,7 +1047,9 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
                     OutlinedButton.icon(
                       onPressed: _retake,
                       icon: const Icon(Icons.refresh, size: 18),
-                      label: const Text('Снять заново'),
+                      label: Text(strings.isPl
+                          ? 'Zrób ponownie'
+                          : (strings.isUk ? 'Зняти знову' : 'Снять заново')),
                     ),
                   ],
                 ),
@@ -956,9 +1061,17 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
                   height: 72,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: _busy ? Colors.grey : Colors.white,
-                    border: Border.all(color: Colors.white54, width: 4),
+                    color: _busy ? Colors.grey : theme.colorScheme.primary,
+                    border: Border.all(color: theme.colorScheme.surface, width: 4),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 8,
+                        offset: Offset(0, 3),
+                      ),
+                    ],
                   ),
+                  child: const Icon(Icons.camera_alt, color: Colors.white, size: 32),
                 ),
               ),
       ),

@@ -39,7 +39,7 @@ class TranslationService {
       case UiLang.ru:
         return 'Русский';
       case UiLang.pl:
-        return 'Украинский';
+        return 'Польский';
     }
   }
 
@@ -56,10 +56,11 @@ class TranslationService {
 
     if (aiClient.apiKey.trim().isNotEmpty) {
       try {
-        final systemPrompt =
-            'Ты — профессиональный переводчик с польского на $_targetLangName. '
-            'Переведи текст связно, литературно, грамотно и контекстно. '
-            'Выведи ТОЛЬКО готовый перевод без вступительных слов и пояснений.';
+        final systemPrompt = lang == UiLang.pl
+            ? 'Jesteś profesjonalnym tłumaczem i redaktorem języka polskiego. Jeśli tekst jest w innym języku, przetłumacz go na naturalny język polski. Jeśli tekst jest już po polsku, zredaguj go, popraw ewentualne błędy i sformułuj w jasnej, poprawnej formie. Wypisz TYLKO gotowy wynik bez żadnych wstępów i komentarzy.'
+            : 'Ты — профессиональный переводчик с польского на $_targetLangName. '
+                'Переведи текст связно, литературно, грамотно и контекстно. '
+                'Выведи ТОЛЬКО готовый перевод без вступительных слов и пояснений.';
 
         final result = await aiClient.chat(
           [
@@ -103,10 +104,11 @@ class TranslationService {
         final contextPart = cleanSentence.isNotEmpty
             ? ' с учётом контекста предложения: "$cleanSentence"'
             : '';
-        final systemPrompt =
-            'Ты — профессиональный переводчик с польского на $_targetLangName. '
-            'Переведи польское слово "$cleanWord"$contextPart. '
-            'Выведи ТОЛЬКО готовый точный перевод этого слова без кавычек, вступительных слов и пояснений.';
+        final systemPrompt = lang == UiLang.pl
+            ? 'Wyjaśnij znaczenie polskiego słowa "$cleanWord"${cleanSentence.isNotEmpty ? ' w kontekście zdania: "$cleanSentence"' : ''} w prostym języku polskim (synonim lub krótkie wyjaśnienie). Wypisz TYLKO samo wyjaśnienie/synonim bez cudzysłowów i wstępów.'
+            : 'Ты — профессиональный переводчик с польского на $_targetLangName. '
+                'Переведи польское слово "$cleanWord"$contextPart. '
+                'Выведи ТОЛЬКО готовый точный перевод этого слова без кавычек, вступительных слов и пояснений.';
 
         final result = await aiClient.chat(
           [
@@ -140,6 +142,9 @@ class TranslationService {
   }
 
   Future<String> _translateMlKit(String text) async {
+    if (lang == UiLang.pl) {
+      return text;
+    }
     await _ensureMlKitModels();
     if (_translator == null || _translatorLang != lang) {
       await _translator?.close();

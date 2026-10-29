@@ -11,6 +11,9 @@ import 'package:polish_ai_tutor/core/db/app_database.dart';
 import 'package:polish_ai_tutor/core/srs/sm2.dart';
 import 'package:polish_ai_tutor/features/onboarding/user_profile.dart';
 import 'package:polish_ai_tutor/features/professions/professions_data.dart';
+import 'package:polish_ai_tutor/features/episodes/episode_model.dart';
+import 'package:polish_ai_tutor/features/episodes/episodes_data.dart';
+import 'package:polish_ai_tutor/features/episodes/episodes_service.dart';
 import 'package:polish_ai_tutor/features/review/quiz_builders.dart';
 import 'package:polish_ai_tutor/features/scanner/doc_analysis_service.dart';
 import 'package:polish_ai_tutor/features/scanner/menu_analysis_service.dart';
@@ -729,6 +732,63 @@ void main() {
           );
         }
       }
+    });
+  });
+
+  group('Episodes & Story Mode (Живые эпизоды)', () {
+    test('kAllEpisodes содержит 5 насыщенных серий 1-го сезона', () {
+      expect(kAllEpisodes.length, equals(5));
+      final numbers = kAllEpisodes.map((e) => e.number).toList();
+      expect(numbers, equals([1, 2, 3, 4, 5]));
+    });
+
+    test('Каждая серия имеет синопсис, словарный банк и валидный сценарий', () {
+      for (final ep in kAllEpisodes) {
+        expect(ep.titlePl.isNotEmpty, isTrue);
+        expect(ep.titleUk.isNotEmpty, isTrue);
+        expect(ep.titleRu.isNotEmpty, isTrue);
+        expect(ep.synopsisPl.isNotEmpty, isTrue);
+        expect(ep.duration.isNotEmpty, isTrue);
+        expect(ep.vocabulary.isNotEmpty, isTrue);
+        expect(ep.scenes.isNotEmpty, isTrue);
+
+        for (final v in ep.vocabulary) {
+          expect(v.termPl.isNotEmpty, isTrue);
+          expect(v.examplePl.isNotEmpty, isTrue);
+          expect(v.translation(UiLang.pl), equals(v.termPl));
+          expect(v.translation(UiLang.uk), equals(v.translationUk));
+          expect(v.translation(UiLang.ru), equals(v.translationRu));
+        }
+
+        final sc = ep.toScenario();
+        expect(sc.key.startsWith('ep_'), isTrue);
+        expect(sc.subScenarios.length, equals(ep.scenes.length));
+      }
+    });
+
+    test('EpisodesService управляет прогрессом, открытием серий и звездами', () async {
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
+      final service = EpisodesService(prefs);
+
+      expect(service.isEpisodeUnlocked(episode1Flat.id, 1), isTrue);
+      expect(service.isEpisodeUnlocked(episode2Office.id, 2), isFalse);
+
+      final p1 = service.getProgress(episode1Flat.id, 1);
+      expect(p1.isUnlocked, isTrue);
+      expect(p1.isCompleted, isFalse);
+      expect(p1.stars, equals(0));
+
+      // Завершаем сцены серии 1
+      for (final scene in episode1Flat.scenes) {
+        await service.completeScene(episode1Flat.id, scene.id);
+      }
+
+      expect(service.isEpisodeCompleted(episode1Flat.id), isTrue);
+      expect(service.getEpisodeStars(episode1Flat.id), equals(3));
+      expect(service.isEpisodeUnlocked(episode2Office.id, 2), isTrue);
+      expect(service.completedEpisodesCount, equals(1));
+      expect(service.totalStarsCount, equals(3));
     });
   });
 }

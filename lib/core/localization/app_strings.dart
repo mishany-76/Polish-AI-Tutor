@@ -595,6 +595,35 @@ class AppStrings {
   String get professionsCategoryWork => isPl
       ? 'Praca i zawody'
       : (isUk ? 'Робота та професії' : 'Работа и профессии');
+
+  // --- Живые эпизоды (Story Mode / Сериал) ---
+  String get episodesTitle => isPl
+      ? 'Żywe odcinki'
+      : (isUk ? 'Живі епізоди' : 'Живые эпизоды');
+  String get episodesSubtitle => isPl
+      ? 'Serial interaktywny: Życie w Polsce'
+      : (isUk
+          ? 'Інтерактивний серіал: Життя в Польщі'
+          : 'Интерактивный сериал: Жизнь в Польше');
+  String get episodesBannerSub => isPl
+      ? '5 odcinków: od wynajmu mieszkania do pierwszej wypłaty'
+      : (isUk
+          ? '5 серій: від оренди житла до першої зарплати'
+          : '5 серий: от аренды жилья до первой зарплаты');
+  String get episodesSeason1 => isPl
+      ? 'Sezon 1: Pierwszy miesiąc w Polsce'
+      : (isUk ? 'Сезон 1: Перший місяць у Польщі' : 'Сезон 1: Первый месяц в Польше');
+  String get episodesVocabTitle => isPl
+      ? 'Słownik przetrwania w odcinku'
+      : (isUk ? 'Словник виживання в серії' : 'Словарь выживания в серии');
+  String get episodesScenesTitle => isPl
+      ? 'Sceny fabularne odcinka'
+      : (isUk ? 'Сюжетні сцени серії' : 'Сюжетные сцены серии');
+  String get episodesAddVocabAll => isPl
+      ? 'Dodaj słowa odcinka do słownika'
+      : (isUk
+          ? 'Додати слова серії до словника'
+          : 'Добавить слова серии в словарь');
 }
 
 

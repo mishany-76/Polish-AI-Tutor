@@ -21,6 +21,7 @@ import '../onboarding/onboarding_screen.dart';
 import '../onboarding/user_profile.dart';
 import '../professions/professions_data.dart';
 import '../professions/professions_screen.dart';
+import '../episodes/episodes_screen.dart';
 
 /// Главный экран: тренажёр обучения (повторение, игры, ролевые диалоги).
 class LearnDashboard extends ConsumerStatefulWidget {
@@ -510,6 +511,95 @@ class _LearnDashboardState extends ConsumerState<LearnDashboard> {
                           const SizedBox(height: 2),
                           Text(
                             strings.professionsBannerSub,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 12.5,
+                              color: theme.colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Icon(Icons.arrow_forward_ios, size: 16, color: AppTheme.primaryCarmine),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+
+          // --- Баннер «Живые эпизоды: Жизнь в Польше» ---
+          Card(
+            clipBehavior: Clip.antiAlias,
+            elevation: 1,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+              side: BorderSide(
+                color: AppTheme.primaryCarmine.withValues(alpha: 0.20),
+              ),
+            ),
+            child: InkWell(
+              onTap: () => EpisodesScreen.show(context),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      AppTheme.primaryCarmine.withValues(alpha: 0.08),
+                      Colors.white,
+                    ],
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: AppTheme.primaryCarmine.withValues(alpha: 0.12),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Text('🎬', style: TextStyle(fontSize: 22)),
+                    ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Wrap(
+                            spacing: 8,
+                            runSpacing: 4,
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            children: [
+                              Text(
+                                strings.episodesTitle,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                ),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: AppTheme.primaryCarmine.withValues(alpha: 0.15),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Text(
+                                  strings.isPl ? 'SERIAL' : (strings.isUk ? 'СЕРІАЛ' : 'СЕРИАЛ'),
+                                  style: const TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppTheme.primaryCarmine,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            strings.episodesBannerSub,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(

@@ -162,15 +162,46 @@ class _ProfessionsScreenState extends ConsumerState<ProfessionsScreen>
       ),
       body: Column(
         children: [
-          // Горизонтальный скролл чипов категорий профессий со стрелкой прокрутки
+          // Горизонтальный скролл чипов категорий профессий со стрелками назад и вперед
           SizedBox(
             height: 52,
             child: Row(
               children: [
+                // Стрелочка влево (скролл назад)
+                InkWell(
+                  onTap: () {
+                    if (_chipsScrollController.hasClients) {
+                      final current = _chipsScrollController.offset;
+                      final target = (current - 160).clamp(0.0, _chipsScrollController.position.maxScrollExtent);
+                      _chipsScrollController.animateTo(
+                        target,
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                      );
+                    }
+                  },
+                  borderRadius: BorderRadius.circular(20),
+                  child: Container(
+                    margin: const EdgeInsets.only(left: 10),
+                    padding: const EdgeInsets.all(7),
+                    decoration: BoxDecoration(
+                      color: AppTheme.primaryCarmine.withValues(alpha: 0.12),
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: AppTheme.primaryCarmine.withValues(alpha: 0.25),
+                      ),
+                    ),
+                    child: const Icon(
+                      Icons.arrow_back_ios_new_rounded,
+                      size: 13,
+                      color: AppTheme.primaryCarmine,
+                    ),
+                  ),
+                ),
                 Expanded(
                   child: ListView.separated(
                     controller: _chipsScrollController,
-                    padding: const EdgeInsets.fromLTRB(16, 6, 8, 6),
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                     scrollDirection: Axis.horizontal,
                     itemCount: kAllProfessions.length,
                     separatorBuilder: (context, index) => const SizedBox(width: 8),
@@ -200,12 +231,13 @@ class _ProfessionsScreenState extends ConsumerState<ProfessionsScreen>
                     },
                   ),
                 ),
+                // Стрелочка вправо (скролл вперед)
                 InkWell(
                   onTap: () {
                     if (_chipsScrollController.hasClients) {
                       final current = _chipsScrollController.offset;
                       final max = _chipsScrollController.position.maxScrollExtent;
-                      final target = (current + 150).clamp(0.0, max);
+                      final target = (current + 160).clamp(0.0, max);
                       _chipsScrollController.animateTo(
                         target,
                         duration: const Duration(milliseconds: 300),
@@ -215,7 +247,7 @@ class _ProfessionsScreenState extends ConsumerState<ProfessionsScreen>
                   },
                   borderRadius: BorderRadius.circular(20),
                   child: Container(
-                    margin: const EdgeInsets.only(right: 12),
+                    margin: const EdgeInsets.only(right: 10),
                     padding: const EdgeInsets.all(7),
                     decoration: BoxDecoration(
                       color: AppTheme.primaryCarmine.withValues(alpha: 0.12),

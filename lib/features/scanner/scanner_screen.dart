@@ -1034,6 +1034,7 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
                   controller: _textInputController,
                   maxLines: 5,
                   style: TextStyle(color: theme.colorScheme.onSurface),
+                  onChanged: (_) => setState(() {}),
                   decoration: InputDecoration(
                     hintText: strings.isPl
                         ? 'Wklej lub wpisz tekst po polsku do przetłumaczenia…'
@@ -1043,6 +1044,18 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
                     hintStyle: TextStyle(
                       color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
                     ),
+                    suffixIcon: _textInputController.text.isNotEmpty
+                        ? IconButton(
+                            tooltip: strings.isPl
+                                ? 'Wyczyść'
+                                : (strings.isUk ? 'Очистити' : 'Очистить'),
+                            icon: const Icon(Icons.clear_rounded),
+                            onPressed: () {
+                              _textInputController.clear();
+                              setState(() => _textTranslationResult = null);
+                            },
+                          )
+                        : null,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -1051,64 +1064,115 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
                   ),
                 ),
                 const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  height: 48,
+                  child: FilledButton.icon(
+                    style: FilledButton.styleFrom(
+                      backgroundColor: AppTheme.primaryCarmine,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    onPressed: _translatingText
+                        ? null
+                        : () async {
+                            final text = _textInputController.text.trim();
+                            if (text.isEmpty) return;
+                            setState(() {
+                              _translatingText = true;
+                              _textTranslationResult = null;
+                            });
+                            try {
+                              final tr = await ref
+                                  .read(translationServiceProvider)
+                                  .translate(text);
+                              setState(() => _textTranslationResult = tr);
+                            } catch (e) {
+                              _toast('Ошибка перевода: $e');
+                            } finally {
+                              setState(() => _translatingText = false);
+                            }
+                          },
+                    icon: _translatingText
+                        ? const SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                        : const Icon(Icons.translate, size: 20),
+                    label: Text(
+                      _translatingText
+                          ? (strings.isPl
+                              ? 'Tłumaczę…'
+                              : (strings.isUk ? 'Перекладаю…' : 'Перевожу…'))
+                          : (strings.isPl
+                              ? 'Przetłumacz tekst'
+                              : (strings.isUk ? 'Перекласти текст' : 'Перевести текст')),
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
                 Row(
                   children: [
                     Expanded(
-                      child: FilledButton.icon(
-                        onPressed: _translatingText
-                            ? null
-                            : () async {
-                                final text = _textInputController.text.trim();
-                                if (text.isEmpty) return;
-                                setState(() {
-                                  _translatingText = true;
-                                  _textTranslationResult = null;
-                                });
-                                try {
-                                  final tr = await ref
-                                      .read(translationServiceProvider)
-                                      .translate(text);
-                                  setState(() => _textTranslationResult = tr);
-                                } catch (e) {
-                                  _toast('Ошибка перевода: $e');
-                                } finally {
-                                  setState(() => _translatingText = false);
-                                }
-                              },
-                        icon: const Icon(Icons.translate),
-                        label: Text(_translatingText
-                            ? (strings.isPl
-                                ? 'Tłumaczę…'
-                                : (strings.isUk ? 'Перекладаю…' : 'Перевожу…'))
-                            : (strings.isPl
-                                ? 'Przetłumacz'
-                                : (strings.isUk ? 'Перекласти' : 'Перевести'))),
+                      child: SizedBox(
+                        height: 44,
+                        child: FilledButton.tonalIcon(
+                          style: FilledButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          onPressed: () => _analyzeDocument(_textInputController.text),
+                          icon: const Icon(Icons.gavel_rounded, size: 18),
+                          label: Text(
+                            strings.isPl
+                                ? 'Analiza dokumentu'
+                                : (strings.isUk ? 'Аналіз документа' : 'Анализ документа'),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                    const SizedBox(width: 8),
-                    FilledButton.tonalIcon(
-                      onPressed: () => _analyzeDocument(_textInputController.text),
-                      icon: const Icon(Icons.gavel_rounded, size: 16),
-                      label: Text(strings.isPl
-                          ? 'Analiza'
-                          : (strings.isUk ? 'Аналіз' : 'Анализ')),
-                    ),
-                    const SizedBox(width: 8),
-                    FilledButton.tonalIcon(
-                      onPressed: () => _analyzeMenu(_textInputController.text),
-                      icon: const Icon(Icons.restaurant_menu, size: 16),
-                      label: Text(strings.isPl ? 'Menu' : 'Меню'),
-                    ),
-                    const SizedBox(width: 8),
-                    IconButton(
-                      tooltip: strings.isPl
-                          ? 'Wyczyść'
-                          : (strings.isUk ? 'Очистити' : 'Очистить'),
-                      onPressed: () {
-                        _textInputController.clear();
-                        setState(() => _textTranslationResult = null);
-                      },
-                      icon: Icon(Icons.clear, color: theme.colorScheme.onSurfaceVariant),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: SizedBox(
+                        height: 44,
+                        child: FilledButton.tonalIcon(
+                          style: FilledButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          onPressed: () => _analyzeMenu(_textInputController.text),
+                          icon: const Icon(Icons.restaurant_menu, size: 18),
+                          label: Text(
+                            strings.isPl
+                                ? 'Menu restauracji'
+                                : (strings.isUk ? 'Меню ресторану' : 'Меню ресторана'),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ),

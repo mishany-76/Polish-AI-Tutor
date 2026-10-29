@@ -593,8 +593,8 @@ class AppStrings {
       ? 'Życie codzienne'
       : (isUk ? 'Повсякденне життя' : 'Повседневная жизнь');
   String get professionsCategoryWork => isPl
-      ? 'Praca i zawód'
-      : (isUk ? 'Робота та фах' : 'Работа и профессия');
+      ? 'Praca i zawody'
+      : (isUk ? 'Робота та професії' : 'Работа и профессии');
 }
 
 

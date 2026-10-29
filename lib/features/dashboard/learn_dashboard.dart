@@ -582,7 +582,7 @@ class _LearnDashboardState extends ConsumerState<LearnDashboard> {
           ),
           const SizedBox(height: 12),
           Container(
-            height: 46,
+            height: 56,
             padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
               color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
@@ -615,38 +615,43 @@ class _LearnDashboardState extends ConsumerState<LearnDashboard> {
                               ]
                             : null,
                       ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.home_outlined,
-                            size: 18,
-                            color: _dialogCategoryIndex == 0
-                                ? Colors.white
-                                : theme.colorScheme.onSurfaceVariant,
-                          ),
-                          const SizedBox(width: 8),
-                          Flexible(
-                            child: Text(
-                              strings.professionsCategoryLife,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: _dialogCategoryIndex == 0
-                                    ? FontWeight.bold
-                                    : FontWeight.w500,
-                                color: _dialogCategoryIndex == 0
-                                    ? Colors.white
-                                    : theme.colorScheme.onSurface,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.home_outlined,
+                              size: 19,
+                              color: _dialogCategoryIndex == 0
+                                  ? Colors.white
+                                  : theme.colorScheme.onSurfaceVariant,
+                            ),
+                            const SizedBox(width: 6),
+                            Expanded(
+                              child: Text(
+                                strings.professionsCategoryLife,
+                                maxLines: 2,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  height: 1.15,
+                                  fontWeight: _dialogCategoryIndex == 0
+                                      ? FontWeight.bold
+                                      : FontWeight.w600,
+                                  color: _dialogCategoryIndex == 0
+                                      ? Colors.white
+                                      : theme.colorScheme.onSurface,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
+                const SizedBox(width: 4),
                 Expanded(
                   child: InkWell(
                     borderRadius: BorderRadius.circular(10),
@@ -669,34 +674,38 @@ class _LearnDashboardState extends ConsumerState<LearnDashboard> {
                               ]
                             : null,
                       ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.work_outline,
-                            size: 18,
-                            color: _dialogCategoryIndex == 1
-                                ? Colors.white
-                                : theme.colorScheme.onSurfaceVariant,
-                          ),
-                          const SizedBox(width: 8),
-                          Flexible(
-                            child: Text(
-                              strings.professionsCategoryWork,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: _dialogCategoryIndex == 1
-                                    ? FontWeight.bold
-                                    : FontWeight.w500,
-                                color: _dialogCategoryIndex == 1
-                                    ? Colors.white
-                                    : theme.colorScheme.onSurface,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.work_outline,
+                              size: 19,
+                              color: _dialogCategoryIndex == 1
+                                  ? Colors.white
+                                  : theme.colorScheme.onSurfaceVariant,
+                            ),
+                            const SizedBox(width: 6),
+                            Expanded(
+                              child: Text(
+                                strings.professionsCategoryWork,
+                                maxLines: 2,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  height: 1.15,
+                                  fontWeight: _dialogCategoryIndex == 1
+                                      ? FontWeight.bold
+                                      : FontWeight.w600,
+                                  color: _dialogCategoryIndex == 1
+                                      ? Colors.white
+                                      : theme.colorScheme.onSurface,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),

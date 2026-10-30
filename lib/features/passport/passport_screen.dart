@@ -3,9 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/achievements/achievement_service.dart';
+import '../../core/di/providers.dart';
 import '../../core/localization/app_strings.dart';
 import '../../core/theme/app_theme.dart';
 import '../onboarding/user_profile.dart';
+import '../review/review_screen.dart';
 
 // Helper: get localized title/desc from Achievement based on lang
 String _achTitle(Achievement a, AppStrings s) {
@@ -260,13 +262,13 @@ class _PassportGrid extends ConsumerWidget {
           achievement: ach,
           isUnlocked: isUnlocked,
           strings: strings,
-          onTap: () => _showDetail(context, ach, isUnlocked, strings),
+          onTap: () => _showDetail(context, ref, ach, isUnlocked, strings),
         );
       },
     );
   }
 
-  void _showDetail(BuildContext context, Achievement ach, bool isUnlocked,
+  void _showDetail(BuildContext context, WidgetRef ref, Achievement ach, bool isUnlocked,
       AppStrings strings) {
     final title = _achTitle(ach, strings);
     final desc = _achDesc(ach, strings);
@@ -312,9 +314,33 @@ class _PassportGrid extends ConsumerWidget {
             onPressed: () => Navigator.pop(context),
             child: Text(strings.cancel),
           ),
+          FilledButton.icon(
+            icon: const Icon(Icons.arrow_forward_rounded, size: 16),
+            label: Text(strings.goToTask),
+            onPressed: () {
+              Navigator.pop(context);
+              _handleAchievementAction(context, ref, ach.id);
+            },
+          ),
         ],
       ),
     );
+  }
+
+  void _handleAchievementAction(BuildContext context, WidgetRef ref, String achId) {
+    if (achId.startsWith('mastered_')) {
+      ReviewScreen.show(context);
+    } else if (achId.startsWith('words_') || achId == 'first_word') {
+      ref.read(currentTabProvider.notifier).setTab(2);
+      Navigator.of(context).popUntil((route) => route.isFirst);
+    } else if (achId == 'first_scan') {
+      ref.read(currentTabProvider.notifier).setTab(1);
+      Navigator.of(context).popUntil((route) => route.isFirst);
+    } else {
+      // dialogs, quizzes, streaks, passport_complete
+      ref.read(currentTabProvider.notifier).setTab(0);
+      Navigator.of(context).popUntil((route) => route.isFirst);
+    }
   }
 }
 

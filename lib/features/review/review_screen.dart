@@ -12,6 +12,14 @@ import '../../core/srs/sm2.dart';
 class ReviewScreen extends ConsumerStatefulWidget {
   const ReviewScreen({super.key});
 
+  static Future<void> show(BuildContext context) {
+    return Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => const ReviewScreen(),
+      ),
+    );
+  }
+
   @override
   ConsumerState<ReviewScreen> createState() => _ReviewScreenState();
 }

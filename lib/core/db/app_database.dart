@@ -284,6 +284,30 @@ class AppDatabase extends _$AppDatabase {
   /// Очистить весь словарь пользователя (удалить все сохраненные слова).
   Future<int> deleteAllWords() => delete(words).go();
 
+  /// Восстановление слова из резервной копии (сохраняя точные SM-2 метрики)
+  Future<void> restoreWord(Word word) async {
+    await into(words).insertOnConflictUpdate(WordsCompanion(
+      lemma: Value(word.lemma),
+      surfaceForm: Value(word.surfaceForm),
+      pos: Value(word.pos),
+      gender: Value(word.gender),
+      translationUk: Value(word.translationUk),
+      translationRu: Value(word.translationRu),
+      examplePl: Value(word.examplePl),
+      exampleTr: Value(word.exampleTr),
+      note: Value(word.note),
+      isFalseFriend: Value(word.isFalseFriend),
+      source: Value(word.source),
+      createdAt: Value(word.createdAt),
+      easeFactor: Value(word.easeFactor),
+      intervalDays: Value(word.intervalDays),
+      reps: Value(word.reps),
+      lapses: Value(word.lapses),
+      dueAt: Value(word.dueAt),
+      lastReviewAt: Value(word.lastReviewAt),
+    ));
+  }
+
   /// Отложить очередь слов на завтра (очистить очередь повторений на сегодня).
   Future<int> deferDueWordsToTomorrow() async {
     final tomorrow = DateTime.now().add(const Duration(days: 1));

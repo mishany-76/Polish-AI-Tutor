@@ -5,7 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/achievements/achievement_service.dart';
 import '../../core/ai_client/ai_client.dart';
 import '../../core/di/providers.dart';
+import '../../core/localization/app_strings.dart';
 import '../../core/settings/app_settings.dart';
+import '../dictation/dictation_screen.dart';
+import '../dictation/dictation_service.dart';
 import 'drill_progress_service.dart';
 import 'quiz_builders.dart';
 
@@ -32,6 +35,7 @@ class QuizScreen extends ConsumerStatefulWidget {
 
 class _QuizScreenState extends ConsumerState<QuizScreen> {
   late List<QuizQuestion> _currentQuestions;
+  final List<QuizQuestion> _wrongQuestions = [];
   int _round = 1;
   int _index = 0;
   int _score = 0;
@@ -159,6 +163,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
       HapticFeedback.lightImpact();
     } else {
       HapticFeedback.mediumImpact();
+      _wrongQuestions.add(_q);
     }
     setState(() {
       _picked = i;
@@ -202,6 +207,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
       _round++;
       _index = 0;
       _score = 0;
+      _wrongQuestions.clear();
       _picked = null;
       _showTranslation = false;
       _cachedTranslation = null;
@@ -341,6 +347,49 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                 style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),
+            if (_wrongQuestions.isNotEmpty) ...[
+              const SizedBox(height: 10),
+              OutlinedButton.icon(
+                icon: const Icon(Icons.bookmark_add_outlined, size: 18),
+                label: Text(ref.watch(appStringsProvider).addMistakesToDict),
+                onPressed: () async {
+                  final db = ref.read(databaseProvider);
+                  int added = 0;
+                  for (final w in _wrongQuestions) {
+                    final term = w.speakText ?? (w.options.isNotEmpty ? w.options[w.correctIndex] : '');
+                    if (term.isNotEmpty) {
+                      final ok = await db.addScanWord(
+                        form: term,
+                        translation: w.explanation,
+                        uk: isUk,
+                      );
+                      if (ok) added++;
+                    }
+                  }
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          isUk
+                              ? '📥 Додано $added слів з помилками до вашого словника!'
+                              : '📥 Добавлено $added слов с ошибками в ваш словарь!',
+                        ),
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                  }
+                },
+              ),
+              const SizedBox(height: 8),
+              OutlinedButton.icon(
+                icon: const Icon(Icons.spellcheck, size: 18),
+                label: Text(ref.watch(appStringsProvider).trainInDictation),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  DictationScreen.show(context, mode: DictationMode.myDeck);
+                },
+              ),
+            ],
             const SizedBox(height: 12),
             OutlinedButton(
               onPressed: () => Navigator.of(context).pop(),

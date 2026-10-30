@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:polish_ai_tutor/core/achievements/achievement_service.dart';
 import 'package:polish_ai_tutor/core/ai_client/ai_client.dart';
+import 'package:polish_ai_tutor/core/backup/backup_service.dart';
 import 'package:polish_ai_tutor/core/db/app_database.dart';
 import 'package:polish_ai_tutor/core/srs/sm2.dart';
 import 'package:polish_ai_tutor/features/onboarding/user_profile.dart';

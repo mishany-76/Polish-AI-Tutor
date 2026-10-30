@@ -709,6 +709,52 @@ class AppStrings {
   String get primerBadge => isPl
       ? 'KROK ZEROWY • OD ZERA'
       : (isUk ? 'КРОК НУЛЬОВИЙ • ВІД ЗЕРО' : 'ШАГ НУЛЕВОЙ • С НУЛЯ');
+
+  // --- Резервное копирование (Backup & Restore) ---
+  String get backupSectionTitle => isPl
+      ? 'Kopia zapasowa i przywracanie'
+      : (isUk ? 'Резервне копіювання та відновлення' : 'Резервное копирование и восстановление');
+  String get backupSectionSub => isPl
+      ? 'Zapisz całą bazę słów, osiągnięć i ustawień do pliku lub przywróć ją na nowym telefonie.'
+      : (isUk
+          ? 'Збережіть базу слів, досягнень та налаштувань у файл або відновіть її на новому телефоні.'
+          : 'Сохраните базу слов, достижений и настроек в файл или восстановите её на новом телефоне.');
+  String get exportBackupBtn => isPl
+      ? 'Utwórz kopię zapasową (.json)'
+      : (isUk ? 'Створити резервну копію (.json)' : 'Создать резервную копию (.json)');
+  String get importBackupBtn => isPl
+      ? 'Przywróć z kopii (.json)'
+      : (isUk ? 'Відновити з копії (.json)' : 'Восстановить из копии (.json)');
+  String get backupExportSuccess => isPl
+      ? 'Kopia zapasowa została pomyślnie utworzona!'
+      : (isUk ? 'Резервну копію успішно створено!' : 'Резервная копия успешно создана!');
+  String backupImportSuccess(int words, int prefs) => isPl
+      ? 'Przywrócono $words słów oraz $prefs ustawień!'
+      : (isUk
+          ? 'Успішно відновлено $words слів та $prefs налаштувань!'
+          : 'Успешно восстановлено $words слов и $prefs параметров!');
+  String get confirmRestoreTitle => isPl
+      ? 'Przywrócić dane z pliku?'
+      : (isUk ? 'Відновити дані з файлу?' : 'Восстановить данные из файла?');
+  String get confirmRestoreBody => isPl
+      ? 'Wszystkie słowa i postępy z pliku kopii zostaną zsynchronizowane z Twoją aplikacją.'
+      : (isUk
+          ? 'Усі слова та прогрес із файлу копії будуть синхронізовані з вашим додатком.'
+          : 'Все слова и прогресс из файла копии будут синхронизированы с вашим приложением.');
+
+  // --- Сквозные мостики (Deep Cross-Linking) ---
+  String get addMistakesToDict => isPl
+      ? 'Dodaj błędy do słownika'
+      : (isUk ? 'Додати помилки до словника' : 'Добавить ошибки в словарь');
+  String get trainInDictation => isPl
+      ? 'Poćwicz w dyktandzie'
+      : (isUk ? 'Потренувати в диктанті' : 'Потренировать в диктанте');
+  String get goToTask => isPl
+      ? 'Przejdź do zadania'
+      : (isUk ? 'Перейти до завдання' : 'Перейти к заданию');
+  String get startSm2Session => isPl
+      ? 'Powtórz słowa (SM-2)'
+      : (isUk ? 'Повторити слова (SM-2)' : 'Повторить слова (SM-2)');
 }
 
 

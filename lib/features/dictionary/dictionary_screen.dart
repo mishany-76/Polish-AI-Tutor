@@ -6,6 +6,9 @@ import '../../core/di/providers.dart';
 import '../../core/localization/app_strings.dart';
 import '../../core/settings/app_settings.dart';
 import '../scanner/translation_service.dart' show UiLang;
+import '../dictation/dictation_screen.dart';
+import '../dictation/dictation_service.dart';
+import '../review/review_screen.dart';
 
 import 'export_deck_service.dart';
 
@@ -490,6 +493,7 @@ class _DictionaryScreenState extends ConsumerState<DictionaryScreen> {
   Widget _buildCefrProgressCard(
     BuildContext context,
     int totalWords,
+    int dueCount,
     UiLang lang,
     AppStrings strings,
     ThemeData theme,
@@ -653,6 +657,44 @@ class _DictionaryScreenState extends ConsumerState<DictionaryScreen> {
                       ),
                   ],
                 ),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    Expanded(
+                      child: FilledButton.tonalIcon(
+                        style: FilledButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                          visualDensity: VisualDensity.compact,
+                        ),
+                        onPressed: () => ReviewScreen.show(context),
+                        icon: const Icon(Icons.psychology_outlined, size: 16),
+                        label: Text(
+                          strings.startSm2Session,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                          visualDensity: VisualDensity.compact,
+                        ),
+                        onPressed: () => DictationScreen.show(context, mode: DictationMode.myDeck),
+                        icon: const Icon(Icons.spellcheck, size: 16),
+                        label: Text(
+                          strings.trainInDictation,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(fontSize: 11.5),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
@@ -696,7 +738,7 @@ class _DictionaryScreenState extends ConsumerState<DictionaryScreen> {
       body: Column(
         children: [
           words.when(
-            data: (all) => _buildCefrProgressCard(context, all.length, lang, strings, theme),
+            data: (all) => _buildCefrProgressCard(context, all.length, ref.watch(dueCountProvider), lang, strings, theme),
             loading: () => const SizedBox.shrink(),
             error: (_, _) => const SizedBox.shrink(),
           ),

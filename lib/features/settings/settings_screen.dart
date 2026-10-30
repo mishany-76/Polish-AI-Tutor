@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/ai_client/ai_client.dart';
+import '../../core/backup/backup_service.dart';
 import '../../core/di/providers.dart';
 import '../../core/localization/app_strings.dart';
 import '../../core/settings/app_settings.dart';
@@ -30,6 +31,93 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   String? _testResult;
   bool _testOk = false;
   bool _checkingUpdate = false;
+  bool _isBackingUp = false;
+  bool _isRestoring = false;
+  final _backupService = const BackupService();
+
+  Future<void> _handleExportBackup() async {
+    final strings = ref.read(appStringsProvider);
+    final db = ref.read(databaseProvider);
+    setState(() => _isBackingUp = true);
+    try {
+      final res = await _backupService.exportBackup(db: db);
+      if (mounted && res.success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(strings.backupExportSuccess),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Ошибка экспорта: $e'),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isBackingUp = false);
+    }
+  }
+
+  Future<void> _handleImportBackup() async {
+    final strings = ref.read(appStringsProvider);
+    final db = ref.read(databaseProvider);
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(strings.confirmRestoreTitle),
+        content: Text(strings.confirmRestoreBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(strings.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(strings.importBackupBtn),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) return;
+
+    setState(() => _isRestoring = true);
+    try {
+      final res = await _backupService.importBackupFromFile(db: db);
+      if (mounted && res.success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(strings.backupImportSuccess(res.wordsCount, res.preferencesCount)),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      } else if (mounted && res.message != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(res.message!),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Ошибка восстановления: $e'),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isRestoring = false);
+    }
+  }
 
   @override
   void initState() {
@@ -434,6 +522,88 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ),
               trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 16),
               onTap: () => UserGuideScreen.show(context),
+            ),
+          ),
+          const SizedBox(height: 10),
+
+          // Карточка «Резервное копирование и восстановление данных»
+          Card(
+            elevation: 0,
+            color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+              side: BorderSide(color: theme.colorScheme.outlineVariant),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.backup_outlined, color: theme.colorScheme.primary),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              strings.backupSectionTitle,
+                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                            ),
+                            Text(
+                              strings.backupSectionSub,
+                              style: theme.textTheme.bodySmall,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 14),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: _isBackingUp ? null : _handleExportBackup,
+                          icon: _isBackingUp
+                              ? const SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: CircularProgressIndicator(strokeWidth: 2),
+                                )
+                              : const Icon(Icons.file_upload_outlined, size: 18),
+                          label: Text(
+                            strings.exportBackupBtn,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(fontSize: 12),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: FilledButton.tonalIcon(
+                          onPressed: _isRestoring ? null : _handleImportBackup,
+                          icon: _isRestoring
+                              ? const SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: CircularProgressIndicator(strokeWidth: 2),
+                                )
+                              : const Icon(Icons.file_download_outlined, size: 18),
+                          label: Text(
+                            strings.importBackupBtn,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(fontSize: 12),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
           const SizedBox(height: 10),

@@ -5,8 +5,97 @@ import '../../core/db/app_database.dart';
 import '../../core/di/providers.dart';
 import '../../core/localization/app_strings.dart';
 import '../../core/settings/app_settings.dart';
+import '../scanner/translation_service.dart' show UiLang;
 
 import 'export_deck_service.dart';
+
+class _CefrMilestone {
+  final String code;
+  final String titlePl;
+  final String titleUk;
+  final String titleRu;
+  final int minWords;
+  final int maxWords;
+  final Color color;
+
+  const _CefrMilestone({
+    required this.code,
+    required this.titlePl,
+    required this.titleUk,
+    required this.titleRu,
+    required this.minWords,
+    required this.maxWords,
+    required this.color,
+  });
+
+  String title(UiLang lang) {
+    switch (lang) {
+      case UiLang.pl:
+        return titlePl;
+      case UiLang.uk:
+        return titleUk;
+      case UiLang.ru:
+        return titleRu;
+    }
+  }
+}
+
+const _kCefrMilestones = [
+  _CefrMilestone(
+    code: 'A0',
+    titlePl: 'Absolutny początkujący',
+    titleUk: 'Початківець (Буквар)',
+    titleRu: 'Абсолютный новичок (Букварь)',
+    minWords: 0,
+    maxWords: 500,
+    color: Color(0xFF78909C),
+  ),
+  _CefrMilestone(
+    code: 'A1',
+    titlePl: 'Poziom podstawowy (przetrwanie)',
+    titleUk: 'Базовий (побут і виживання)',
+    titleRu: 'Базовый (быт и выживание)',
+    minWords: 500,
+    maxWords: 1500,
+    color: Color(0xFF43A047),
+  ),
+  _CefrMilestone(
+    code: 'A2',
+    titlePl: 'Podstawowy komunikatywny',
+    titleUk: 'Комунікативний (щоденне спілкування)',
+    titleRu: 'Коммуникативный (повседневное общение)',
+    minWords: 1500,
+    maxWords: 3000,
+    color: Color(0xFF1E88E5),
+  ),
+  _CefrMilestone(
+    code: 'B1',
+    titlePl: 'Średniozaawansowany (samodzielność)',
+    titleUk: 'Самостійний (робота і соціум)',
+    titleRu: 'Самостоятельный (работа и социум)',
+    minWords: 3000,
+    maxWords: 4500,
+    color: Color(0xFFFB8C00),
+  ),
+  _CefrMilestone(
+    code: 'B2',
+    titlePl: 'Średni wyższy (biegłość zawodowa)',
+    titleUk: 'Вільний робочий (професійне володіння)',
+    titleRu: 'Свободный рабочий (профессиональное владение)',
+    minWords: 4500,
+    maxWords: 6000,
+    color: Color(0xFF8E24AA),
+  ),
+  _CefrMilestone(
+    code: 'C1',
+    titlePl: 'Zaawansowany (biegłość akademicka)',
+    titleUk: 'Просунутий (повна вільність)',
+    titleRu: 'Продвинутый (полная беглость)',
+    minWords: 6000,
+    maxWords: -1,
+    color: Color(0xFFB81428),
+  ),
+];
 
 /// «Мой словарь»: все сохранённые слова, поиск и фильтр по статусу изучения.
 class DictionaryScreen extends ConsumerStatefulWidget {
@@ -288,11 +377,297 @@ class _DictionaryScreenState extends ConsumerState<DictionaryScreen> {
     }
   }
 
+  void _showCefrScaleModal(BuildContext context, UiLang lang, int totalWords) {
+    final theme = Theme.of(context);
+    String title;
+    String sub;
+    switch (lang) {
+      case UiLang.pl:
+        title = '📊 Skala słownictwa (CEFR)';
+        sub = 'Zasób 5 000–6 000 słów pokrywa ponad 95% codziennej, zawodowej i oficjalnej komunikacji w Polsce. Każde dodane słowo przybliża Cię do pełnej swobody!';
+        break;
+      case UiLang.uk:
+        title = '📊 Шкала словникового запасу (CEFR)';
+        sub = 'Запас 5 000–6 000 слів покриває понад 95% щоденного, професійного та офіційного спілкування в Польщі. Кожне нове слово наближає вас до вільного володіння!';
+        break;
+      case UiLang.ru:
+        title = '📊 Шкала словарного запаса (CEFR)';
+        sub = 'Запас 5 000–6 000 слов покрывает более 95% повседневного, профессионального и официального общения в Польше. Каждое новое слово приближает вас к свободной речи!';
+        break;
+    }
+
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      isScrollControlled: true,
+      builder: (sheetCtx) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                sub,
+                style: TextStyle(fontSize: 13, color: theme.colorScheme.onSurfaceVariant),
+              ),
+              const SizedBox(height: 16),
+              for (final m in _kCefrMilestones) ...[
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 4),
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: totalWords >= m.minWords && (m.maxWords == -1 || totalWords < m.maxWords)
+                        ? m.color.withValues(alpha: 0.15)
+                        : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.25),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: totalWords >= m.minWords && (m.maxWords == -1 || totalWords < m.maxWords)
+                          ? m.color
+                          : Colors.transparent,
+                      width: 1.5,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: m.color,
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          m.code,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              m.title(lang),
+                              style: TextStyle(
+                                fontSize: 13.5,
+                                fontWeight: FontWeight.w600,
+                                color: totalWords >= m.minWords && (m.maxWords == -1 || totalWords < m.maxWords)
+                                    ? m.color
+                                    : null,
+                              ),
+                            ),
+                            Text(
+                              m.maxWords == -1
+                                  ? '≥ ${m.minWords} słów'
+                                  : '${m.minWords} – ${m.maxWords} słów',
+                              style: TextStyle(fontSize: 11.5, color: theme.colorScheme.onSurfaceVariant),
+                            ),
+                          ],
+                        ),
+                      ),
+                      if (totalWords >= m.minWords && (m.maxWords == -1 || totalWords < m.maxWords))
+                        Icon(Icons.check_circle, color: m.color, size: 20),
+                    ],
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCefrProgressCard(
+    BuildContext context,
+    int totalWords,
+    UiLang lang,
+    AppStrings strings,
+    ThemeData theme,
+  ) {
+    _CefrMilestone current = _kCefrMilestones.first;
+    _CefrMilestone? next;
+    for (int i = 0; i < _kCefrMilestones.length; i++) {
+      final m = _kCefrMilestones[i];
+      if (totalWords >= m.minWords) {
+        current = m;
+        if (i + 1 < _kCefrMilestones.length) {
+          next = _kCefrMilestones[i + 1];
+        } else {
+          next = null;
+        }
+      }
+    }
+
+    final double progress;
+    final int wordsRemaining;
+    if (next != null) {
+      final span = next.minWords - current.minWords;
+      final gained = (totalWords - current.minWords).clamp(0, span);
+      progress = span > 0 ? (gained / span).clamp(0.0, 1.0) : 1.0;
+      wordsRemaining = (next.minWords - totalWords).clamp(0, next.minWords);
+    } else {
+      progress = 1.0;
+      wordsRemaining = 0;
+    }
+
+    String remainingText;
+    switch (lang) {
+      case UiLang.pl:
+        remainingText = next != null
+            ? 'Do poziomu ${next.code} brakuje $wordsRemaining słów'
+            : 'Osiągnięto poziom mistrzowski C1!';
+        break;
+      case UiLang.uk:
+        remainingText = next != null
+            ? 'До рівня ${next.code} залишилося $wordsRemaining слів'
+            : 'Досягнуто рівня вільного володіння C1!';
+        break;
+      case UiLang.ru:
+        remainingText = next != null
+            ? 'До уровня ${next.code} осталось $wordsRemaining слов'
+            : 'Достигнут уровень свободного владения C1!';
+        break;
+    }
+
+    String countLabel;
+    switch (lang) {
+      case UiLang.pl:
+        countLabel = '$totalWords słów';
+        break;
+      case UiLang.uk:
+        countLabel = '$totalWords слів';
+        break;
+      case UiLang.ru:
+        countLabel = '$totalWords слов';
+        break;
+    }
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+      child: Card(
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14),
+          side: BorderSide(
+            color: current.color.withValues(alpha: 0.35),
+            width: 1.2,
+          ),
+        ),
+        color: current.color.withValues(alpha: 0.06),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(14),
+          onTap: () => _showCefrScaleModal(context, lang, totalWords),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: current.color,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        current.code,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        current.title(lang),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      countLabel,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    Icon(
+                      Icons.info_outline,
+                      size: 16,
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child: LinearProgressIndicator(
+                    value: progress,
+                    minHeight: 6,
+                    backgroundColor: current.color.withValues(alpha: 0.2),
+                    valueColor: AlwaysStoppedAnimation<Color>(current.color),
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        remainingText,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 11.5,
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ),
+                    if (next != null)
+                      Text(
+                        'Cel: ${next.minWords}',
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                          color: next.color,
+                        ),
+                      ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final words = ref.watch(wordsProvider);
     final strings = ref.watch(appStringsProvider);
+    final lang = ref.watch(settingsProvider.select((s) => s.lang));
     final uk = ref.watch(settingsProvider.select((s) => s.isUk));
+    final theme = Theme.of(context);
 
     final filterLabels = {
       WordStatus.fresh: strings.filterFresh,
@@ -320,8 +695,13 @@ class _DictionaryScreenState extends ConsumerState<DictionaryScreen> {
       ),
       body: Column(
         children: [
+          words.when(
+            data: (all) => _buildCefrProgressCard(context, all.length, lang, strings, theme),
+            loading: () => const SizedBox.shrink(),
+            error: (_, _) => const SizedBox.shrink(),
+          ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+            padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
             child: TextField(
               onChanged: (v) => setState(() => _query = v.trim().toLowerCase()),
               decoration: InputDecoration(

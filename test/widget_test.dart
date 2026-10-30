@@ -692,20 +692,21 @@ void main() {
   });
 
   group('Professions & Work Scenarios (Польский для профессий)', () {
-    test('kAllProfessions содержит 5 ключевых направлений', () {
-      expect(kAllProfessions.length, 5);
+    test('kAllProfessions содержит 6 ключевых направлений', () {
+      expect(kAllProfessions.length, 6);
       final ids = kAllProfessions.map((p) => p.id).toList();
       expect(ids.contains('logistics'), isTrue);
       expect(ids.contains('construction'), isTrue);
       expect(ids.contains('gastronomy'), isTrue);
       expect(ids.contains('cleaning'), isTrue);
       expect(ids.contains('it_office'), isTrue);
+      expect(ids.contains('manufacturing'), isTrue);
     });
 
     test('Каждая профессия имеет словарный банк и примеры', () {
       for (final p in kAllProfessions) {
         expect(p.vocabulary.isNotEmpty, isTrue);
-        expect(p.vocabulary.length, greaterThanOrEqualTo(4));
+        expect(p.vocabulary.length, greaterThanOrEqualTo(30));
         for (final v in p.vocabulary) {
           expect(v.termPl.isNotEmpty, isTrue);
           expect(v.translationUk.isNotEmpty, isTrue);

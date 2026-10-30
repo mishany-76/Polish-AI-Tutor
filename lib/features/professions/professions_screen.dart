@@ -121,11 +121,325 @@ class _ProfessionsScreenState extends ConsumerState<ProfessionsScreen>
   }
 
   void _openRoleplay(SubScenario sub) {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => RoleplayScreen(
-          scenario: _selectedProfession.scenario,
-          subScenario: sub,
+    _showRoleplayLauncherSheet(context, sub);
+  }
+
+  void _showRoleplayLauncherSheet(BuildContext context, SubScenario initialSub) {
+    final theme = Theme.of(context);
+    final strings = ref.read(appStringsProvider);
+    final lang = ref.read(settingsProvider.select((s) => s.lang));
+
+    SubScenario selectedSub = initialSub;
+    DialogInitiator selectedInitiator = DialogInitiator.npcFirst;
+    RoleplayDifficulty selectedDifficulty = RoleplayDifficulty.life;
+
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder: (sheetCtx) {
+        return StatefulBuilder(
+          builder: (context, setSheetState) {
+            return DraggableScrollableSheet(
+              expand: false,
+              initialChildSize: 0.82,
+              maxChildSize: 0.95,
+              minChildSize: 0.5,
+              builder: (_, scrollCtrl) {
+                return ListView(
+                  controller: scrollCtrl,
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+                  children: [
+                    Row(
+                      children: [
+                        Text(_selectedProfession.emoji, style: const TextStyle(fontSize: 28)),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                _selectedProfession.scenario.title(lang),
+                                style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                              ),
+                              Text(_selectedProfession.scenario.level, style: theme.textTheme.bodySmall),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      strings.chooseSubSituation,
+                      style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
+                    for (final sub in _selectedProfession.scenario.subScenarios)
+                      InkWell(
+                        onTap: () => setSheetState(() => selectedSub = sub),
+                        borderRadius: BorderRadius.circular(12),
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(vertical: 4),
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: selectedSub.id == sub.id
+                                ? theme.colorScheme.primaryContainer.withValues(alpha: 0.4)
+                                : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: selectedSub.id == sub.id
+                                  ? theme.colorScheme.primary
+                                  : Colors.transparent,
+                              width: 1.5,
+                            ),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(
+                                    selectedSub.id == sub.id
+                                        ? Icons.radio_button_checked
+                                        : Icons.radio_button_off,
+                                    size: 18,
+                                    color: selectedSub.id == sub.id
+                                        ? theme.colorScheme.primary
+                                        : theme.colorScheme.onSurfaceVariant,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text(
+                                      sub.title(lang),
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 14,
+                                        color: selectedSub.id == sub.id
+                                            ? theme.colorScheme.primary
+                                            : null,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 26, top: 4),
+                                child: Text(
+                                  sub.description(lang),
+                                  style: TextStyle(fontSize: 12, color: theme.textTheme.bodySmall?.color),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    const SizedBox(height: 16),
+                    Text(
+                      strings.whoSpeaksFirst,
+                      style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: InkWell(
+                            onTap: () => setSheetState(() => selectedInitiator = DialogInitiator.npcFirst),
+                            borderRadius: BorderRadius.circular(12),
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 150),
+                              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                              decoration: BoxDecoration(
+                                color: selectedInitiator == DialogInitiator.npcFirst
+                                    ? theme.colorScheme.primaryContainer
+                                    : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.4),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: selectedInitiator == DialogInitiator.npcFirst
+                                      ? theme.colorScheme.primary
+                                      : Colors.transparent,
+                                  width: 1.5,
+                                ),
+                              ),
+                              alignment: Alignment.center,
+                              child: Text(
+                                strings.initiatorNpcFirst,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  color: selectedInitiator == DialogInitiator.npcFirst
+                                      ? theme.colorScheme.primary
+                                      : null,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: InkWell(
+                            onTap: () => setSheetState(() => selectedInitiator = DialogInitiator.userFirst),
+                            borderRadius: BorderRadius.circular(12),
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 150),
+                              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                              decoration: BoxDecoration(
+                                color: selectedInitiator == DialogInitiator.userFirst
+                                    ? theme.colorScheme.primaryContainer
+                                    : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.4),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: selectedInitiator == DialogInitiator.userFirst
+                                      ? theme.colorScheme.primary
+                                      : Colors.transparent,
+                                  width: 1.5,
+                                ),
+                              ),
+                              alignment: Alignment.center,
+                              child: Text(
+                                strings.initiatorUserFirst,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  color: selectedInitiator == DialogInitiator.userFirst
+                                      ? theme.colorScheme.primary
+                                      : null,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      strings.dialogueDifficulty,
+                      style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
+                    GridView.count(
+                      crossAxisCount: 2,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      crossAxisSpacing: 8,
+                      mainAxisSpacing: 8,
+                      childAspectRatio: 2.3,
+                      children: [
+                        _buildDifficultyOption(
+                          title: strings.difficultyCalm,
+                          sub: strings.difficultyCalmSub,
+                          isSelected: selectedDifficulty == RoleplayDifficulty.calm,
+                          theme: theme,
+                          onTap: () => setSheetState(() => selectedDifficulty = RoleplayDifficulty.calm),
+                        ),
+                        _buildDifficultyOption(
+                          title: strings.difficultyLife,
+                          sub: strings.difficultyLifeSub,
+                          isSelected: selectedDifficulty == RoleplayDifficulty.life,
+                          theme: theme,
+                          onTap: () => setSheetState(() => selectedDifficulty = RoleplayDifficulty.life),
+                        ),
+                        _buildDifficultyOption(
+                          title: strings.difficultyChallenge,
+                          sub: strings.difficultyChallengeSub,
+                          isSelected: selectedDifficulty == RoleplayDifficulty.challenge,
+                          theme: theme,
+                          onTap: () => setSheetState(() => selectedDifficulty = RoleplayDifficulty.challenge),
+                        ),
+                        _buildDifficultyOption(
+                          title: strings.difficultyRandom,
+                          sub: strings.difficultyRandomSub,
+                          isSelected: selectedDifficulty == RoleplayDifficulty.random,
+                          theme: theme,
+                          onTap: () => setSheetState(() => selectedDifficulty = RoleplayDifficulty.random),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    FilledButton.icon(
+                      icon: const Icon(Icons.play_arrow),
+                      label: Text(
+                        strings.startDialogBtn,
+                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                      ),
+                      style: FilledButton.styleFrom(
+                        backgroundColor: AppTheme.primaryCarmine,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                      ),
+                      onPressed: () {
+                        Navigator.of(sheetCtx).pop();
+                        Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (_) => RoleplayScreen(
+                              scenario: _selectedProfession.scenario,
+                              subScenario: selectedSub,
+                              initiator: selectedInitiator,
+                              difficulty: selectedDifficulty,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildDifficultyOption({
+    required String title,
+    required String sub,
+    required bool isSelected,
+    required ThemeData theme,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? theme.colorScheme.primaryContainer
+              : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.4),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isSelected ? theme.colorScheme.primary : Colors.transparent,
+            width: 1.5,
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: isSelected ? theme.colorScheme.primary : null,
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              sub,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 10,
+                color: theme.textTheme.bodySmall?.color,
+              ),
+            ),
+          ],
         ),
       ),
     );

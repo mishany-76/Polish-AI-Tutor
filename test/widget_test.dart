@@ -24,6 +24,9 @@ import 'package:polish_ai_tutor/features/scanner/word_analysis.dart';
 import 'package:polish_ai_tutor/features/dictation/dictation_item.dart';
 import 'package:polish_ai_tutor/features/dictation/dictation_service.dart';
 import 'package:polish_ai_tutor/features/dictionary/export_deck_service.dart';
+import 'package:polish_ai_tutor/features/guide/user_guide_data.dart';
+import 'package:polish_ai_tutor/features/guide/user_guide_screen.dart';
+import 'package:polish_ai_tutor/core/settings/app_settings.dart';
 import 'package:polish_ai_tutor/features/tutor/scenarios.dart';
 import 'package:polish_ai_tutor/features/wrapped/monthly_stats_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -886,6 +889,39 @@ void main() {
       expect(service.getLatestResult()?.id, equals('2'));
       expect(service.getBestResult()?.overallLevel, equals('B1'));
       expect(service.getBestResult()?.score, equals(85));
+    });
+  });
+
+  group('User Guide & Manual tests', () {
+    test('kAllGuideSections contains 12 comprehensive sections', () {
+      expect(kAllGuideSections.length, equals(12));
+      for (final sec in kAllGuideSections) {
+        expect(sec.id.isNotEmpty, isTrue);
+        expect(sec.titlePl.isNotEmpty, isTrue);
+        expect(sec.titleUk.isNotEmpty, isTrue);
+        expect(sec.titleRu.isNotEmpty, isTrue);
+        expect(sec.summaryPl.isNotEmpty, isTrue);
+        expect(sec.summaryUk.isNotEmpty, isTrue);
+        expect(sec.summaryRu.isNotEmpty, isTrue);
+        expect(sec.contentPl.length, greaterThan(100));
+        expect(sec.contentUk.length, greaterThan(100));
+        expect(sec.contentRu.length, greaterThan(100));
+      }
+    });
+
+    test('Localized getters return correct language string', () {
+      final first = kAllGuideSections.first;
+      expect(first.title(UiLang.pl), equals(first.titlePl));
+      expect(first.title(UiLang.uk), equals(first.titleUk));
+      expect(first.title(UiLang.ru), equals(first.titleRu));
+
+      expect(first.summary(UiLang.pl), equals(first.summaryPl));
+      expect(first.summary(UiLang.uk), equals(first.summaryUk));
+      expect(first.summary(UiLang.ru), equals(first.summaryRu));
+
+      expect(first.content(UiLang.pl), equals(first.contentPl));
+      expect(first.content(UiLang.uk), equals(first.contentUk));
+      expect(first.content(UiLang.ru), equals(first.contentRu));
     });
   });
 }

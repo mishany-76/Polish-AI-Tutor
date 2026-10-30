@@ -681,6 +681,22 @@ class AppStrings {
   String get examHistoryTitle => isPl
       ? 'Historia egzaminów'
       : (isUk ? 'Історія іспитів' : 'История экзаменов');
+
+  // --- Руководство пользователя (User Guide) ---
+  String get userGuideTitle => isPl
+      ? 'Podręcznik użytkownika'
+      : (isUk ? 'Керівництво користувача' : 'Руководство пользователя');
+  String get userGuideSubtitle => isPl
+      ? 'Kompletny przewodnik po wszystkich funkcjach aplikacji'
+      : (isUk
+          ? 'Повний довідник по всіх функціях додатку'
+          : 'Полный справочник по всем функциям приложения');
+  String get userGuideSearchHint => isPl
+      ? 'Szukaj w podręczniku…'
+      : (isUk ? 'Пошук по посібнику…' : 'Поиск по руководству…');
+  String get userGuideOpenSection => isPl
+      ? 'Otwórz funkcję w aplikacji'
+      : (isUk ? 'Відкрити у додатку' : 'Перейти в приложении');
 }
 
 

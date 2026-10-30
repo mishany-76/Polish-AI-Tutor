@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:package_info_plus/package_info_plus.dart';
@@ -22,7 +23,7 @@ class UpdateInfo {
 }
 
 /// Резервная константа на случай сбоя платформенного канала
-const fallbackAppVersion = "1.4.13";
+const fallbackAppVersion = "1.4.14";
 
 class AppUpdaterService {
   static const String _releasesApiUrl =
@@ -44,13 +45,15 @@ class AppUpdaterService {
   Future<UpdateInfo> checkForUpdate() async {
     final currentVer = await getCurrentVersion();
     try {
-      final response = await http.get(
-        Uri.parse(_releasesApiUrl),
-        headers: {
-          'Accept': 'application/vnd.github.v3+json',
-          'User-Agent': 'Polish-AI-Tutor-App',
-        },
-      ).timeout(const Duration(seconds: 10));
+      final response = await http
+          .get(
+            Uri.parse(_releasesApiUrl),
+            headers: {
+              'Accept': 'application/vnd.github.v3+json',
+              'User-Agent': 'Polish-AI-Tutor-App',
+            },
+          )
+          .timeout(const Duration(seconds: 10));
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as Map<String, dynamic>;
@@ -102,7 +105,9 @@ class AppUpdaterService {
     final rParts = remote.split('.').map((e) => int.tryParse(e) ?? 0).toList();
     final cParts = current.split('.').map((e) => int.tryParse(e) ?? 0).toList();
 
-    final maxLen = rParts.length > cParts.length ? rParts.length : cParts.length;
+    final maxLen = rParts.length > cParts.length
+        ? rParts.length
+        : cParts.length;
     for (int i = 0; i < maxLen; i++) {
       final r = i < rParts.length ? rParts[i] : 0;
       final c = i < cParts.length ? cParts[i] : 0;

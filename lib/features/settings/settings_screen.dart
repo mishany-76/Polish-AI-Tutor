@@ -11,6 +11,7 @@ import '../../core/theme/app_theme.dart';
 import '../onboarding/onboarding_screen.dart';
 import '../onboarding/user_profile.dart';
 import '../scanner/translation_service.dart';
+import '../guide/user_guide_screen.dart';
 
 /// Настройки: язык подсказок, блок «ИИ-Шлюз» (OmniRoute/CLIProxy), очистка кэша.
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -406,6 +407,36 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           const SizedBox(height: 28),
           Text(strings.aboutAppTitle, style: theme.textTheme.titleMedium),
           const SizedBox(height: 8),
+          Card(
+            elevation: 0,
+            color: theme.colorScheme.primaryContainer.withValues(alpha: 0.25),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+              side: BorderSide(color: theme.colorScheme.primary.withValues(alpha: 0.3)),
+            ),
+            child: ListTile(
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              leading: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primary.withValues(alpha: 0.15),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(Icons.menu_book_rounded, color: theme.colorScheme.primary),
+              ),
+              title: Text(
+                strings.userGuideTitle,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              subtitle: Text(
+                strings.userGuideSubtitle,
+                style: theme.textTheme.bodySmall,
+              ),
+              trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 16),
+              onTap: () => UserGuideScreen.show(context),
+            ),
+          ),
+          const SizedBox(height: 10),
           Card(
             elevation: 0,
             color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),

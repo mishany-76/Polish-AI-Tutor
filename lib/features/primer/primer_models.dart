@@ -242,3 +242,55 @@ class NumberBuilderHelper {
     return parts.join(' ');
   }
 }
+
+
+/// Элемент тренажёра-викторины первоклассника (без визуальных подсказок)
+class PrimerQuizItem {
+  final String word;
+  final String masked;
+  final String meaningUk;
+  final String meaningRu;
+  final String meaningPl;
+  final String emoji;
+  final List<String> options;
+  final String correct;
+  final String noteUk;
+  final String noteRu;
+  final String notePl;
+
+  const PrimerQuizItem({
+    required this.word,
+    required this.masked,
+    required this.meaningUk,
+    required this.meaningRu,
+    required this.meaningPl,
+    required this.emoji,
+    required this.options,
+    required this.correct,
+    required this.noteUk,
+    required this.noteRu,
+    required this.notePl,
+  });
+
+  String meaning(UiLang lang) {
+    switch (lang) {
+      case UiLang.pl:
+        return meaningPl;
+      case UiLang.uk:
+        return meaningUk;
+      case UiLang.ru:
+        return meaningRu;
+    }
+  }
+
+  String note(UiLang lang) {
+    switch (lang) {
+      case UiLang.pl:
+        return notePl;
+      case UiLang.uk:
+        return noteUk;
+      case UiLang.ru:
+        return noteRu;
+    }
+  }
+}

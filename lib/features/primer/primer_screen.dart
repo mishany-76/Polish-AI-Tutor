@@ -38,6 +38,9 @@ class _PrimerScreenState extends ConsumerState<PrimerScreen>
   // Для вкладки игр
   int _quizScore = 0;
   int _currentQuizIdx = 0;
+  bool _hasAnswered = false;
+  bool _wasAnswerCorrect = false;
+  String? _selectedOption;
   // 
   @override
   void initState() {
@@ -117,17 +120,82 @@ class _PrimerScreenState extends ConsumerState<PrimerScreen>
             },
           ),
         ],
-        bottom: TabBar(
-          controller: _tabCtrl,
-          isScrollable: true,
-          tabAlignment: TabAlignment.start,
-          labelPadding: const EdgeInsets.symmetric(horizontal: 14),
-          tabs: [
-            Tab(icon: const Icon(Icons.spellcheck), text: isPl ? 'Alfabet' : (isUk ? 'Абетка' : 'Азбука')),
-            Tab(icon: const Icon(Icons.pin), text: isPl ? 'Liczby 0-1000' : (isUk ? 'Числа 0-1000' : 'Числа 0-1000')),
-            Tab(icon: const Icon(Icons.grid_view), text: isPl ? '250 Słów' : (isUk ? '250 Слів' : '250 Слов')),
-            Tab(icon: const Icon(Icons.sports_esports), text: isPl ? 'Trening' : (isUk ? 'Тренінг' : 'Тренинг')),
-          ],
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(58),
+          child: TabBar(
+            controller: _tabCtrl,
+            isScrollable: false,
+            labelPadding: const EdgeInsets.symmetric(horizontal: 2),
+            indicatorSize: TabBarIndicatorSize.tab,
+            tabs: [
+              Tab(
+                height: 56,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.spellcheck, size: 20),
+                    const SizedBox(height: 3),
+                    Text(
+                      isPl ? 'Alfabet' : (isUk ? 'Абетка' : 'Азбука'),
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
+                    ),
+                  ],
+                ),
+              ),
+              Tab(
+                height: 56,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.pin, size: 20),
+                    const SizedBox(height: 2),
+                    Text(
+                      isPl ? 'Liczby\n0-1000' : 'Числа\n0-1000',
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      style: const TextStyle(fontSize: 10.5, height: 1.05, fontWeight: FontWeight.w600),
+                    ),
+                  ],
+                ),
+              ),
+              Tab(
+                height: 56,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.grid_view, size: 20),
+                    const SizedBox(height: 2),
+                    Text(
+                      isPl ? '250\nsłów' : (isUk ? '250\nслів' : '250\nслов'),
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      style: const TextStyle(fontSize: 10.5, height: 1.05, fontWeight: FontWeight.w600),
+                    ),
+                  ],
+                ),
+              ),
+              Tab(
+                height: 56,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.sports_esports, size: 20),
+                    const SizedBox(height: 3),
+                    Text(
+                      isPl ? 'Trening' : (isUk ? 'Тренінг' : 'Тренинг'),
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
       body: TabBarView(
@@ -701,20 +769,10 @@ class _PrimerScreenState extends ConsumerState<PrimerScreen>
     final isUk = lang == UiLang.uk;
     final isPl = lang == UiLang.pl;
 
-    // Простые пары на различение
-    final soundPairs = [
-      {'prompt': 'Śnieg', 'options': ['Ś', 'SZ'], 'correct': 'Ś', 'note': 'М\'який шелест [сь/шь] перед n'},
-      {'prompt': 'Szkoła', 'options': ['Ś', 'SZ'], 'correct': 'SZ', 'note': 'Твердий звук [ш]'},
-      {'prompt': 'Czas', 'options': ['Ć', 'CZ'], 'correct': 'CZ', 'note': 'Твердий звук [ч]'},
-      {'prompt': 'Ćma', 'options': ['Ć', 'CZ'], 'correct': 'Ć', 'note': 'М\'який звук [чь] з посмішкою'},
-      {'prompt': 'Żona', 'options': ['Ż', 'Ź'], 'correct': 'Ż', 'note': 'Твердий звук [ж]'},
-      {'prompt': 'Źle', 'options': ['Ż', 'Ź'], 'correct': 'Ź', 'note': 'М\'який ніжний звук [зь/жь]'},
-      {'prompt': 'Łódź', 'options': ['Ł', 'L'], 'correct': 'Ł', 'note': 'Ł читається як [w]'},
-    ];
+    final items = kPrimerQuizItems;
+    final current = items[_currentQuizIdx % items.length];
 
-    final current = soundPairs[_currentQuizIdx % soundPairs.length];
-
-    return Padding(
+    return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -726,57 +784,116 @@ class _PrimerScreenState extends ConsumerState<PrimerScreen>
                 isPl ? '🎯 Trening ucha' : (isUk ? '🎯 Фонетичний тир' : '🎯 Фонетический тир'),
                 style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
-              Chip(
-                label: Text(
-                  '${isPl ? 'Wynik' : (isUk ? 'Рахунок' : 'Счёт')}: $_quizScore',
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.surfaceContainerHighest,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      '${_currentQuizIdx + 1} / ${items.length}',
+                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Chip(
+                    label: Text(
+                      '${isPl ? 'Wynik' : (isUk ? 'Рахунок' : 'Счёт')}: $_quizScore',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           Text(
             isPl
-                ? 'Posłuchaj słowa i wybierz właściwy dźwięk:'
+                ? 'Posłuchaj wymowy i odgadnij brakującą literę lub dwuznak:'
                 : (isUk
-                    ? 'Послухайте слово та виберіть правильну літеру/диграф:'
-                    : 'Послушайте слово и выберите правильную букву/диграф:'),
-            style: theme.textTheme.bodyMedium,
+                    ? 'Послухайте вимову та відгадайте пропущену літеру або диграф:'
+                    : 'Послушайте произношение и отгадайте пропущенную букву или диграф:'),
+            style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey.shade700),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 18),
 
-          // Карточка вопроса
+          // Карточка вопроса (БЕЗ подсказок, со скрытой буквой и переводом)
           Card(
             elevation: 2,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 16),
+              padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
               child: Column(
                 children: [
                   IconButton.filled(
-                    iconSize: 36,
+                    iconSize: 42,
                     icon: const Icon(Icons.volume_up),
-                    onPressed: () => _speak(current['prompt'] as String),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    current['prompt'] as String,
-                    style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+                    onPressed: () => _speak(current.word),
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    isPl ? 'Kliknij głośnik, aby odsłuchać ponownie' : (isUk ? 'Натисніть динамік для повтору' : 'Нажмите динамик для повтора'),
-                    style: theme.textTheme.bodySmall,
+                    isPl
+                        ? 'Kliknij, aby posłuchać wymowy'
+                        : (isUk ? 'Натисніть для прослуховування' : 'Нажмите для прослушивания'),
+                    style: TextStyle(fontSize: 11, color: Colors.grey.shade600),
+                  ),
+                  const SizedBox(height: 16),
+                  // Замаскированное слово крупным шрифтом
+                  Text(
+                    _hasAnswered ? current.word : current.masked,
+                    style: TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 2,
+                      color: _hasAnswered
+                          ? (_wasAnswerCorrect ? Colors.green.shade700 : Colors.red.shade700)
+                          : theme.colorScheme.onSurface,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  // Перевод слова и эмодзи
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.primary.withValues(alpha: 0.08),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      '${current.emoji} ${current.meaning(lang)}',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: theme.colorScheme.primary,
+                      ),
+                    ),
                   ),
                 ],
               ),
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 20),
 
           // Варианты ответов
           Row(
-            children: (current['options'] as List<String>).map((opt) {
+            children: current.options.map((opt) {
+              final isSelected = _selectedOption == opt;
+              final isCorrectOpt = opt == current.correct;
+
+              Color? btnBg;
+              Color borderCol = theme.colorScheme.primary;
+
+              if (_hasAnswered) {
+                if (isCorrectOpt) {
+                  btnBg = Colors.green.withValues(alpha: 0.2);
+                  borderCol = Colors.green;
+                } else if (isSelected && !_wasAnswerCorrect) {
+                  btnBg = Colors.red.withValues(alpha: 0.2);
+                  borderCol = Colors.red;
+                }
+              }
+
               return Expanded(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 6),
@@ -784,28 +901,36 @@ class _PrimerScreenState extends ConsumerState<PrimerScreen>
                     height: 56,
                     child: OutlinedButton(
                       style: OutlinedButton.styleFrom(
+                        backgroundColor: btnBg,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                        side: BorderSide(color: theme.colorScheme.primary, width: 2),
+                        side: BorderSide(color: borderCol, width: 2),
                       ),
-                      onPressed: () {
-                        final isCorrect = opt == current['correct'];
-                        setState(() {
-                          //                           if (isCorrect) _quizScore++;
-                          _currentQuizIdx++;
-                        });
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            backgroundColor: isCorrect ? Colors.green : Colors.red,
-                            content: Text(isCorrect
-                                ? (isUk ? 'Правильно! 🎉 ${current['note']}' : 'Верно! 🎉 ${current['note']}')
-                                : (isUk ? 'Помилка! Правильно: ${current['correct']}' : 'Ошибка! Правильно: ${current['correct']}')),
-                            duration: const Duration(milliseconds: 1500),
+                      onPressed: _hasAnswered
+                          ? null
+                          : () {
+                              final isCorrect = opt == current.correct;
+                              setState(() {
+                                _hasAnswered = true;
+                                _selectedOption = opt;
+                                _wasAnswerCorrect = isCorrect;
+                                if (isCorrect) _quizScore++;
+                              });
+                            },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          if (_hasAnswered && isCorrectOpt) ...[
+                            const Icon(Icons.check_circle, color: Colors.green, size: 20),
+                            const SizedBox(width: 6),
+                          ] else if (_hasAnswered && isSelected && !_wasAnswerCorrect) ...[
+                            const Icon(Icons.cancel, color: Colors.red, size: 20),
+                            const SizedBox(width: 6),
+                          ],
+                          Text(
+                            opt,
+                            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                           ),
-                        );
-                      },
-                      child: Text(
-                        opt,
-                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        ],
                       ),
                     ),
                   ),
@@ -813,7 +938,83 @@ class _PrimerScreenState extends ConsumerState<PrimerScreen>
               );
             }).toList(),
           ),
-          const Spacer(),
+
+          // Блок объяснения и кнопка Далее при ответе
+          if (_hasAnswered) ...[
+            const SizedBox(height: 18),
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: _wasAnswerCorrect
+                    ? Colors.green.withValues(alpha: 0.1)
+                    : Colors.red.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(
+                  color: _wasAnswerCorrect
+                      ? Colors.green.withValues(alpha: 0.4)
+                      : Colors.red.withValues(alpha: 0.4),
+                  width: 1.5,
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        _wasAnswerCorrect ? Icons.check_circle : Icons.info_outline,
+                        color: _wasAnswerCorrect ? Colors.green.shade700 : Colors.red.shade700,
+                        size: 20,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        _wasAnswerCorrect
+                            ? (isUk ? 'Чудово! Правильно!' : (isPl ? 'Świetnie! Prawidłowo!' : 'Отлично! Верно!'))
+                            : (isUk ? 'Помилка! Правильна літера: ${current.correct}' : (isPl ? 'Błąd! Prawidłowa litera: ${current.correct}' : 'Ошибка! Правильная буква: ${current.correct}')),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                          color: _wasAnswerCorrect ? Colors.green.shade800 : Colors.red.shade800,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    current.note(lang),
+                    style: TextStyle(fontSize: 13, color: Colors.grey.shade800),
+                  ),
+                  const SizedBox(height: 14),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 48,
+                    child: ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                      icon: const Icon(Icons.arrow_forward),
+                      label: Text(
+                        isPl
+                            ? 'Następne słowo →'
+                            : (isUk ? 'Наступне слово →' : 'Следующее слово →'),
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _hasAnswered = false;
+                          _selectedOption = null;
+                          _currentQuizIdx = (_currentQuizIdx + 1) % items.length;
+                        });
+                        _speak(items[_currentQuizIdx % items.length].word);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+
+          const SizedBox(height: 24),
           OutlinedButton.icon(
             icon: const Icon(Icons.refresh),
             label: Text(isPl ? 'Zresetuj wynik' : (isUk ? 'Скинути рахунок' : 'Сбросить счёт')),
@@ -821,6 +1022,8 @@ class _PrimerScreenState extends ConsumerState<PrimerScreen>
               setState(() {
                 _quizScore = 0;
                 _currentQuizIdx = 0;
+                _hasAnswered = false;
+                _selectedOption = null;
               });
             },
           ),

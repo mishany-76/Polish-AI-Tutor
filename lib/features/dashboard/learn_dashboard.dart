@@ -311,7 +311,10 @@ class _LearnDashboardState extends ConsumerState<LearnDashboard> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
+                          Wrap(
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            spacing: 6,
+                            runSpacing: 4,
                             children: [
                               Text(
                                 strings.primerTitle,
@@ -320,7 +323,6 @@ class _LearnDashboardState extends ConsumerState<LearnDashboard> {
                                   fontSize: 15.5,
                                 ),
                               ),
-                              const SizedBox(width: 6),
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                 decoration: BoxDecoration(
@@ -330,9 +332,10 @@ class _LearnDashboardState extends ConsumerState<LearnDashboard> {
                                 child: Text(
                                   strings.primerBadge,
                                   style: const TextStyle(
-                                    fontSize: 9,
+                                    fontSize: 8.5,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
+                                    letterSpacing: 0.3,
                                   ),
                                 ),
                               ),
@@ -341,6 +344,8 @@ class _LearnDashboardState extends ConsumerState<LearnDashboard> {
                           const SizedBox(height: 3),
                           Text(
                             strings.primerSubtitle,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontSize: 12,
                               color: Colors.grey.shade700,

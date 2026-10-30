@@ -962,6 +962,21 @@ void main() {
         expect(brick.examplePl.isNotEmpty, isTrue);
       }
     });
+
+    test('kPrimerQuizItems contains balanced questions with masked words and no hints', () {
+      expect(kPrimerQuizItems.length, greaterThanOrEqualTo(15));
+      for (final q in kPrimerQuizItems) {
+        expect(q.word.isNotEmpty, isTrue);
+        expect(q.masked.contains('...'), isTrue, reason: 'Слово должно быть замаскировано без прямых подсказок');
+        expect(q.options.contains(q.correct), isTrue, reason: 'Варианты ответа должны содержать правильный');
+        expect(q.meaning(UiLang.pl).isNotEmpty, isTrue);
+        expect(q.meaning(UiLang.uk).isNotEmpty, isTrue);
+        expect(q.meaning(UiLang.ru).isNotEmpty, isTrue);
+        expect(q.note(UiLang.pl).isNotEmpty, isTrue);
+        expect(q.note(UiLang.uk).isNotEmpty, isTrue);
+        expect(q.note(UiLang.ru).isNotEmpty, isTrue);
+      }
+    });
   });
 }
 

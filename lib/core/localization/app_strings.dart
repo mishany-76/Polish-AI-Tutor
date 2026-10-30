@@ -755,6 +755,33 @@ class AppStrings {
   String get startSm2Session => isPl
       ? 'Powtórz słowa (SM-2)'
       : (isUk ? 'Повторити слова (SM-2)' : 'Повторить слова (SM-2)');
+
+  // --- Локальные напоминания (Daily Push Notifications) ---
+  String get notificationsCardTitle => isPl
+      ? '🔔 Codzienne przypomnienia'
+      : (isUk ? '🔔 Щоденні нагадування' : '🔔 Ежедневные напоминания');
+  String get notificationsCardDesc => isPl
+      ? 'Przypomnienia o powtórkach słówek SM-2 i utrzymaniu serii nauki.'
+      : (isUk
+          ? 'Нагадування про повторення слів SM-2 та збереження ударного режиму.'
+          : 'Напоминания о повторении слов SM-2 и сохранении ударного режима.');
+  String get notificationsToggleLabel => isPl
+      ? 'Włącz przypomnienia'
+      : (isUk ? 'Увімкнути нагадування' : 'Включить напоминания');
+  String get notificationsTimeLabel => isPl
+      ? 'Godzina przypomnienia'
+      : (isUk ? 'Час нагадування' : 'Время напоминания');
+  String get notificationsTestBtn => isPl
+      ? 'Wyślij testowe powiadomienie'
+      : (isUk ? 'Надіслати тестове сповіщення' : 'Отправить тестовое уведомление');
+  String get notificationsTestSentSnack => isPl
+      ? '🔔 Powiadomienie zostało wysłane!'
+      : (isUk ? '🔔 Сповіщення надіслано!' : '🔔 Уведомление отправлено!');
+  String get notificationsPermissionDenied => isPl
+      ? 'Brak uprawnień do powiadomień. Zezwól na nie w ustawieniach systemu.'
+      : (isUk
+          ? 'Немає дозволу на сповіщення. Дозвольте їх у налаштуваннях системи.'
+          : 'Нет разрешения на уведомления. Разрешите их в настройках системы.');
 }
 
 

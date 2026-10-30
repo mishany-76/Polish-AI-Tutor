@@ -5,9 +5,9 @@ import 'package:drift/drift.dart' hide isNull, isNotNull;
 import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:polish_ai_tutor/core/notifications/notification_service.dart';
 import 'package:polish_ai_tutor/core/achievements/achievement_service.dart';
 import 'package:polish_ai_tutor/core/ai_client/ai_client.dart';
-import 'package:polish_ai_tutor/core/backup/backup_service.dart';
 import 'package:polish_ai_tutor/core/db/app_database.dart';
 import 'package:polish_ai_tutor/core/srs/sm2.dart';
 import 'package:polish_ai_tutor/features/onboarding/user_profile.dart';
@@ -979,7 +979,52 @@ void main() {
         expect(q.note(UiLang.ru).isNotEmpty, isTrue);
       }
     });
+
+  group('NotificationService (Локальные пуш-напоминания)', () {
+    test('getNotificationContent for test notification across 3 languages', () {
+      final uk = NotificationService.getNotificationContent(language: UiLang.uk, isTest: true);
+      expect(uk.title.contains('Polish AI Tutor'), isTrue);
+      expect(uk.body.contains('активні'), isTrue);
+
+      final ru = NotificationService.getNotificationContent(language: UiLang.ru, isTest: true);
+      expect(ru.title.contains('Polish AI Tutor'), isTrue);
+      expect(ru.body.contains('активны'), isTrue);
+
+      final pl = NotificationService.getNotificationContent(language: UiLang.pl, isTest: true);
+      expect(pl.title.contains('Polish AI Tutor'), isTrue);
+      expect(pl.body.contains('aktywne'), isTrue);
+    });
+
+    test('getNotificationContent with due words mentions SM-2 and count', () {
+      final uk = NotificationService.getNotificationContent(language: UiLang.uk, dueWordsCount: 7);
+      expect(uk.body.contains('7'), isTrue);
+      expect(uk.body.contains('SM-2'), isTrue);
+
+      final ru = NotificationService.getNotificationContent(language: UiLang.ru, dueWordsCount: 12);
+      expect(ru.body.contains('12'), isTrue);
+      expect(ru.body.contains('SM-2'), isTrue);
+
+      final pl = NotificationService.getNotificationContent(language: UiLang.pl, dueWordsCount: 5);
+      expect(pl.body.contains('5'), isTrue);
+      expect(pl.body.contains('SM-2'), isTrue);
+    });
+
+    test('getNotificationContent with streak days encourages retention', () {
+      final uk = NotificationService.getNotificationContent(language: UiLang.uk, streakDays: 14);
+      expect(uk.title.contains('14'), isTrue);
+
+      final ru = NotificationService.getNotificationContent(language: UiLang.ru, streakDays: 10);
+      expect(ru.title.contains('10'), isTrue);
+
+      final pl = NotificationService.getNotificationContent(language: UiLang.pl, streakDays: 21);
+      expect(pl.title.contains('21'), isTrue);
+    });
+
+    test('Notification constants and channels are configured', () {
+      expect(NotificationService.reminderNotificationId, equals(1001));
+      expect(NotificationService.testNotificationId, equals(1002));
+      expect(NotificationService.channelId.isNotEmpty, isTrue);
+    });
+  });
   });
 }
-
-

@@ -4,6 +4,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/ai_client/ai_client.dart';
 import '../../core/backup/backup_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../core/notifications/notification_service.dart';
 import '../../core/di/providers.dart';
 import '../../core/localization/app_strings.dart';
 import '../../core/settings/app_settings.dart';
@@ -34,6 +36,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   bool _isBackingUp = false;
   bool _isRestoring = false;
   final _backupService = const BackupService();
+  bool _notifEnabled = true;
+  TimeOfDay _notifTime = const TimeOfDay(hour: 19, minute: 0);
+  bool _sendingTestNotif = false;
 
   Future<void> _handleExportBackup() async {
     final strings = ref.read(appStringsProvider);
@@ -126,7 +131,108 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     _url = TextEditingController(text: s.baseUrl);
     _key = TextEditingController(text: s.apiKey);
     _model = TextEditingController(text: s.model);
+    _loadNotificationSettings();
   }
+
+  Future<void> _loadNotificationSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (!mounted) return;
+    setState(() {
+      _notifEnabled = prefs.getBool(NotificationService.prefNotificationsEnabled) ?? true;
+      final h = prefs.getInt(NotificationService.prefNotificationsHour) ?? 19;
+      final m = prefs.getInt(NotificationService.prefNotificationsMinute) ?? 0;
+      _notifTime = TimeOfDay(hour: h, minute: m);
+    });
+  }
+
+  Future<void> _toggleNotifications(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    final strings = ref.read(appStringsProvider);
+    final lang = ref.read(settingsProvider.select((s) => s.lang));
+
+    if (value) {
+      final granted = await NotificationService.instance.requestPermission();
+      if (!granted && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(strings.notificationsPermissionDenied),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    }
+
+    await prefs.setBool(NotificationService.prefNotificationsEnabled, value);
+    if (!mounted) return;
+    setState(() => _notifEnabled = value);
+
+    if (value) {
+      await NotificationService.instance.scheduleDailyReminder(
+        hour: _notifTime.hour,
+        minute: _notifTime.minute,
+        language: lang,
+      );
+    } else {
+      await NotificationService.instance.cancelDailyReminder();
+    }
+  }
+
+  Future<void> _pickNotificationTime() async {
+    final strings = ref.read(appStringsProvider);
+    final lang = ref.read(settingsProvider.select((s) => s.lang));
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: _notifTime,
+      helpText: strings.notificationsTimeLabel,
+    );
+
+    if (picked != null && picked != _notifTime) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setInt(NotificationService.prefNotificationsHour, picked.hour);
+      await prefs.setInt(NotificationService.prefNotificationsMinute, picked.minute);
+      if (!mounted) return;
+      setState(() => _notifTime = picked);
+
+      if (_notifEnabled) {
+        await NotificationService.instance.scheduleDailyReminder(
+          hour: picked.hour,
+          minute: picked.minute,
+          language: lang,
+        );
+      }
+    }
+  }
+
+  Future<void> _sendTestNotification() async {
+    final strings = ref.read(appStringsProvider);
+    final lang = ref.read(settingsProvider.select((s) => s.lang));
+    setState(() => _sendingTestNotif = true);
+    try {
+      await NotificationService.instance.sendTestNotification(
+        language: lang,
+      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(strings.notificationsTestSentSnack),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: $e'),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _sendingTestNotif = false);
+    }
+  }
+
 
   @override
   void dispose() {
@@ -522,6 +628,106 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ),
               trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 16),
               onTap: () => UserGuideScreen.show(context),
+            ),
+          ),
+          const SizedBox(height: 10),
+
+          // Карточка «Ежедневные напоминания»
+          Card(
+            elevation: 0,
+            color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+              side: BorderSide(color: theme.colorScheme.outlineVariant),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.notifications_active_outlined, color: theme.colorScheme.primary),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              strings.notificationsCardTitle,
+                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                            ),
+                            Text(
+                              strings.notificationsCardDesc,
+                              style: theme.textTheme.bodySmall,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Switch(
+                        value: _notifEnabled,
+                        onChanged: _toggleNotifications,
+                      ),
+                    ],
+                  ),
+                  if (_notifEnabled) ...[
+                    const Divider(height: 20),
+                    Row(
+                      children: [
+                        Icon(Icons.access_time_rounded, size: 20, color: theme.colorScheme.onSurfaceVariant),
+                        const SizedBox(width: 8),
+                        Text(
+                          strings.notificationsTimeLabel,
+                          style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
+                        ),
+                        const Spacer(),
+                        InkWell(
+                          borderRadius: BorderRadius.circular(8),
+                          onTap: _pickNotificationTime,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: theme.colorScheme.primaryContainer.withValues(alpha: 0.4),
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: theme.colorScheme.primary.withValues(alpha: 0.3)),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  '${_notifTime.hour.toString().padLeft(2, '0')}:${_notifTime.minute.toString().padLeft(2, '0')}',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: theme.colorScheme.primary,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                                const SizedBox(width: 4),
+                                Icon(Icons.edit, size: 14, color: theme.colorScheme.primary),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        onPressed: _sendingTestNotif ? null : _sendTestNotification,
+                        icon: _sendingTestNotif
+                            ? const SizedBox(
+                                width: 16,
+                                height: 16,
+                                child: CircularProgressIndicator(strokeWidth: 2),
+                              )
+                            : const Icon(Icons.send_rounded, size: 16),
+                        label: Text(strings.notificationsTestBtn),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
             ),
           ),
           const SizedBox(height: 10),

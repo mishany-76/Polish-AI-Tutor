@@ -95,3 +95,4 @@ roadmap = roadmap.replace(old_table_rows, new_table_rows)
 with open(roadmap_path, "w", encoding="utf-8") as f:
     f.write(roadmap)
 print("Updated Polish_App_Commercial_Strategy_Roadmap.md successfully")
+

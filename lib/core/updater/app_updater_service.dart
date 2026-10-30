@@ -23,7 +23,7 @@ class UpdateInfo {
 }
 
 /// Резервная константа на случай сбоя платформенного канала
-const fallbackAppVersion = "1.5.4";
+const fallbackAppVersion = "1.5.5";
 
 class AppUpdaterService {
   static const String _releasesApiUrl =

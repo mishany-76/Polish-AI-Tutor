@@ -10,6 +10,7 @@ import '../episodes/episodes_screen.dart';
 import '../exam/exam_hub_screen.dart';
 import '../onboarding/onboarding_screen.dart';
 import '../passport/passport_screen.dart';
+import '../primer/primer_screen.dart';
 import '../professions/professions_screen.dart';
 import '../scanner/translation_service.dart' show UiLang;
 import '../wrapped/monthly_wrapped_screen.dart';
@@ -45,6 +46,8 @@ class _UserGuideScreenState extends ConsumerState<UserGuideScreen> {
 
   void _handleNavigation(String action) {
     switch (action) {
+      case 'primer':
+        PrimerScreen.show(context);
       case 'onboarding':
         Navigator.of(context).push(
           MaterialPageRoute<void>(

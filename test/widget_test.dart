@@ -25,8 +25,8 @@ import 'package:polish_ai_tutor/features/dictation/dictation_item.dart';
 import 'package:polish_ai_tutor/features/dictation/dictation_service.dart';
 import 'package:polish_ai_tutor/features/dictionary/export_deck_service.dart';
 import 'package:polish_ai_tutor/features/guide/user_guide_data.dart';
-import 'package:polish_ai_tutor/features/guide/user_guide_screen.dart';
-import 'package:polish_ai_tutor/core/settings/app_settings.dart';
+import 'package:polish_ai_tutor/features/primer/primer_models.dart';
+import 'package:polish_ai_tutor/features/primer/primer_data.dart';
 import 'package:polish_ai_tutor/features/tutor/scenarios.dart';
 import 'package:polish_ai_tutor/features/wrapped/monthly_stats_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -893,8 +893,8 @@ void main() {
   });
 
   group('User Guide & Manual tests', () {
-    test('kAllGuideSections contains 12 comprehensive sections', () {
-      expect(kAllGuideSections.length, equals(12));
+    test('kAllGuideSections contains 13 comprehensive sections including Primer', () {
+      expect(kAllGuideSections.length, equals(13));
       for (final sec in kAllGuideSections) {
         expect(sec.id.isNotEmpty, isTrue);
         expect(sec.titlePl.isNotEmpty, isTrue);
@@ -922,6 +922,45 @@ void main() {
       expect(first.content(UiLang.pl), equals(first.contentPl));
       expect(first.content(UiLang.uk), equals(first.contentUk));
       expect(first.content(UiLang.ru), equals(first.contentRu));
+    });
+  });
+
+  group('Polski Elementarz (Букварь A0) tests', () {
+    test('NumberBuilderHelper converts numbers to Polish words correctly', () {
+      expect(NumberBuilderHelper.toPolishWords(0), equals('zero'));
+      expect(NumberBuilderHelper.toPolishWords(1), equals('jeden'));
+      expect(NumberBuilderHelper.toPolishWords(10), equals('dziesięć'));
+      expect(NumberBuilderHelper.toPolishWords(15), equals('piętnaście'));
+      expect(NumberBuilderHelper.toPolishWords(42), equals('czterdzieści dwa'));
+      expect(NumberBuilderHelper.toPolishWords(100), equals('sto'));
+      expect(NumberBuilderHelper.toPolishWords(356), equals('trzysta pięćdziesiąt sześć'));
+      expect(NumberBuilderHelper.toPolishWords(748), equals('siedemset czterdzieści osiem'));
+      expect(NumberBuilderHelper.toPolishWords(1000), equals('tysiąc'));
+    });
+
+    test('kAllLettersAndSounds contains all letters, diacritics and digraphs', () {
+      expect(kAllLettersAndSounds.length, greaterThanOrEqualTo(35));
+      final diacritics = kAllLettersAndSounds.where((e) => e.isDiacritic).toList();
+      final digraphs = kAllLettersAndSounds.where((e) => e.isDigraph).toList();
+      expect(diacritics.length, equals(9));
+      expect(digraphs.length, equals(7));
+      for (final item in kAllLettersAndSounds) {
+        expect(item.letter.isNotEmpty, isTrue);
+        expect(item.soundTranscript.isNotEmpty, isTrue);
+        expect(item.exampleWord.isNotEmpty, isTrue);
+      }
+    });
+
+    test('kAllPrimerBricks contains valid words across 8 categories', () {
+      expect(kAllPrimerCategories.length, equals(8));
+      expect(kAllPrimerBricks.length, greaterThanOrEqualTo(100));
+      for (final brick in kAllPrimerBricks) {
+        expect(brick.polishWord.isNotEmpty, isTrue);
+        expect(brick.translationUk.isNotEmpty, isTrue);
+        expect(brick.translationRu.isNotEmpty, isTrue);
+        expect(brick.transcript.isNotEmpty, isTrue);
+        expect(brick.examplePl.isNotEmpty, isTrue);
+      }
     });
   });
 }

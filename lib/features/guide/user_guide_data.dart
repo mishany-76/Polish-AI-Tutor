@@ -65,6 +65,43 @@ class GuideSectionItem {
 
 /// База данных подробного руководства пользователя на трех языках
 const List<GuideSectionItem> kAllGuideSections = [
+  // 0. Польский Букварь
+  GuideSectionItem(
+    id: 'primer',
+    emoji: '🔤',
+    titlePl: '0. Polski Elementarz (Krok od zera A0)',
+    titleUk: '0. Польський Буквар (Крок з нуля A0)',
+    titleRu: '0. Польский Букварь (Шаг с нуля A0)',
+    summaryPl: 'Fonetyka, dwuznaki, liczby od 0 do 1000 i 250 pierwszych cegiełek słownictwa.',
+    summaryUk: 'Фонетика, диграфи, числа від 0 до 1000 та 250 перших цеглинок слів.',
+    summaryRu: 'Фонетика, диграфы, числа от 0 до 1000 и 250 первых кирпичиков слов.',
+    contentPl: '''### 🔤 Czym jest Polski Elementarz?
+To fundament nauki dla każdego, kto zaczyna od zupełnego zera. Pozwala przełamać strach przed polską pisownią, opanować miękkie i twarde głoski oraz zrozumieć logikę języka.
+
+### 🧩 4 kluczowe moduły Elementarza:
+1. **Alfabet i Dźwięki:** 32 litery, 9 znaków z kreskami i ogonkami (ą, ę, ć, ł, ń, ó, ś, ź, ż) oraz 7 dwuznaków (cz, sz, rz, ch, dz, dż, dź) z nagraniami audio i wskazówkami wymowy.
+2. **Żelazna zasada akcentu:** Akcent w języku polskim prawie ZAWSZE pada na przedostatnią sylabę!
+3. **Liczby od 0 do 1000:** Logiczna konstrukcja z przedrostkami i przyrostkami (-naście, -dziesiąt, -set) oraz interaktywny kalkulator słowny.
+4. **250 Pierwszych Cegiełek:** 8 witryn słownictwa przetrwania (Grzeczność, Pytania, Ludzie, Jedzenie, Miasto, Czas, Cechy, 15 kluczowych czasowników) z możliwością importu do własnego słownika SM-2!''',
+    contentUk: '''### 🔤 Що таке Польський Буквар (Elementarz)?
+Це фундаментальний крок для тих, хто починає вивчення польської мови з абсолютного нуля. Він знімає паніку перед шиплячими звуками та латинською графікою і пояснює прості базові правила читання.
+
+### 🧩 4 ключові модулі Букваря:
+1. **Звукова Абетка:** 32 літери, 9 знаків із діакритикою (ą, ć, ę, ł, ń, ó, ś, ź, ż) та 7 диграфів (cz, sz, rz, ch, dz, dż, dź) з кристально чистою озвучкою та мнемонічними асоціаціями.
+2. **Залізне правило наголосу:** У польській мові наголос майже ЗАВЖДИ падає на передостанній склад (ka-PU-sta, war-SZA-wa)!
+3. **Мега-лінійка чисел 0–1000:** Логічний конструктор чисел (-naście, -dziesiąt, -set) та інтерактивний калькулятор слів з озвучкою.
+4. **250 перших цеглинок:** 8 тематичних вітрин найнеобхідніших слів (Ввічливість, Питання, Сім'я, Їжа, Місто, Час, Кольори, 15 дієслів життя) з кнопкою додавання до персонального словника SM-2!''',
+    contentRu: '''### 🔤 Что такое Польский Букварь (Elementarz)?
+Это фундамент приложения для каждого, кто начинает учить польский язык с полного нуля. Он помогает понять «секретную логику» польского языка, научиться безошибочно читать и различать твёрдые и мягкие шипящие.
+
+### 🧩 4 ключевых модуля Букваря:
+1. **Звуковая Азбука:** 32 буквы алфавита, 9 знаков с диакритикой (ą, ć, ę, ł, ń, ó, ś, ź, ż) и 7 диграфов (cz, sz, rz, ch, dz, dż, dź) с чистой озвучкой каждого звука и подсказками положения губ.
+2. **Железное правило ударения:** Ударение в польском языке почти ВСЕГДА падает на предпоследний слог (ka-PU-sta, war-SZA-wa)!
+3. **Счётная линейка 0–1000:** Прозрачный математический конструктор чисел (-naście, -dziesiąt, -set) и интерактивный звуковой калькулятор.
+4. **250 кирпичиков языка:** 8 витрин выживания (вежливость, вопросы, семья, еда, транспорт, дни недели, базовые свойства и 15 глаголов бытия) с кнопкой пакетного импорта в личный словарь SM-2!''',
+    routeAction: 'primer',
+  ),
+
   // 1. Онбординг
   GuideSectionItem(
     id: 'onboarding',

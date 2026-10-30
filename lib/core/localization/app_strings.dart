@@ -697,6 +697,18 @@ class AppStrings {
   String get userGuideOpenSection => isPl
       ? 'Otwórz funkcję w aplikacji'
       : (isUk ? 'Відкрити у додатку' : 'Перейти в приложении');
+
+  String get primerTitle => isPl
+      ? 'Polski Elementarz (A0)'
+      : (isUk ? 'Польський Буквар (A0)' : 'Польский Букварь (A0)');
+  String get primerSubtitle => isPl
+      ? 'Dźwięki, liczby 0-1000 i 250 pierwszych słów'
+      : (isUk
+          ? 'Звуки, числа 0-1000 та 250 перших слів'
+          : 'Звуки, числа 0-1000 и 250 первых слов');
+  String get primerBadge => isPl
+      ? 'KROK ZEROWY • OD ZERA'
+      : (isUk ? 'КРОК НУЛЬОВИЙ • ВІД ЗЕРО' : 'ШАГ НУЛЕВОЙ • С НУЛЯ');
 }
 
 

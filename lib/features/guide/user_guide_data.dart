@@ -417,66 +417,72 @@ Wzorowane na Spotify Wrapped podsumowanie miesiąca, wyliczane w 100% lokalnie w
   GuideSectionItem(
     id: 'professions',
     emoji: '💼',
-    titlePl: '6. Hub «Polski w pracy i zawodzie»',
-    titleUk: '6. Хаб «Польська для професій»',
-    titleRu: '6. Хаб «Польский для профессий»',
-    summaryPl: '5 branż: Logistyka, Budownictwo, Gastronomia, Hotel/Opieka, IT/Biuro.',
-    summaryUk: '5 сфер: Логістика, Будівництво, Гастрономія, Готель/Догляд, IT/Офіс.',
-    summaryRu: '5 сфер: Логистика, Стройка, Гастрономия, Отель/Клининг, IT/Офис.',
-    contentPl: '''### 🏢 Profesjonalne moduły językowe:
-Sekcja stworzona z myślą o osobach pracujących lub planujących podjęcie pracy w Polsce. Obejmuje 5 wiodących sektorów:
+    titlePl: '6. Hub «Polski w pracy i zawodzie» (v1.5.3)',
+    titleUk: '6. Хаб «Польська для професій» (v1.5.3)',
+    titleRu: '6. Хаб «Польский для профессий» (v1.5.3)',
+    summaryPl: '6 branż (192 terminy): Produkcja, Logistyka, Budownictwo, Gastronomia, Opieka/Hotel, IT.',
+    summaryUk: '6 сфер (192 терміни): Заводи/Виробництво, Логістика, Будівництво, Гастрономія, Догляд, IT.',
+    summaryRu: '6 сфер (192 термина): Заводы/Производство, Логистика, Стройка, Гастрономия, Клининг, IT.',
+    contentPl: '''### 🏢 Profesjonalne moduły językowe (192 terminy):
+Sekcja stworzona z myślą o osobach pracujących lub planujących podjęcie pracy w Polsce. Obejmuje 6 wiodących sektorów po 32 praktyczne terminy:
 
-1. **🚚 Logistyka, Kierowcy i Magazyn:**
-   - Listy przewozowe CMR, rampa załadunkowa, wózki widłowe, tachograf, awizacja i kontrole ITD.
-2. **🏗️ Budownictwo i Wykończenia:**
+1. **🏭 Produkcja i Zakłady Przemysłowe (NOWOŚĆ v1.5.3):**
+   - Taśma/linia montażowa, brygadzista, kontrola jakości (QA), odrzut/brak, stop awaryjny, suwmiarka, norma akordowa, instruktaż BHP, nocki i nadgodziny.
+2. **🚚 Logistyka, Kierowcy i Magazyn:**
+   - Listy przewozowe CMR, rampa załadunkowa, wózki widłowe, tachograf, awizacja i kontrole drogowe ITD.
+3. **🏗️ Budownictwo i Wykończenia:**
    - Instruktaż BHP, rusztowania, szlifierki, gładź, wylewki, odbiór robót i zakupy w hurtowni budowlanej.
-3. **👩‍🍳 Gastronomia i Kuchnia:**
+4. **👩‍🍳 Gastronomia i Kuchnia:**
    - Wydawka dań, stoliki, kasy fiskalne, alergeny w menu, sanepid, obsługa gości restauracji.
-4. **🧹 Serwis Hotelowy, Pokoje i Opieka:**
+5. **🧹 Serwis Hotelowy, Pokoje i Opieka:**
    - Środki czystości, pościel, odkurzacze przemysłowe, dyżury, leki i opieka nad seniorami.
-5. **💻 IT i Praca Biurowa:**
+6. **💻 IT i Praca Biurowa:**
    - Widełki płacowe, umowy B2B, sprinty, daily, zgłaszanie zwolnień L4 i urlopów.
 
 ### 🛠️ Możliwości modułu:
-- Specjalistyczny słowniczek z transkrypcją i lektorem TTS.
-- Przycisk hurtowego dodania całej branży do osobistej talii słownika.
-- 15 dedykowanych scenariuszy dialogowych z symulacją rozmów z przełożonym lub współpracownikiem.''',
-    contentUk: '''### 🏢 Професійні мовні модулі:
-Розділ створений для українців та експатів, які працюють або влаштовуються на роботу в Польщі. Охоплює 5 ключових галузей:
+- 192 specjalistyczne hasła z pełną fonetyką i lektorem TTS.
+- Hurtowy eksport całej branży do osobistego słownika w 1 kliknięcie.
+- Konfigurator trudności dialogu: wybór inicjatora (kto zaczyna) oraz 4 poziomów (Spokojny, Życiowy, Wyzwanie, Losowy).''',
+    contentUk: '''### 🏢 Професійні мовні модулі (192 практичні терміни):
+Розділ створений для українців та експатів, які працюють або влаштовуються на роботу в Польщі. Охоплює 6 ключових галузей по 32 терміни:
 
-1. **🚚 Логістика, водії та склад:**
+1. **🏭 Виробництво та заводи (НОВЕ v1.5.3):**
+   - Робота на конвеєрі, інструктаж бригадира, контроль якості QA, брак/відбракування (odrzut), аварійна зупинка, норми виробітку та надгодини (nadgodziny).
+2. **🚚 Логістика, водії та склад:**
    - Накладні CMR, вантажні рампи, вилкові навантажувачі, тахографи, авізація та дорожній контроль інспекції ITD.
-2. **🏗️ Будівництво та ремонти:**
+3. **🏗️ Будівництво та ремонти:**
    - Інструктажі BHP (техніка безпеки), риштування, болгарки, шпаклівка, стяжки, прийом робіт бригадиром.
-3. **👩‍🍳 Гастрономія, ресторан та кухня:**
+4. **👩‍🍳 Гастрономія, ресторан та кухня:**
    - Видача страв, столики, касові чеки, алергени в меню, санепід, спілкування з гостями та кельнерами.
-4. **🧹 Готельний сервіс, клінінг та догляд:**
+5. **🧹 Готельний сервіс, клінінг та догляд:**
    - Засоби дезінфекції, постіль, графіки прибирання, ліки, тиск та чергування доглядальниці.
-5. **💻 IT та офісна робота:**
+6. **💻 IT та офісна робота:**
    - Зарплатні вилки, контракти B2B, планування спринтів, дейлі, оформлення лікарняних L4 та відпусток.
 
 ### 🛠️ Що можна робити:
 - Вивчати терміни з прикладами та прослуховуванням Google TTS.
 - Додавати всі слова професії до особистого словника в один дотик.
-- Проходити 15 вузькопрофільних ролевих діалогів з робочими NPC.''',
-    contentRu: '''### 🏢 Профессиональные языковые модули:
-Раздел разработан специально для экспатов, работающих или устраивающихся на работу в Польше. Охватывает 5 направлений:
+- Інтерактивна шторка запуску діалогів: вибір ініціатора розмови та 4 рівнів реалістичності (Спокійний, Життєвий, Виклик, Випадковий).''',
+    contentRu: '''### 🏢 Профессиональные языковые модули (192 практических термина):
+Раздел разработан специально для экспатов, работающих или устраивающихся на работу в Польше. Охватывает 6 направлений по 32 термина:
 
-1. **🚚 Логистика, водители и склад:**
+1. **🏭 Производство и заводы (НОВОЕ v1.5.3):**
+   - Конвейер, сборочная линия, бригадир, контроль качества QA, оформление брака, аварийная остановка, нормы выработки, сменный график и сверхурочные.
+2. **🚚 Логистика, водители и склад:**
    - Накладные CMR, погрузочные рампы, вилочные погрузчики, тахограф, авизация и дорожная инспекция ITD.
-2. **🏗️ Стройка и отделочные работы:**
+3. **🏗️ Стройка и отделочные работы:**
    - Инструктаж техники безопасности BHP, строительные леса, шлифмашинки, шпатлевка, стяжка, сдача объекта бригадиру.
-3. **👩‍🍳 Гастрономия, рестораны и кухня:**
+4. **👩‍🍳 Гастрономия, рестораны и кухня:**
    - Раздача заказов, чеки, кассы, аллергены в блюдах, санэпид, взаимодействие зала и кухни.
-4. **🧹 Отели, клининг и уход за пожилыми:**
+5. **🧹 Отели, клининг и уход за пожилыми:**
    - Профессиональная химия, смена белья, графики смен, приём лекарств, дежурства опекуна.
-5. **💻 IT и офисная деятельность:**
+6. **💻 IT и офисная деятельность:**
    - Вилки зарплат, контракты B2B, спринты, дейли, оформление электронных больничных L4 и отпусков.
 
 ### 🛠️ Функционал:
 - Словарные базы с реальными рабочими примерами и озвучкой TTS.
-- Пакетный импорт всей профессиональной лексики в личный словарь.
-- 15 специализированных диалогов с польскими коллегами и начальством.''',
+- Пакетный импорт всей профессиональной лексики в личный словарь в один клик.
+- Интерактивный запуск диалогов: выбор сложности (Спокойный, Жизненный, Вызов) и того, кто говорит первым.''',
     routeAction: 'professions',
   ),
 
@@ -722,51 +728,75 @@ Możesz powiększać zeskanowane dokumenty dwoma palcami aż do 6.0x lub podwój
   GuideSectionItem(
     id: 'dictionary',
     emoji: '📚',
-    titlePl: '11. Słownik i algorytm pamięci SM-2',
-    titleUk: '11. Словник та пам\'ять SM-2',
-    titleRu: '11. Словарь и память SM-2',
-    summaryPl: 'Krzywa zapominania, etapy nauki, eksport do Anki (.apkg/.tsv) i Quizlet.',
-    summaryUk: 'Крива забування, ступені вивчення, експорт в Anki (.apkg/.tsv) та Quizlet.',
-    summaryRu: 'Кривая забывания, ступени изучения, экспорт в Anki (.apkg/.tsv) и Quizlet.',
-    contentPl: '''### 🧠 Zasada działania algorytmu SM-2:
-Wszystkie słowa dodawane ze skanera, dialogów, serialu czy modułów zawodowych trafiają do Twojego osobistego słownika. Algorytm interwałowego powtarzania SM-2 dba o to, by słowa przeniosły się do pamięci długotrwałej.
+    titlePl: '11. Słownik, skala CEFR i algorytm SM-2 (v1.5.3)',
+    titleUk: '11. Словник, шкала CEFR та пам\'ять SM-2 (v1.5.3)',
+    titleRu: '11. Словарь, шкала CEFR и память SM-2 (v1.5.3)',
+    summaryPl: 'Skala CEFR (A0-C1), siatka ocen 2x2, interwały powtórek, eksport Anki/Quizlet.',
+    summaryUk: 'Шкала CEFR (A0-C1), сітка оцінок 2x2, терміни повернення, експорт Anki/Quizlet.',
+    summaryRu: 'Шкала CEFR (A0-C1), сетка оценок 2x2, сроки возврата слов, экспорт Anki/Quizlet.',
+    contentPl: '''### 📈 Skala słownictwa CEFR (A0–C1):
+W górnej części słownika widoczny jest wskaźnik Twojego aktualnego poziomu:
+- **A0 (0–499 słów):** Absolutny początkujący (Elementarz).
+- **A1 (500–1499 słów):** Przetrwanie i codzienne zakupy.
+- **A2 (1500–2999 słów):** Podstawowa swoboda w mieście i w pracy.
+- **B1 (3000–4499 słów):** Niezależność komunikacyjna i załatwianie spraw urzędowych.
+- **B2 (4500–5999 słów):** Pełna biegłość zawodowa (95%+ zasobu dorosłego Polaka).
+- **C1 (6000+ słów):** Biegłość akademicka i literacka.
 
-### 📊 Statusy słów:
-- 🔵 **Nowe:** Dopiero dodane słowo.
-- 🟡 **W trakcie nauki:** Słowo powtarzane w interwałach (1 dzień → 6 dni → 14 dni itd.).
-- 🟢 **Opanowane:** Słowo utrwalone w pamięci trwałej (odblokowuje pieczęcie w paszporcie!).
+### 🧠 Nowoczesny ekran powtórek SM-2 (v1.5.2):
+- **Obrót karty jednym tapnięciem:** kliknij w dowolne miejsce, aby zobaczyć tłumaczenie i przykład.
+- **Siatka ocen 2x2 z dokładnymi terminami:**
+  - 🔴 **Znowu** (< 10 min)
+  - 🟠 **Trudno** (dynamicznie: 1 d)
+  - 🔵 **Dobrze** (dynamicznie: 3–6 d)
+  - 🟢 **Łatwo** (dynamicznie: 7–14+ d)
+- **Wskaźnik sesji:** pasek postępu i licznik powtórzonych kart.
 
 ### 📤 Eksport do Anki i Quizlet:
-Możesz jednym kliknięciem wyeksportować cały swój słownik:
-- **Anki (.tsv / .apkg):** Z pełnymi polskimi przykładami, częściami mowy i tagami.
-- **Quizlet (.csv):** Gotowy format do importu do popularnych fiszek.
+Możesz jednym kliknięciem wyeksportować całą swoją bazę:
+- **Anki (.tsv / .apkg):** Z pełnymi przykładami i tagami.
+- **Quizlet (.csv):** Gotowy format do importu do fiszek.
 - **Excel (.csv):** Pełny zrzut bazy z datami i interwałami.''',
-    contentUk: '''### 🧠 Принцип інтервального повторення SM-2:
-Кожне слово, збережене зі сканера, серіалу чи професійного хабу, потрапляє до вашого словника. Науковий алгоритм SuperMemo SM-2 автоматично розраховує точний день наступного повторення, запобігаючи забуванню.
+    contentUk: '''### 📈 Шкала словникового запасу CEFR (A0–C1):
+Угорі словника розміщено інтерактивний трекер вашого мовного рівня:
+- **A0 (0–499 слів):** Початківець (Буквар).
+- **A1 (500–1499 слів):** Базовий побутовий рівень.
+- **A2 (1500–2999 слів):** Спілкування в місті та на роботі.
+- **B1 (3000–4499 слів):** Впевнена самостійність та ужонд.
+- **B2 (4500–5999 слів):** Вільне робоче володіння (покриває понад 95% польської мови).
+- **C1 (6000+ слів):** Просунута досконала вільність.
 
-### 📊 Статуси слів у словнику:
-- 🔵 **Нові:** Тільки додані слова, що очікують першої перевірки.
-- 🟡 **Вивчаються:** Слова на інтервальних циклах (1 день → 6 днів → 14 днів і далі).
-- 🟢 **Засвоєні:** Слова, які перейшли в довготривалу пам'ять (за ними нараховуються досягнення в паспорті!).
+### 🧠 Новий екран інтервального повторення SM-2 (v1.5.2):
+- **Перевертання картки в один тап:** торкніться в будь-якому місці для показу відповіді.
+- **Стильна сітка оцінок 2x2 без скорочень:**
+  - 🔴 **Знову** (< 10 хв)
+  - 🟠 **Важко** (динамічно: 1 д)
+  - 🔵 **Добре** (динамічно: 3–6 д)
+  - 🟢 **Легко** (динамічно: 7–14+ д)
+- **Прогрес сесії:** лінійний індикатор і лічильник карток.
 
 ### 📤 Експорт в Anki, Quizlet та Excel:
-Словник можна в будь-який момент експортувати:
-- **Anki (.tsv):** Формат з HTML-виділенням прикладів та категорійними тегами.
-- **Quizlet (.csv):** Сумісний файл для імпорту в мобільні картки.
-- **Таблиця Excel (.csv):** Повна вибірка з усіма відмінюваннями та інтервалами.''',
-    contentRu: '''### 🧠 Принцип интервального повторения SM-2:
-Каждое слово из сканера, онбординга, диалогов или сериала отправляется в вашу личную память. Алгоритм SuperMemo SM-2 рассчитывает оптимальные дни повторений, побеждая кривую забывания Эббингауза.
+Словник можна в будь-який момент експортувати в Anki (.tsv), Quizlet (.csv) або таблицю Excel.''',
+    contentRu: '''### 📈 Шкала словарного запаса CEFR (A0–C1):
+В шапке словаря отображается динамический бейдж текущего уровня и прогресс-бар:
+- **A0 (0–499 слов):** Абсолютный новичок (Букварь).
+- **A1 (500–1499 слов):** Базовый уровень выживания.
+- **A2 (1500–2999 слов):** Повседневное городское и рабочее общение.
+- **B1 (3000–4499 слов):** Уверенная самостоятельность и решение вопросов в ужонде.
+- **B2 (4500–5999 слов):** Свободное профессиональное владение (95%+ понимания речи).
+- **C1 (6000+ слов):** Продвинутый уровень полной беглости.
 
-### 📊 Стадии запоминания слова:
-- 🔵 **Новые:** Недавно добавленные карточки.
-- 🟡 **На изучении:** Слова в цикле возрастающих интервалов (1 день → 6 дней → 14 дней и т.д.).
-- 🟢 **Освоенные:** Слова, надежно закрепленные в долгосрочной памяти (открывают гербовые штампы паспорта!).
+### 🧠 Новый экран повторений SM-2 (v1.5.2):
+- **Переворот тапом:** открытие карточки кликом в любое место.
+- **Сетка оценок 2x2 без нелепых сокращений:**
+  - 🔴 **Снова** (< 10 мин)
+  - 🟠 **Трудно** (динамически: 1 дн)
+  - 🔵 **Хорошо** (динамически: 3–6 дн)
+  - 🟢 **Легко** (динамически: 7–14+ дн)
+- **Счётчик карточек:** прогресс-бар текущей сессии.
 
 ### 📤 Экспорт колоды в Anki и Quizlet:
-Всю накопленную базу можно выгрузить в одно нажатие:
-- **Anki (.tsv):** С контекстными примерами, частями речи и метками.
-- **Quizlet (.csv):** Стандартный формат для тренировки карточек.
-- **Excel (.csv):** Полная таблица со всеми датами и интервалами повторений.''',
+Выгрузка слов в один клик в Anki (.tsv), Quizlet (.csv) или Excel (.csv).''',
     routeAction: 'dictionary',
   ),
 

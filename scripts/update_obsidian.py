@@ -102,3 +102,4 @@ if os.path.exists(obsidian_roadmap):
     with open(obsidian_roadmap, "w", encoding="utf-8") as f:
         f.write(r_text)
     print("Polish_App_Commercial_Strategy_Roadmap.md updated")
+

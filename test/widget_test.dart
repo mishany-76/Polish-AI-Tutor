@@ -11,9 +11,10 @@ import 'package:polish_ai_tutor/core/db/app_database.dart';
 import 'package:polish_ai_tutor/core/srs/sm2.dart';
 import 'package:polish_ai_tutor/features/onboarding/user_profile.dart';
 import 'package:polish_ai_tutor/features/professions/professions_data.dart';
-import 'package:polish_ai_tutor/features/episodes/episode_model.dart';
 import 'package:polish_ai_tutor/features/episodes/episodes_data.dart';
 import 'package:polish_ai_tutor/features/episodes/episodes_service.dart';
+import 'package:polish_ai_tutor/features/exam/exam_model.dart';
+import 'package:polish_ai_tutor/features/exam/exam_service.dart';
 import 'package:polish_ai_tutor/features/review/quiz_builders.dart';
 import 'package:polish_ai_tutor/features/scanner/doc_analysis_service.dart';
 import 'package:polish_ai_tutor/features/scanner/menu_analysis_service.dart';
@@ -789,6 +790,102 @@ void main() {
       expect(service.isEpisodeUnlocked(episode2Office.id, 2), isTrue);
       expect(service.completedEpisodesCount, equals(1));
       expect(service.totalStarsCount, equals(3));
+    });
+  });
+
+  group('ExamBossFight & CEFR Assessment (Экзаменационный Boss Fight)', () {
+    test('kDefaultExaminers содержит валидных экзаменаторов с репликами открытия', () {
+      expect(kDefaultExaminers.length, greaterThanOrEqualTo(2));
+      for (final ex in kDefaultExaminers) {
+        expect(ex.name.isNotEmpty, isTrue);
+        expect(ex.rolePl.isNotEmpty, isTrue);
+        expect(ex.roleUk.isNotEmpty, isTrue);
+        expect(ex.roleRu.isNotEmpty, isTrue);
+        expect(ex.openingPl.isNotEmpty, isTrue);
+        expect(ex.role(UiLang.pl), equals(ex.rolePl));
+        expect(ex.role(UiLang.uk), equals(ex.roleUk));
+        expect(ex.role(UiLang.ru), equals(ex.roleRu));
+      }
+    });
+
+    test('ExamAssessmentResult.evaluateFallback корректно рассчитывает уровень и критерии', () {
+      final resB1 = ExamAssessmentResult.evaluateFallback(
+        userUtterances: [
+          'Dzień dobry, nazywam się Mychajło i mieszkam w Warszawie od roku.',
+          'Pracuję w branży logistycznej i codziennie rozmawiam po polsku z kierowcami.',
+          'Chciałbym zdać państwowy egzamin certyfikatowy na poziomie B1.',
+          'W urzędzie nie mam już żadnych problemów z załatwianiem dokumentów i meldunku.',
+        ],
+        examinerName: 'Prof. Ewa Wiśniewska',
+        lang: UiLang.ru,
+      );
+
+      expect(resB1.overallLevel, equals('B1'));
+      expect(resB1.score, greaterThanOrEqualTo(60));
+      expect(resB1.passed, isTrue);
+      expect(resB1.vocabScore + resB1.grammarScore + resB1.fluencyScore + resB1.interactionScore, equals(resB1.score));
+      expect(resB1.strongPoints.isNotEmpty, isTrue);
+
+      final json = resB1.toJson();
+      final parsed = ExamAssessmentResult.fromJson(json);
+      expect(parsed.overallLevel, equals('B1'));
+      expect(parsed.score, equals(resB1.score));
+      expect(parsed.passed, isTrue);
+    });
+
+    test('ExamService сохраняет историю и находит лучший сертификат', () async {
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
+      final ai = AiClient(baseUrl: 'https://test.com', apiKey: 'test', model: 'test');
+      final service = ExamService(prefs, ai);
+
+      expect(service.getHistory().isEmpty, isTrue);
+      expect(service.getBestResult(), isNull);
+
+      final r1 = ExamAssessmentResult(
+        id: '1',
+        date: DateTime.now().subtract(const Duration(days: 1)),
+        examinerName: 'Prof. Ewa Wiśniewska',
+        overallLevel: 'A2',
+        score: 72,
+        passed: true,
+        vocabScore: 18,
+        grammarScore: 18,
+        fluencyScore: 18,
+        interactionScore: 18,
+        feedbackPl: 'Dobra odpowiedź',
+        feedbackTr: 'Хороший ответ',
+        strongPoints: ['Словарь'],
+        weakPoints: ['Окончания'],
+        recommendations: ['Тренировать'],
+      );
+
+      final r2 = ExamAssessmentResult(
+        id: '2',
+        date: DateTime.now(),
+        examinerName: 'Dr Janusz Kowalczyk',
+        overallLevel: 'B1',
+        score: 85,
+        passed: true,
+        vocabScore: 22,
+        grammarScore: 21,
+        fluencyScore: 21,
+        interactionScore: 21,
+        feedbackPl: 'Świetny poziom',
+        feedbackTr: 'Отличный уровень',
+        strongPoints: ['Беглость'],
+        weakPoints: [],
+        recommendations: [],
+      );
+
+      await service.saveResult(r1);
+      await service.saveResult(r2);
+
+      final history = service.getHistory();
+      expect(history.length, equals(2));
+      expect(service.getLatestResult()?.id, equals('2'));
+      expect(service.getBestResult()?.overallLevel, equals('B1'));
+      expect(service.getBestResult()?.score, equals(85));
     });
   });
 }

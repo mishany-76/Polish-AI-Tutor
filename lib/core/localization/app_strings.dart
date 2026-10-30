@@ -624,6 +624,63 @@ class AppStrings {
       : (isUk
           ? 'Додати слова серії до словника'
           : 'Добавить слова серии в словарь');
+
+  // --- Экзаменационный Boss Fight (CEFR Assessment) ---
+  String get examBossTitle => isPl
+      ? 'Egzamin Ustny CEFR'
+      : (isUk ? 'Екзаменаційний Boss Fight' : 'Экзаменационный Boss Fight');
+  String get examBossSubtitle => isPl
+      ? 'Państwowa Komisja Egzaminacyjna'
+      : (isUk
+          ? 'Суворий 5-хвилинний іспит без підказок'
+          : 'Строгий 5-минутный экзамен без подсказок');
+  String get examBossBannerSub => isPl
+      ? 'Sprawdź swój poziom (A1–B2) i odbierz oficjalny certyfikat'
+      : (isUk
+          ? '5-хвилинна перевірка без підказок та сертифікат рівня'
+          : '5-минутная проверка без подсказок и сертификат уровня');
+  String get examBossBadge => 'CEFR A1–B2';
+  String get examStage1 => isPl
+      ? '1. Kim jesteś i plany w Polsce'
+      : (isUk ? '1. Хто ви та плани в Польщі' : '1. Кто вы и планы в Польше');
+  String get examStage2 => isPl
+      ? '2. Rozwiązanie sytuacji życiowej'
+      : (isUk ? '2. Вирішення життєвої ситуації' : '2. Решение жизненной ситуации');
+  String get examStage3 => isPl
+      ? '3. Opinia i argumentacja'
+      : (isUk ? '3. Думка та аргументація' : '3. Мнение и аргументация');
+  String get examTimerLabel => isPl
+      ? 'Czas egzaminu'
+      : (isUk ? 'Час іспиту' : 'Время экзамена');
+  String get examFinishButton => isPl
+      ? 'Zakończ i odbierz ocenę'
+      : (isUk ? 'Завершити та отримати оцінку' : 'Завершить и получить оценку');
+  String get examCertificateTitle => isPl
+      ? 'Certyfikat Biegłości Językowej'
+      : (isUk
+          ? 'Сертифікат знання польської мови'
+          : 'Сертификат владения польским языком');
+  String get examCriteriaVocab => isPl
+      ? 'Zasób słownictwa'
+      : (isUk ? 'Словниковий запас' : 'Словарный запас');
+  String get examCriteriaGrammar => isPl
+      ? 'Gramatyka i odmiana'
+      : (isUk ? 'Граматика та відмінювання' : 'Грамматика и формы слов');
+  String get examCriteriaFluency => isPl
+      ? 'Płynność i spójność'
+      : (isUk ? 'Плинність та зв’язність' : 'Беглость и связность');
+  String get examCriteriaInteraction => isPl
+      ? 'Reakcja i zrozumienie'
+      : (isUk ? 'Реакція та розуміння' : 'Реакция и понимание темы');
+  String get examPassed => isPl
+      ? 'EGZAMIN ZDANY'
+      : (isUk ? 'ІСПИТ СКЛАДЕНО' : 'ЭКЗАМЕН СДАН');
+  String get examNotPassed => isPl
+      ? 'WYMAGA POPRAWY'
+      : (isUk ? 'ПОТРЕБУЄ ПОВТОРЕННЯ' : 'ТРЕБУЕТСЯ ПОВТОРЕНИЕ');
+  String get examHistoryTitle => isPl
+      ? 'Historia egzaminów'
+      : (isUk ? 'Історія іспитів' : 'История экзаменов');
 }
 
 

@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/achievements/achievement_service.dart';
 import '../../core/di/providers.dart';
@@ -13,7 +15,7 @@ import '../scanner/translation_service.dart';
 import 'dictation_item.dart';
 import 'dictation_service.dart';
 
-/// Экран тренировки «Режим Диктант» (Active Recall Speller).
+/// Экран тренировки «Режим Диктант» (Active Recall Speller) с 3 уровнями сложности.
 class DictationScreen extends ConsumerStatefulWidget {
   const DictationScreen({
     super.key,
@@ -36,6 +38,7 @@ class DictationScreen extends ConsumerStatefulWidget {
 
 class _DictationScreenState extends ConsumerState<DictationScreen> {
   late DictationMode _mode;
+  DictationDifficulty _difficulty = DictationDifficulty.veryEasy;
   List<DictationItem> _items = [];
   bool _isLoading = true;
   int _currentIndex = 0;
@@ -51,6 +54,10 @@ class _DictationScreenState extends ConsumerState<DictationScreen> {
   String? _detectedMistakeTip;
 
   List<String> _currentLetterTiles = [];
+  bool _isPeeking = false;
+  Timer? _peekTimer;
+
+  static const String _prefDifficultyKey = 'dictation_difficulty_level';
 
   DictationItem? get _currentItem {
     if (_items.isEmpty || _currentIndex >= _items.length) return null;
@@ -62,11 +69,11 @@ class _DictationScreenState extends ConsumerState<DictationScreen> {
     if (item == null) {
       _currentLetterTiles = [];
     } else {
-      _currentLetterTiles = _generateLetterBank(item.word);
+      _currentLetterTiles = _generateLetterBank(item.word, _difficulty);
     }
   }
 
-  static List<String> _generateLetterBank(String targetWord) {
+  static List<String> _generateLetterBank(String targetWord, DictationDifficulty difficulty) {
     final clean = targetWord.toLowerCase().trim();
     final wordLetters = <String>[];
     for (int i = 0; i < clean.length; i++) {
@@ -76,7 +83,15 @@ class _DictationScreenState extends ConsumerState<DictationScreen> {
       }
     }
 
-    // Добавляем реалистичные ложные буквы / орфографические ловушки
+    final rnd = Random(targetWord.hashCode);
+
+    // В режиме «Очень легко» даём ТОЛЬКО буквы этого слова — как пазл/анаграмму без лишних ложных букв!
+    if (difficulty == DictationDifficulty.veryEasy) {
+      final shuffled = [...wordLetters]..shuffle(rnd);
+      return shuffled;
+    }
+
+    // Добавляем орфографические ловушки/дистракторы
     final distractors = <String>{};
     if (clean.contains('ó')) distractors.add('u');
     if (clean.contains('u')) distractors.add('ó');
@@ -92,21 +107,22 @@ class _DictationScreenState extends ConsumerState<DictationScreen> {
     if (clean.contains('ł')) distractors.add('l');
     if (clean.contains('ń')) distractors.add('n');
 
-    // Общий пул польских букв для дополнения кассетницы
     const pool = [
       'a', 'e', 'i', 'o', 'k', 'm', 'n', 'p', 'r', 's', 't', 'w', 'y', 'z',
       'ą', 'ę', 'ł', 'ń', 'ó', 'ś', 'ź', 'ż'
     ];
-    final rnd = Random(targetWord.hashCode);
+
+    final maxDistractors = difficulty == DictationDifficulty.easy ? 2 : 5;
     final shuffledPool = [...pool]..shuffle(rnd);
     for (final ch in shuffledPool) {
-      if (distractors.length >= 4) break;
+      if (distractors.length >= maxDistractors) break;
       if (!wordLetters.contains(ch)) {
         distractors.add(ch);
       }
     }
 
-    final combined = [...wordLetters, ...distractors]..shuffle(rnd);
+    final selectedDistractors = distractors.take(maxDistractors).toList();
+    final combined = [...wordLetters, ...selectedDistractors]..shuffle(rnd);
     return combined;
   }
 
@@ -114,12 +130,51 @@ class _DictationScreenState extends ConsumerState<DictationScreen> {
   void initState() {
     super.initState();
     _mode = widget.initialMode;
-    _loadRound();
+    _loadDifficultyAndRound();
     AchievementService.instance.increment('drills_used');
+  }
+
+  Future<void> _loadDifficultyAndRound() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final savedDiff = prefs.getString(_prefDifficultyKey);
+      if (savedDiff == 'hard') {
+        _difficulty = DictationDifficulty.hard;
+      } else if (savedDiff == 'easy') {
+        _difficulty = DictationDifficulty.easy;
+      } else {
+        _difficulty = DictationDifficulty.veryEasy;
+      }
+      if (_difficulty == DictationDifficulty.veryEasy) {
+        _isSlowSpeed = true;
+      }
+    } catch (_) {}
+    _loadRound();
+  }
+
+  Future<void> _changeDifficulty(DictationDifficulty newDiff) async {
+    if (_difficulty == newDiff) return;
+    setState(() {
+      _difficulty = newDiff;
+      if (newDiff == DictationDifficulty.veryEasy) {
+        _isSlowSpeed = true;
+      }
+      _updateLetterTiles();
+    });
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final str = switch (newDiff) {
+        DictationDifficulty.veryEasy => 'veryEasy',
+        DictationDifficulty.easy => 'easy',
+        DictationDifficulty.hard => 'hard',
+      };
+      await prefs.setString(_prefDifficultyKey, str);
+    } catch (_) {}
   }
 
   @override
   void dispose() {
+    _peekTimer?.cancel();
     _textController.dispose();
     _focusNode.dispose();
     ref.read(ttsProvider).stop();
@@ -133,6 +188,7 @@ class _DictationScreenState extends ConsumerState<DictationScreen> {
       _currentIndex = 0;
       _correctCount = 0;
       _isAnswerChecked = false;
+      _isPeeking = false;
       _textController.clear();
     });
 
@@ -207,6 +263,57 @@ class _DictationScreenState extends ConsumerState<DictationScreen> {
     setState(() {});
   }
 
+  void _onSlotTap(int index) {
+    if (_isAnswerChecked) return;
+    HapticFeedback.selectionClick();
+    final text = _textController.text;
+    if (index < text.length) {
+      _textController.text = text.substring(0, index);
+      _textController.selection = TextSelection.collapsed(offset: _textController.text.length);
+      setState(() {});
+    }
+  }
+
+  void _triggerPeekWord() {
+    if (_isPeeking || _isAnswerChecked) return;
+    HapticFeedback.mediumImpact();
+    setState(() => _isPeeking = true);
+    _peekTimer?.cancel();
+    _peekTimer = Timer(const Duration(milliseconds: 2200), () {
+      if (mounted) {
+        setState(() => _isPeeking = false);
+      }
+    });
+  }
+
+  void _hintNextLetter() {
+    final item = _currentItem;
+    if (item == null || _isAnswerChecked) return;
+    HapticFeedback.lightImpact();
+
+    final target = item.word.toLowerCase();
+    final current = _textController.text.toLowerCase();
+
+    if (current.isEmpty) {
+      _textController.text = target[0];
+    } else if (target.startsWith(current) && current.length < target.length) {
+      _textController.text = target.substring(0, current.length + 1);
+    } else {
+      // Найдена ошибка — сбрасываем до правильного префикса и добавляем следующую букву
+      int matchLen = 0;
+      for (int i = 0; i < current.length && i < target.length; i++) {
+        if (current[i] == target[i]) {
+          matchLen = i + 1;
+        } else {
+          break;
+        }
+      }
+      _textController.text = target.substring(0, (matchLen + 1).clamp(1, target.length));
+    }
+    _textController.selection = TextSelection.collapsed(offset: _textController.text.length);
+    setState(() {});
+  }
+
   void _checkAnswer() {
     final item = _currentItem;
     if (item == null || _isAnswerChecked) return;
@@ -239,8 +346,8 @@ class _DictationScreenState extends ConsumerState<DictationScreen> {
   }
 
   void _nextWord() {
+    _peekTimer?.cancel();
     if (_currentIndex + 1 >= _items.length) {
-      // Завершение раунда
       AchievementService.instance.increment('quiz_rounds_done');
       _showRoundCompletedDialog();
       return;
@@ -250,6 +357,7 @@ class _DictationScreenState extends ConsumerState<DictationScreen> {
       _currentIndex++;
       _isAnswerChecked = false;
       _isLastAnswerCorrect = false;
+      _isPeeking = false;
       _detectedMistakeTip = null;
       _userSubmittedText = '';
       _textController.clear();
@@ -332,56 +440,116 @@ class _DictationScreenState extends ConsumerState<DictationScreen> {
         backgroundColor: AppTheme.primaryCarmine,
         foregroundColor: Colors.white,
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(48),
+          preferredSize: const Size.fromHeight(88),
           child: Container(
             color: Colors.white,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                DropdownButton<DictationMode>(
-                  value: _mode,
-                  underline: const SizedBox(),
-                  icon: const Icon(Icons.keyboard_arrow_down, color: AppTheme.primaryCarmine),
-                  items: [
-                    DropdownMenuItem(
-                      value: DictationMode.traps,
-                      child: Text(
-                        strings.dictationModeTraps,
-                        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
-                      ),
+                // ВЕРХНИЙ РЯД: ВЫБОР РЕЖИМА И ПРОГРЕСС
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    DropdownButton<DictationMode>(
+                      value: _mode,
+                      underline: const SizedBox(),
+                      icon: const Icon(Icons.keyboard_arrow_down, color: AppTheme.primaryCarmine),
+                      items: [
+                        DropdownMenuItem(
+                          value: DictationMode.traps,
+                          child: Text(
+                            strings.dictationModeTraps,
+                            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                        DropdownMenuItem(
+                          value: DictationMode.myDeck,
+                          child: Text(
+                            strings.dictationModeDeck,
+                            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                      ],
+                      onChanged: (newMode) {
+                        if (newMode != null && newMode != _mode) {
+                          setState(() => _mode = newMode);
+                          _loadRound();
+                        }
+                      },
                     ),
-                    DropdownMenuItem(
-                      value: DictationMode.myDeck,
-                      child: Text(
-                        strings.dictationModeDeck,
-                        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                    if (!_isLoading && _items.isNotEmpty)
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: AppTheme.primaryCarmine.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          strings.dictationProgress(_currentIndex + 1, _items.length),
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: AppTheme.primaryCarmine,
+                          ),
+                        ),
                       ),
-                    ),
                   ],
-                  onChanged: (newMode) {
-                    if (newMode != null && newMode != _mode) {
-                      setState(() => _mode = newMode);
-                      _loadRound();
-                    }
-                  },
                 ),
-                if (!_isLoading && _items.isNotEmpty)
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: AppTheme.primaryCarmine.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      strings.dictationProgress(_currentIndex + 1, _items.length),
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: AppTheme.primaryCarmine,
+                const SizedBox(height: 4),
+
+                // НИЖНИЙ РЯД: 3 УРОВНЯ СЛОЖНОСТИ (ОЧЕНЬ ЛЕГКО / ЛЕГКО / ТРУДНО)
+                Row(
+                  children: [
+                    for (final diff in DictationDifficulty.values)
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 2),
+                          child: InkWell(
+                            onTap: () => _changeDifficulty(diff),
+                            borderRadius: BorderRadius.circular(8),
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              padding: const EdgeInsets.symmetric(vertical: 6),
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: _difficulty == diff
+                                    ? (diff == DictationDifficulty.veryEasy
+                                        ? Colors.green.shade100
+                                        : (diff == DictationDifficulty.easy
+                                            ? Colors.amber.shade100
+                                            : Colors.red.shade100))
+                                    : Colors.grey.shade100,
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(
+                                  color: _difficulty == diff
+                                      ? (diff == DictationDifficulty.veryEasy
+                                          ? Colors.green.shade600
+                                          : (diff == DictationDifficulty.easy
+                                              ? Colors.amber.shade700
+                                              : Colors.red.shade600))
+                                      : Colors.grey.shade300,
+                                  width: _difficulty == diff ? 1.5 : 1.0,
+                                ),
+                              ),
+                              child: Text(
+                                diff == DictationDifficulty.veryEasy
+                                    ? strings.dictationDiffVeryEasy
+                                    : (diff == DictationDifficulty.easy
+                                        ? strings.dictationDiffEasy
+                                        : strings.dictationDiffHard),
+                                style: TextStyle(
+                                  fontSize: 11.5,
+                                  fontWeight: _difficulty == diff ? FontWeight.bold : FontWeight.w500,
+                                  color: _difficulty == diff ? Colors.black87 : Colors.grey.shade700,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
+                  ],
+                ),
               ],
             ),
           ),
@@ -429,13 +597,51 @@ class _DictationScreenState extends ConsumerState<DictationScreen> {
 
   Widget _buildActiveExercise(AppStrings strings, UiLang lang, DictationItem item) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(16, 20, 16, 24),
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          // ВСПЛЫВАЮЩАЯ ПОДСКАЗКА ПОДГЛЯДЫВАНИЯ СЛОВА (ДЛЯ ОЧЕНЬ ЛЕГКОГО РЕЖИМА)
+          if (_isPeeking)
+            Container(
+              margin: const EdgeInsets.only(bottom: 12),
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF2E7D32), Color(0xFF1B5E20)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.green.withValues(alpha: 0.3),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.visibility_rounded, color: Colors.white, size: 24),
+                  const SizedBox(width: 10),
+                  Text(
+                    item.word,
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.5,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
           // КАРТОЧКА С ДИНАМИКОМ И СКОРОСТЬЮ
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
             decoration: BoxDecoration(
               color: AppTheme.surfaceWhite,
               borderRadius: BorderRadius.circular(20),
@@ -448,8 +654,8 @@ class _DictationScreenState extends ConsumerState<DictationScreen> {
                   onTap: () => _speakCurrent(),
                   borderRadius: BorderRadius.circular(50),
                   child: Container(
-                    width: 84,
-                    height: 84,
+                    width: 80,
+                    height: 80,
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
                         colors: [AppTheme.primaryCarmine, Color(0xFF8C1D2F)],
@@ -468,11 +674,11 @@ class _DictationScreenState extends ConsumerState<DictationScreen> {
                     child: const Icon(
                       Icons.volume_up_rounded,
                       color: Colors.white,
-                      size: 44,
+                      size: 42,
                     ),
                   ),
                 ),
-                const SizedBox(height: 14),
+                const SizedBox(height: 12),
 
                 // Переключатели скорости: 1.0x и 0.3x
                 Row(
@@ -511,7 +717,7 @@ class _DictationScreenState extends ConsumerState<DictationScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 10),
 
                 // Подсказка значения слова (перевод)
                 Row(
@@ -520,7 +726,7 @@ class _DictationScreenState extends ConsumerState<DictationScreen> {
                     Text(
                       '${strings.dictationMeaningLabel} ',
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: 13.5,
                         fontWeight: FontWeight.w600,
                         color: Colors.grey.shade600,
                       ),
@@ -541,9 +747,9 @@ class _DictationScreenState extends ConsumerState<DictationScreen> {
               ],
             ),
           ),
-          const SizedBox(height: 18),
+          const SizedBox(height: 14),
 
-          // ПОЛЕ ВВОДА
+          // ПОЛЕ ВВОДА + ВИЗУАЛЬНЫЕ СЛОТЫ БУКВ (ДЛЯ СЛОЖНОСТИ VERY EASY И EASY)
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
@@ -554,16 +760,46 @@ class _DictationScreenState extends ConsumerState<DictationScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  strings.dictationListenHint,
-                  style: const TextStyle(
-                    fontSize: 13.5,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87,
-                  ),
+                // Шапка поля ввода с индикатором длины слова
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      _difficulty == DictationDifficulty.veryEasy
+                          ? strings.dictationSlotsHint
+                          : strings.dictationListenHint,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade100,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        strings.dictationWordLength(item.word.length),
+                        style: TextStyle(
+                          fontSize: 11.5,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey.shade700,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 10),
 
+                // ИНТЕРАКТИВНЫЕ СЛОТЫ БУКВ
+                if (_difficulty != DictationDifficulty.hard) ...[
+                  _buildLetterSlots(item.word, _textController.text),
+                  const SizedBox(height: 12),
+                ],
+
+                // ТЕКСТОВОЕ ПОЛЕ ВВОДА
                 TextField(
                   controller: _textController,
                   focusNode: _focusNode,
@@ -582,7 +818,10 @@ class _DictationScreenState extends ConsumerState<DictationScreen> {
                     suffixIcon: _textController.text.isNotEmpty && !_isAnswerChecked
                         ? IconButton(
                             icon: const Icon(Icons.clear, size: 20),
-                            onPressed: () => _textController.clear(),
+                            onPressed: () {
+                              _textController.clear();
+                              setState(() {});
+                            },
                           )
                         : null,
                     border: OutlineInputBorder(
@@ -594,58 +833,88 @@ class _DictationScreenState extends ConsumerState<DictationScreen> {
                     ),
                   ),
                   onSubmitted: (_) => _checkAnswer(),
+                  onChanged: (_) => setState(() {}),
                 ),
-                const SizedBox(height: 14),
+                const SizedBox(height: 12),
 
-                // 1. КАССЕТНИЦА БУКВ ДЛЯ СОСТАВЛЕНИЯ СЛОВА (все нужные буквы + ложные буквы)
-                if (_currentLetterTiles.isNotEmpty) ...[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
+                // ПАНЕЛЬ ДЕЙСТВИЙ: ПОДГЛЯДЕТЬ / ПОДСКАЗКА / СТЕРЕТЬ
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    if (_difficulty == DictationDifficulty.veryEasy)
+                      OutlinedButton.icon(
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Colors.green.shade800,
+                          side: BorderSide(color: Colors.green.shade400),
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                          visualDensity: VisualDensity.compact,
+                        ),
+                        onPressed: _isAnswerChecked ? null : _triggerPeekWord,
+                        icon: const Icon(Icons.visibility_outlined, size: 16),
+                        label: Text(strings.dictationPeekBtn, style: const TextStyle(fontSize: 12)),
+                      )
+                    else if (_difficulty == DictationDifficulty.easy)
+                      OutlinedButton.icon(
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Colors.amber.shade900,
+                          side: BorderSide(color: Colors.amber.shade500),
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                          visualDensity: VisualDensity.compact,
+                        ),
+                        onPressed: _isAnswerChecked ? null : _hintNextLetter,
+                        icon: const Icon(Icons.lightbulb_outline, size: 16),
+                        label: Text(strings.dictationHintBtn, style: const TextStyle(fontSize: 12)),
+                      )
+                    else
                       Text(
                         strings.dictationLetterBankLabel,
                         style: TextStyle(
-                          fontSize: 12.5,
+                          fontSize: 12,
                           fontWeight: FontWeight.w600,
                           color: Colors.grey.shade700,
                         ),
                       ),
-                      if (!_isAnswerChecked && _textController.text.isNotEmpty)
-                        InkWell(
-                          onTap: _onBackspaceTap,
-                          borderRadius: BorderRadius.circular(6),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Icon(Icons.backspace_outlined, size: 16, color: AppTheme.primaryCarmine),
-                                const SizedBox(width: 4),
-                                Text(
-                                  strings.dictationBackspace,
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                    color: AppTheme.primaryCarmine,
-                                  ),
+                    if (!_isAnswerChecked && _textController.text.isNotEmpty)
+                      InkWell(
+                        onTap: _onBackspaceTap,
+                        borderRadius: BorderRadius.circular(6),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(Icons.backspace_outlined, size: 16, color: AppTheme.primaryCarmine),
+                              const SizedBox(width: 4),
+                              Text(
+                                strings.dictationBackspace,
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppTheme.primaryCarmine,
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+
+                // КАССЕТНИЦА БУКВ ДЛЯ СОСТАВЛЕНИЯ СЛОВА
+                if (_currentLetterTiles.isNotEmpty)
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     physics: const BouncingScrollPhysics(),
                     child: Row(
                       children: [
-                        for (final char in _currentLetterTiles)
+                        for (int i = 0; i < _currentLetterTiles.length; i++)
                           Padding(
                             padding: const EdgeInsets.only(right: 8),
                             child: InkWell(
-                              onTap: _isAnswerChecked ? null : () => _onLetterTileTap(char),
+                              onTap: _isAnswerChecked
+                                  ? null
+                                  : () => _onLetterTileTap(_currentLetterTiles[i]),
                               borderRadius: BorderRadius.circular(10),
                               child: Container(
                                 constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
@@ -664,7 +933,7 @@ class _DictationScreenState extends ConsumerState<DictationScreen> {
                                   ],
                                 ),
                                 child: Text(
-                                  char,
+                                  _currentLetterTiles[i],
                                   style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
@@ -677,7 +946,6 @@ class _DictationScreenState extends ConsumerState<DictationScreen> {
                       ],
                     ),
                   ),
-                ],
               ],
             ),
           ),
@@ -751,32 +1019,40 @@ class _DictationScreenState extends ConsumerState<DictationScreen> {
                       children: [
                         Text(
                           '${strings.dictationYourInputLabel} ',
-                          style: TextStyle(fontSize: 14, color: Colors.grey.shade700),
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.grey.shade700,
+                          ),
                         ),
                         Text(
                           _userSubmittedText,
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 15,
                             fontWeight: FontWeight.bold,
-                            decoration: TextDecoration.lineThrough,
                             color: Colors.red.shade800,
+                            decoration: TextDecoration.lineThrough,
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 6),
                   ],
 
                   Row(
                     children: [
                       Text(
                         '${strings.dictationCorrectWordLabel} ',
-                        style: TextStyle(fontSize: 14, color: Colors.grey.shade700),
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey.shade700,
+                        ),
                       ),
                       Text(
                         item.word,
                         style: const TextStyle(
-                          fontSize: 20,
+                          fontSize: 17,
                           fontWeight: FontWeight.bold,
                           color: AppTheme.primaryCarmine,
                         ),
@@ -784,88 +1060,111 @@ class _DictationScreenState extends ConsumerState<DictationScreen> {
                     ],
                   ),
 
-                  // Подсказка об ошибке (например, rz vs ż)
-                  if (_detectedMistakeTip != null) ...[
-                    const SizedBox(height: 8),
+                  // Подсказка правила орфографии
+                  if (_detectedMistakeTip != null || item.rule(lang).isNotEmpty) ...[
+                    const SizedBox(height: 10),
                     Container(
-                      padding: const EdgeInsets.all(8),
+                      padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: Colors.amber.shade100,
-                        borderRadius: BorderRadius.circular(8),
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: Colors.grey.shade300),
                       ),
-                      child: Text(
-                        _detectedMistakeTip!,
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.brown.shade900,
-                        ),
-                      ),
-                    ),
-                  ],
-
-                  // Мнемоническое правило
-                  if (item.rule(lang).isNotEmpty) ...[
-                    const SizedBox(height: 10),
-                    Text(
-                      strings.dictationRuleTipLabel,
-                      style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      item.rule(lang),
-                      style: TextStyle(
-                        fontSize: 13.5,
-                        color: Colors.grey.shade800,
-                        height: 1.3,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Icon(Icons.lightbulb, size: 18, color: Colors.amber),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              _detectedMistakeTip ?? item.rule(lang),
+                              style: const TextStyle(fontSize: 12.5, color: Colors.black87),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
 
-                  // Пример в предложении
+                  // Пример предложения
                   if (item.examplePl != null && item.examplePl!.isNotEmpty) ...[
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 8),
                     Text(
-                      strings.dictationExampleLabel,
-                      style: const TextStyle(
+                      '${strings.dictationExampleLabel} ${item.examplePl}',
+                      style: TextStyle(
                         fontSize: 12.5,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      '„${item.examplePl}”',
-                      style: const TextStyle(
-                        fontSize: 13.5,
                         fontStyle: FontStyle.italic,
-                        color: Colors.black87,
+                        color: Colors.grey.shade800,
                       ),
                     ),
                   ],
                 ],
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 14),
 
-            // Кнопка Следующее слово
-            FilledButton.icon(
+            FilledButton(
               style: FilledButton.styleFrom(
                 backgroundColor: AppTheme.primaryCarmine,
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
               ),
               onPressed: _nextWord,
-              icon: const Icon(Icons.arrow_forward_rounded),
-              label: Text(
+              child: Text(
                 strings.dictationNextBtn,
                 style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  /// Визуальные слоты для сборки слова как пазла
+  Widget _buildLetterSlots(String targetWord, String currentInput) {
+    final clean = targetWord.trim();
+    final inputLen = currentInput.length;
+
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      physics: const BouncingScrollPhysics(),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          for (int i = 0; i < clean.length; i++) ...[
+            InkWell(
+              onTap: () => _onSlotTap(i),
+              borderRadius: BorderRadius.circular(8),
+              child: Container(
+                width: 36,
+                height: 42,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: i < inputLen
+                      ? AppTheme.primaryCarmine.withValues(alpha: 0.1)
+                      : Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: i < inputLen
+                        ? AppTheme.primaryCarmine
+                        : (i == inputLen ? Colors.amber.shade700 : Colors.grey.shade300),
+                    width: i == inputLen ? 2 : 1.2,
+                  ),
+                ),
+                child: Text(
+                  i < inputLen ? currentInput[i] : (i == inputLen ? '|' : '_'),
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: i < inputLen
+                        ? AppTheme.primaryCarmine
+                        : (i == inputLen ? Colors.amber.shade800 : Colors.grey.shade400),
+                  ),
+                ),
+              ),
+            ),
+            if (i < clean.length - 1) const SizedBox(width: 6),
           ],
         ],
       ),

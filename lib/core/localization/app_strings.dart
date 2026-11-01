@@ -501,6 +501,44 @@ class AppStrings {
       ? 'Kolejna runda'
       : (isUk ? 'Наступний раунд' : 'Следующий раунд');
 
+  // Уровни сложности диктанта (Dictation Difficulty)
+  String get dictationDifficultyTitle => isPl
+      ? 'Trudność'
+      : (isUk ? 'Складність' : 'Сложность');
+  String get dictationDiffVeryEasy => isPl
+      ? '🟢 Bardzo łatwy'
+      : (isUk ? '🟢 Дуже легко' : '🟢 Очень легко');
+  String get dictationDiffEasy => isPl
+      ? '🟡 Łatwy'
+      : (isUk ? '🟡 Легко' : '🟡 Легко');
+  String get dictationDiffHard => isPl
+      ? '🔴 Trudny'
+      : (isUk ? '🔴 Важко' : '🔴 Трудно');
+  String get dictationPeekBtn => isPl
+      ? 'Podejrzyj słowo'
+      : (isUk ? 'Підглянути слово' : 'Подсмотреть слово');
+  String get dictationHintBtn => isPl
+      ? 'Podpowiedź litery'
+      : (isUk ? 'Підказка літери' : 'Подсказка буквы');
+  String get dictationSlotsHint => isPl
+      ? 'Ułóż litery w kolejności:'
+      : (isUk ? 'Склади літери за порядком:' : 'Собери буквы по порядку:');
+  String dictationWordLength(int len) => isPl
+      ? '$len liter'
+      : (isUk ? '$len літер' : '$len букв');
+
+  // Автоматическое добавление в словарь
+  String autoSavedWordsNotice(int count) => isPl
+      ? '📥 Automatycznie dodano do słownika: $count słówek'
+      : (isUk
+          ? '📥 Автоматично додано до словника: $count слів'
+          : '📥 Автоматически добавлено в словарь: $count слов');
+  String get autoSavedAllInDictNotice => isPl
+      ? '✅ Wszystkie słówka są już w Twoim słowniku SM-2'
+      : (isUk
+          ? '✅ Усі слова вже є у вашому словнику SM-2'
+          : '✅ Все слова уже есть в вашем словаре SM-2');
+
   // Onboarding & Profile
   String get onboardingSkip => isPl ? 'Pomiń' : (isUk ? 'Пропустити' : 'Пропустить');
   String get onboardingNext => isPl ? 'Dalej' : (isUk ? 'Далі' : 'Далее');

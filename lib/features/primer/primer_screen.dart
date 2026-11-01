@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
+import '../../core/achievements/achievement_service.dart';
 import '../../core/di/providers.dart';
 import '../../core/settings/app_settings.dart';
 import 'primer_data.dart';
@@ -739,24 +740,22 @@ class _PrimerScreenState extends ConsumerState<PrimerScreen>
 
   Future<void> _importCategoryToDb(BuildContext context, List<PrimerBrickItem> items, bool isUk) async {
     final db = ref.read(databaseProvider);
-    int added = 0;
-    for (final item in items) {
-      final ok = await db.addScanWord(
-        form: item.polishWord.split('(').first.trim(),
-        translation: isUk ? item.translationUk : item.translationRu,
-        uk: isUk,
-        examplePl: item.examplePl,
-        source: 'primer_a0',
-      );
-      if (ok) added++;
+    final terms = items.map((item) => (
+      word: item.polishWord.split('(').first.trim(),
+      translation: (isUk ? item.translationUk : item.translationRu) as String?,
+      examplePl: item.examplePl as String?,
+    )).toList();
+    final added = await db.registerLessonWordsBatch(terms, uk: isUk, source: 'primer_a0');
+    if (added > 0) {
+      await AchievementService.instance.increment('words_added', by: added);
     }
 
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(isUk
-              ? 'Додано $added нових слів у ваш словник SM-2!'
-              : 'Добавлено $added новых слов в ваш словарь SM-2!'),
+              ? (added > 0 ? 'Додано $added нових слів у ваш словник SM-2!' : 'Усі слова вже є у вашому словнику SM-2!')
+              : (added > 0 ? 'Добавлено $added новых слов в ваш словарь SM-2!' : 'Все слова уже есть в вашем словаре SM-2!')),
         ),
       );
     }

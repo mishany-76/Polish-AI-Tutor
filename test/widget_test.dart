@@ -173,6 +173,42 @@ void main() {
       await db.clearCache();
       expect(await db.cacheGet('k'), isNull);
     });
+
+    test('registerLessonWord: автоматическое добавление без дубликатов', () async {
+      final added1 = await db.registerLessonWord(
+        form: 'kawalerka',
+        translation: 'однокомнатная квартира',
+        uk: false,
+        examplePl: 'Wynajmę kawalerkę.',
+        source: 'dialogue',
+      );
+      expect(added1, isTrue);
+
+      // Повторное добавление того же слова не создает дубликат
+      final added2 = await db.registerLessonWord(
+        form: 'KAWALERKA',
+        translation: 'однокімнатна квартира',
+        uk: true,
+        examplePl: 'Szukam kawalerki.',
+        source: 'episode',
+      );
+      expect(added2, isFalse);
+
+      final words = await db.allWords();
+      final kawalerkaWords = words.where((w) => w.lemma == 'kawalerka').toList();
+      expect(kawalerkaWords.length, 1);
+      expect(kawalerkaWords.first.dueAt.isBefore(DateTime.now().add(const Duration(minutes: 1))), isTrue);
+    });
+
+    test('registerLessonWordsBatch: пакетная регистрация уникальных слов уроков', () async {
+      final batch = [
+        (word: 'umowa', translation: 'договор', examplePl: 'Podpisz umowę.'),
+        (word: 'kaucja', translation: 'залог', examplePl: 'Kaucja zwrotna.'),
+        (word: 'umowa', translation: 'угода', examplePl: 'Umowa o pracę.'), // дубликат внутри пакета
+      ];
+      final count = await db.registerLessonWordsBatch(batch, uk: false, source: 'lesson_test');
+      expect(count, 2); // только 2 уникальных слова добавлено
+    });
   });
 
   group('AchievementService (Польский паспорт)', () {
@@ -350,6 +386,13 @@ void main() {
       expect(nasalError, contains('хвостиком'));
 
       expect(DictationService.detectOrthographyMistake('morze', 'morze'), isNull);
+    });
+
+    test('DictationDifficulty: содержит 3 режима (veryEasy, easy, hard)', () {
+      expect(DictationDifficulty.values.length, 3);
+      expect(DictationDifficulty.veryEasy.name, 'veryEasy');
+      expect(DictationDifficulty.easy.name, 'easy');
+      expect(DictationDifficulty.hard.name, 'hard');
     });
 
     test('DictationItem: корректно парсит json и локализует правила', () {

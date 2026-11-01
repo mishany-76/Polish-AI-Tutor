@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/achievements/achievement_service.dart';
 import '../../core/di/providers.dart';
 import '../../core/localization/app_strings.dart';
 import '../../core/settings/app_settings.dart';
@@ -428,6 +429,36 @@ class EpisodeDetailScreen extends ConsumerStatefulWidget {
 
 class _EpisodeDetailScreenState extends ConsumerState<EpisodeDetailScreen> {
   final Set<String> _addedTerms = {};
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _autoRegisterTerms();
+    });
+  }
+
+  Future<void> _autoRegisterTerms() async {
+    final db = ref.read(databaseProvider);
+    final lang = ref.read(settingsProvider).lang;
+    final isUk = lang == UiLang.uk;
+    final items = widget.episode.vocabulary.map((v) => (
+      word: v.termPl,
+      translation: v.translation(lang),
+      examplePl: v.examplePl,
+    )).toList();
+    final added = await db.registerLessonWordsBatch(items, uk: isUk, source: 'episode_${widget.episode.id}');
+    if (added > 0) {
+      await AchievementService.instance.increment('words_added', by: added);
+    }
+    if (mounted) {
+      setState(() {
+        for (final v in widget.episode.vocabulary) {
+          _addedTerms.add(v.termPl);
+        }
+      });
+    }
+  }
 
   Future<void> _speak(String text) async {
     try {

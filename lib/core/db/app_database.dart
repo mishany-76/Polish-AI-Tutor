@@ -181,6 +181,69 @@ class AppDatabase extends _$AppDatabase {
     return addedCount;
   }
 
+  /// Автоматическое добавление слова из уроков, диалогов или упражнений.
+  /// Предотвращает дубликаты (возвращает false, если слово уже в словаре).
+  /// Если слова еще нет — добавляет его в статус Новые для первого интервального повторения.
+  /// Если слово уже есть, но у него не было примера употребления — обновляет пример.
+  Future<bool> registerLessonWord({
+    required String form,
+    String? translation,
+    required bool uk,
+    String? examplePl,
+    String source = 'lesson_auto',
+  }) async {
+    final clean = normalize(form.trim().replaceAll(
+      RegExp(r'^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$', unicode: true),
+      '',
+    ));
+    if (clean.length < 2) return false;
+    if (stopwords.contains(clean)) return false;
+    if (RegExp(r'^\d+$').hasMatch(clean)) return false;
+
+    final existing = await findByForm(clean);
+    if (existing != null) {
+      if ((existing.examplePl == null || existing.examplePl!.isEmpty) &&
+          examplePl != null &&
+          examplePl.trim().isNotEmpty) {
+        await (update(words)..where((t) => t.id.equals(existing.id))).write(
+          WordsCompanion(examplePl: Value(examplePl.trim())),
+        );
+      }
+      return false;
+    }
+
+    await into(words).insert(WordsCompanion.insert(
+      lemma: clean,
+      surfaceForm: Value(clean),
+      translationUk: Value(uk ? translation : null),
+      translationRu: Value(uk ? null : translation),
+      examplePl: Value(examplePl?.trim().isEmpty == true ? null : examplePl?.trim()),
+      source: Value(source),
+      dueAt: Value(DateTime.now()),
+    ));
+    return true;
+  }
+
+  /// Пакетная регистрация уникальных слов из уроков и диалогов.
+  Future<int> registerLessonWordsBatch(
+    List<({String word, String? translation, String? examplePl})> items, {
+    required bool uk,
+    String source = 'lesson_auto',
+  }) async {
+    int added = 0;
+    for (final item in items) {
+      final ok = await registerLessonWord(
+        form: item.word,
+        translation: item.translation,
+        uk: uk,
+        examplePl: item.examplePl,
+        source: source,
+      );
+      if (ok) added++;
+    }
+    return added;
+  }
+
   /// Пакетное добавление извлеченных ИИ качественных слов (лемма, перевод, часть речи).
   Future<int> batchAddAiWords(
     List<({String lemma, String translation, String? pos})> aiWords, {

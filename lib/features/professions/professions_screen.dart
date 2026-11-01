@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/achievements/achievement_service.dart';
 import '../../core/di/providers.dart';
 import '../../core/localization/app_strings.dart';
 import '../../core/settings/app_settings.dart';
@@ -44,6 +45,32 @@ class _ProfessionsScreenState extends ConsumerState<ProfessionsScreen>
       (p) => p.id == widget.initialProfessionId,
       orElse: () => kAllProfessions.first,
     );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _autoRegisterProfession(_selectedProfession);
+    });
+  }
+
+  void _autoRegisterProfession(ProfessionItem prof) {
+    final db = ref.read(databaseProvider);
+    final lang = ref.read(settingsProvider).lang;
+    final isUk = lang == UiLang.uk;
+    final items = prof.vocabulary.map((v) => (
+      word: v.termPl,
+      translation: v.translation(lang),
+      examplePl: v.examplePl,
+    )).toList();
+    db.registerLessonWordsBatch(items, uk: isUk, source: 'profession_${prof.id}').then((added) {
+      if (added > 0) {
+        AchievementService.instance.increment('words_added', by: added);
+      }
+      if (mounted) {
+        setState(() {
+          for (final v in prof.vocabulary) {
+            _addedTerms.add(v.termPl);
+          }
+        });
+      }
+    });
   }
 
   @override

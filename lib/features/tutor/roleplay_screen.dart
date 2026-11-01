@@ -784,18 +784,43 @@ $initiatorRule
   }
 }
 
-class _SummaryDialog extends ConsumerWidget {
+class _SummaryDialog extends ConsumerStatefulWidget {
   const _SummaryDialog({required this.future, required this.uk});
 
   final Future<Map<String, dynamic>> future;
   final bool uk;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_SummaryDialog> createState() => _SummaryDialogState();
+}
+
+class _SummaryDialogState extends ConsumerState<_SummaryDialog> {
+  bool _didAutoSave = false;
+  int _autoAddedCount = 0;
+
+  void _triggerAutoSave(List<(String, String)> words) {
+    if (_didAutoSave || words.isEmpty) return;
+    _didAutoSave = true;
+    final db = ref.read(databaseProvider);
+    final items = words
+        .map((w) => (word: w.$1, translation: w.$2.isEmpty ? null : w.$2, examplePl: null))
+        .toList();
+    db.registerLessonWordsBatch(items, uk: widget.uk, source: 'dialogue').then((added) {
+      if (added > 0) {
+        AchievementService.instance.increment('words_added', by: added);
+      }
+      if (mounted) {
+        setState(() => _autoAddedCount = added);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text('Итог сцены'),
       content: FutureBuilder<Map<String, dynamic>>(
-        future: future,
+        future: widget.future,
         builder: (context, snap) {
           if (snap.hasError) {
             return Text('Не удалось подвести итог: ${snap.error}');
@@ -815,6 +840,11 @@ class _SummaryDialog extends ConsumerWidget {
               if (w is Map && w['pl'] != null)
                 (w['pl'].toString(), (w['tr'] ?? '').toString()),
           ];
+
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _triggerAutoSave(words);
+          });
+
           return SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -831,32 +861,36 @@ class _SummaryDialog extends ConsumerWidget {
                   const Text('Слова для повторения:',
                       style: TextStyle(fontWeight: FontWeight.bold)),
                   for (final w in words) Text('• ${w.$1} — ${w.$2}'),
-                  const SizedBox(height: 8),
-                  FilledButton.tonal(
-                    onPressed: () async {
-                      final db = ref.read(databaseProvider);
-                      var added = 0;
-                      for (final w in words) {
-                        if (await db.addScanWord(
-                          form: w.$1,
-                          translation: w.$2,
-                          uk: uk,
-                          source: 'chat',
-                        )) {
-                          added++;
-                        }
-                      }
-                      if (added > 0) {
-                        await AchievementService.instance.increment('words_added', by: added);
-                      }
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text('✅ Добавлено в колоду: $added'),
-                        ));
-                        Navigator.of(context).pop();
-                      }
-                    },
-                    child: const Text('Добавить в колоду'),
+                  const SizedBox(height: 10),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.green.shade50,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.green.shade200),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.check_circle_rounded, size: 18, color: Colors.green),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            widget.uk
+                                ? (_autoAddedCount > 0
+                                    ? '📥 Автоматично додано $_autoAddedCount нових слів до словника SM-2!'
+                                    : '✅ Усі слова збережені у вашому словнику SM-2')
+                                : (_autoAddedCount > 0
+                                    ? '📥 Автоматически добавлено $_autoAddedCount новых слов в словарь SM-2!'
+                                    : '✅ Все слова сохранены в вашем словаре SM-2'),
+                            style: TextStyle(
+                              fontSize: 12.5,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.green.shade900,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ],
